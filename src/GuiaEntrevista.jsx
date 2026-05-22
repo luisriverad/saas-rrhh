@@ -18,6 +18,22 @@ const questions = [
   { es: "¿Cuál ha sido la retroalimentación más difícil que has recibido y qué hiciste con ella?" },
 ];
 
+// Estilos alineados con SaaSRRHH.jsx
+const S = {
+  page: { minHeight: "100vh", background: "#ffffff", color: "#000", fontFamily: "system-ui, -apple-system, sans-serif" },
+  topbar: { borderBottom: "1px solid #ccc", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" },
+  title: { fontSize: 20, fontWeight: 700 },
+  subtitle: { fontSize: 12, color: "#666" },
+  content: { padding: 24, maxWidth: 1200, margin: "0 auto" },
+  h2: { fontSize: 18, fontWeight: 700, marginBottom: 4 },
+  h3: { fontSize: 14, fontWeight: 700, marginTop: 20, marginBottom: 8 },
+  hint: { fontSize: 12, color: "#666", marginBottom: 16 },
+  card: { border: "1px solid #ccc", borderRadius: 6, padding: 16, marginBottom: 16, background: "#fff" },
+  kpiLabel: { fontSize: 11, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: 0.6 },
+  btn: { padding: "8px 14px", border: "1px solid #000", background: "#000", color: "#fff", borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" },
+  btnGhost: { padding: "8px 14px", border: "1px solid #ccc", background: "#fff", color: "#000", borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" },
+};
+
 export default function GuiaEntrevista({ onClose }) {
   const [notes, setNotes] = useState({});
   const [activeCard, setActiveCard] = useState(null);
@@ -32,7 +48,7 @@ export default function GuiaEntrevista({ onClose }) {
   const answered = scores.filter((s) => s !== null);
   const avgRaw = answered.length > 0 ? answered.reduce((a, b) => a + b, 0) / answered.length : 0;
   const globalScore = Math.round((avgRaw / 5) * 100);
-  const scoreColor = globalScore <= 40 ? "#c0392b" : globalScore <= 70 ? "#d97706" : "#0a7d2c";
+  const scoreColor = globalScore <= 40 ? "#b00020" : globalScore <= 70 ? "#b58900" : "#0a7d2c";
 
   const handleCvUpload = (file) => {
     if (!file) return;
@@ -60,12 +76,12 @@ export default function GuiaEntrevista({ onClose }) {
     setCvLoading(true);
     setCvMatch(null);
 
-    await new Promise((r) => setTimeout(r, 1400)); // Simula procesamiento
+    await new Promise((r) => setTimeout(r, 1400));
 
     const promRaw = answered.length > 0 ? avgRaw / 5 : 0.5;
     const matchPct = Math.round(45 + promRaw * 45 + (Math.random() * 10 - 5));
     const matchFinal = Math.max(20, Math.min(98, matchPct));
-    const color = matchFinal <= 50 ? "#c0392b" : matchFinal <= 75 ? "#d97706" : "#0a7d2c";
+    const color = matchFinal <= 50 ? "#b00020" : matchFinal <= 75 ? "#b58900" : "#0a7d2c";
 
     const muestraPreguntas = questions
       .map((q, i) => ({ q: q.es, score: notes[`score_${i}`], nota: notes[i] }))
@@ -159,133 +175,116 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
     setLoading(false);
   };
 
-  const C = {
-    pageBg: "#f8fafc",
-    cardBg: "#ffffff",
-    cardBorder: "#e2e8f0",
-    textPrimary: "#0f172a",
-    textSecondary: "#475569",
-    textMuted: "#94a3b8",
-    accent: "#0a7d2c",
-    accentDark: "#075c20",
-    softBg: "#f1f5f9",
-    softBorder: "#cbd5e1",
-  };
-
   return (
-    <div style={{ minHeight: "100vh", background: C.pageBg, fontFamily: "'Inter', sans-serif", padding: 0, color: C.textPrimary }}>
-      {/* Title bar with back button */}
-      <div style={{ background: "linear-gradient(135deg, #0a7d2c 0%, #075c20 100%)", padding: "20px 40px 24px", color: "#fff" }}>
-        <button
-          onClick={onClose}
-          style={{
-            background: "rgba(255,255,255,0.15)",
-            color: "#fff",
-            border: "1px solid rgba(255,255,255,0.3)",
-            borderRadius: 6,
-            padding: "6px 14px",
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-            marginBottom: 14,
-            fontFamily: "'Inter', sans-serif",
-          }}
-        >
-          ← Volver a Cobertura de Plantilla
-        </button>
-        <h1 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 800, color: "#ffffff", margin: 0, letterSpacing: "-0.5px", lineHeight: 1.1 }}>
-          Guía de Preguntas de Entrevista
-        </h1>
+    <div style={S.page}>
+      {/* Topbar — mismo estilo que el sistema */}
+      <div style={S.topbar}>
+        <div>
+          <div style={S.title}>Guía de Preguntas de Entrevista</div>
+          <div style={S.subtitle}>15 preguntas conductuales con score 1-5 y notas por pregunta</div>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button style={S.btnGhost} onClick={onClose}>← Volver a Cobertura</button>
+          <button style={S.btn} onClick={handleGenerateDictamen} disabled={loading || answered.length === 0}>
+            {loading ? "Analizando..." : "Generar Dictamen con IA"}
+          </button>
+        </div>
       </div>
 
-      {/* Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16, padding: "24px 28px", maxWidth: 1200, margin: "0 auto" }}>
-        {questions.map((q, i) => (
-          <div
-            key={i}
-            onClick={() => setActiveCard(activeCard === i ? null : i)}
-            style={{
-              background: C.cardBg,
-              borderRadius: 14,
-              padding: "22px 20px",
-              border: activeCard === i ? `1.5px solid ${C.accent}` : `1px solid ${C.cardBorder}`,
-              boxShadow: activeCard === i ? `0 4px 12px rgba(10, 125, 44, 0.10)` : "0 1px 2px rgba(15,23,42,0.04)",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              display: "flex",
-              flexDirection: "column",
-              minHeight: 180,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-              <span style={{ background: C.accent, color: "#fff", fontWeight: 700, fontSize: 13, borderRadius: 8, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                {String(i + 1).padStart(2, "0")}
-              </span>
-            </div>
-            <p style={{ color: C.textPrimary, fontSize: 15, fontWeight: 600, lineHeight: 1.45, margin: "0 0 12px 0" }}>{q.es}</p>
+      <div style={S.content}>
+        <h2 style={S.h2}>Cuestionario</h2>
+        <p style={S.hint}>Asigna un score de 1 a 5 a cada respuesta (rojo = débil, amarillo = aceptable, verde = sólido) y registra tus notas.</p>
 
-            <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-              {[1, 2, 3, 4, 5].map((score) => {
-                const isSelected = notes[`score_${i}`] === score;
-                const bg = score <= 2 ? "#c0392b" : score === 3 ? "#f1c40f" : "#71b248";
-                const fg = score === 3 ? "#000" : "#fff";
-                return (
-                  <button
-                    key={score}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setNotes({ ...notes, [`score_${i}`]: notes[`score_${i}`] === score ? null : score });
-                    }}
-                    style={{
-                      width: 34, height: 34, borderRadius: 8,
-                      border: isSelected ? "2px solid #0f172a" : "2px solid transparent",
-                      background: bg,
-                      color: fg,
-                      fontSize: 14, fontWeight: 700, cursor: "pointer",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontFamily: "'Inter', sans-serif",
-                      transition: "all 0.15s ease",
-                      opacity: isSelected ? 1 : 0.75,
-                      boxShadow: isSelected ? "0 2px 6px rgba(15,23,42,0.18)" : "none",
-                    }}
-                  >
-                    {score}
-                  </button>
-                );
-              })}
-            </div>
+        {/* Grid de preguntas */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
+          {questions.map((q, i) => {
+            const isActive = activeCard === i;
+            const currentScore = notes[`score_${i}`];
+            return (
+              <div
+                key={i}
+                onClick={() => setActiveCard(isActive ? null : i)}
+                style={{
+                  ...S.card,
+                  marginBottom: 0,
+                  cursor: "pointer",
+                  borderColor: isActive ? "#000" : "#ccc",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <span style={{
+                    width: 22, height: 22, borderRadius: "50%",
+                    background: "#000", color: "#fff",
+                    fontSize: 11, fontWeight: 700,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0,
+                  }}>
+                    {i + 1}
+                  </span>
+                  <span style={S.kpiLabel}>Pregunta {String(i + 1).padStart(2, "0")}</span>
+                </div>
 
-            <textarea
-              onClick={(e) => e.stopPropagation()}
-              placeholder="Escribe notas aquí..."
-              value={notes[i] || ""}
-              onChange={(e) => setNotes({ ...notes, [i]: e.target.value })}
-              style={{
-                flex: 1,
-                background: C.softBg,
-                border: `1px solid ${C.cardBorder}`,
-                borderRadius: 8,
-                padding: "10px 12px",
-                color: C.textPrimary,
-                fontSize: 13,
-                fontFamily: "'Inter', sans-serif",
-                resize: "none",
-                outline: "none",
-                minHeight: 60,
-                lineHeight: 1.5,
-              }}
-            />
-          </div>
-        ))}
-      </div>
+                <p style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.4, margin: "0 0 10px 0", color: "#0f172a" }}>
+                  {q.es}
+                </p>
 
-      {/* CV match section (antes del Score) */}
-      <div style={{ maxWidth: 1200, margin: "20px auto 0", padding: "0 28px" }}>
-        <div style={{ background: C.cardBg, borderRadius: 16, border: `1px solid ${C.cardBorder}`, padding: 28, marginBottom: 20, boxShadow: "0 1px 3px rgba(15,23,42,0.04)" }}>
-          <p style={{ color: C.accent, fontSize: 14, fontWeight: 700, margin: "0 0 18px 0", textTransform: "uppercase", letterSpacing: 1 }}>
-            Match con CV del candidato
-          </p>
+                <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
+                  {[1, 2, 3, 4, 5].map((score) => {
+                    const isSelected = currentScore === score;
+                    const bg = score <= 2 ? "#e53935" : score === 3 ? "#fdd835" : "#43a047";
+                    const fg = score === 3 ? "#000" : "#fff";
+                    return (
+                      <button
+                        key={score}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setNotes({ ...notes, [`score_${i}`]: currentScore === score ? null : score });
+                        }}
+                        style={{
+                          width: 30, height: 30, borderRadius: 4,
+                          border: isSelected ? "2px solid #000" : "1px solid transparent",
+                          background: bg,
+                          color: fg,
+                          fontSize: 13, fontWeight: 700, cursor: "pointer",
+                          fontFamily: "inherit",
+                          opacity: isSelected ? 1 : 0.65,
+                        }}
+                      >
+                        {score}
+                      </button>
+                    );
+                  })}
+                </div>
 
+                <textarea
+                  onClick={(e) => e.stopPropagation()}
+                  placeholder="Escribe notas aquí..."
+                  value={notes[i] || ""}
+                  onChange={(e) => setNotes({ ...notes, [i]: e.target.value })}
+                  style={{
+                    width: "100%",
+                    padding: "8px 10px",
+                    border: "1px solid #ccc",
+                    borderRadius: 4,
+                    fontSize: 13,
+                    fontFamily: "inherit",
+                    resize: "none",
+                    outline: "none",
+                    minHeight: 56,
+                    lineHeight: 1.5,
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Match con CV */}
+        <h3 style={S.h3}>Match con CV del candidato</h3>
+        <div style={S.card}>
           {!cvFile ? (
             <div
               onDragOver={(e) => { e.preventDefault(); setCvDragOver(true); }}
@@ -293,19 +292,18 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
               onDrop={handleCvDrop}
               onClick={() => document.getElementById("cv-file-input")?.click()}
               style={{
-                border: `2px dashed ${cvDragOver ? C.accent : C.softBorder}`,
-                background: cvDragOver ? "#f0fdf4" : C.softBg,
-                borderRadius: 12,
-                padding: "32px 20px",
+                border: `1px dashed ${cvDragOver ? "#000" : "#ccc"}`,
+                background: cvDragOver ? "#f5f5f5" : "#fafafa",
+                borderRadius: 6,
+                padding: "28px 20px",
                 textAlign: "center",
                 cursor: "pointer",
-                transition: "all 0.15s ease",
               }}
             >
-              <div style={{ fontSize: 14, fontWeight: 600, color: C.textPrimary, marginBottom: 4 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
                 Arrastra el CV del candidato aquí
               </div>
-              <div style={{ fontSize: 12, color: C.textMuted }}>
+              <div style={{ fontSize: 12, color: "#666" }}>
                 Solo PDF · o haz click para seleccionarlo
               </div>
               <input
@@ -318,33 +316,14 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
             </div>
           ) : (
             <div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: C.softBg, border: `1px solid ${C.cardBorder}`, borderRadius: 8, marginBottom: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: "#fafafa", border: "1px solid #e5e5e5", borderRadius: 4, marginBottom: 12 }}>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: C.textPrimary }}>{cvFile.name}</div>
-                  <div style={{ fontSize: 11, color: C.textMuted }}>{(cvFile.size / 1024).toFixed(1)} KB · listo para analizar</div>
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>{cvFile.name}</div>
+                  <div style={{ fontSize: 11, color: "#666" }}>{(cvFile.size / 1024).toFixed(1)} KB · listo para analizar</div>
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <button
-                    onClick={removeCv}
-                    style={{ background: "#fff", border: `1px solid ${C.softBorder}`, color: C.textSecondary, borderRadius: 6, padding: "6px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-                  >
-                    Quitar
-                  </button>
-                  <button
-                    onClick={analizarMatch}
-                    disabled={cvLoading}
-                    style={{
-                      background: cvLoading ? C.softBorder : `linear-gradient(135deg, ${C.accent}, ${C.accentDark})`,
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 6,
-                      padding: "6px 14px",
-                      fontSize: 12,
-                      fontWeight: 700,
-                      cursor: cvLoading ? "not-allowed" : "pointer",
-                      opacity: cvLoading ? 0.6 : 1,
-                    }}
-                  >
+                  <button onClick={removeCv} style={S.btnGhost}>Quitar</button>
+                  <button onClick={analizarMatch} disabled={cvLoading} style={{ ...S.btn, opacity: cvLoading ? 0.6 : 1, cursor: cvLoading ? "not-allowed" : "pointer" }}>
                     {cvLoading ? "Analizando..." : "Analizar match"}
                   </button>
                 </div>
@@ -352,52 +331,43 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
 
               {cvMatch && (
                 <div>
-                  {/* Score del match */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 24, marginBottom: 18, padding: "16px 20px", background: C.softBg, borderRadius: 10 }}>
-                    <div style={{ width: 84, height: 84, borderRadius: "50%", border: `4px solid ${cvMatch.color}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, background: "#fff" }}>
-                      <span style={{ fontSize: 28, fontWeight: 800, color: cvMatch.color, lineHeight: 1 }}>{cvMatch.porcentaje}</span>
-                      <span style={{ fontSize: 10, color: C.textMuted, fontWeight: 600 }}>% MATCH</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 14, padding: "14px 16px", background: "#fafafa", borderRadius: 4, border: "1px solid #e5e5e5" }}>
+                    <div style={{ width: 76, height: 76, borderRadius: "50%", border: `3px solid ${cvMatch.color}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, background: "#fff" }}>
+                      <span style={{ fontSize: 24, fontWeight: 800, color: cvMatch.color, lineHeight: 1 }}>{cvMatch.porcentaje}</span>
+                      <span style={{ fontSize: 9, color: "#666", fontWeight: 600 }}>% MATCH</span>
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: C.textPrimary, marginBottom: 4 }}>CV procesado</div>
-                      <div style={{ fontSize: 12, color: C.textSecondary, lineHeight: 1.5 }}>{cvMatch.resumenCV}</div>
+                      <div style={S.kpiLabel}>CV procesado</div>
+                      <div style={{ fontSize: 12, color: "#333", lineHeight: 1.5, marginTop: 4 }}>{cvMatch.resumenCV}</div>
                     </div>
                   </div>
 
-                  {/* 3 columnas: coincidencias / brechas / red flags */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 14 }}>
-                    <div style={{ border: `1px solid ${C.cardBorder}`, borderRadius: 8, padding: 14, background: "#f0fdf4" }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>
-                        Coincidencias confirmadas
-                      </div>
-                      <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, lineHeight: 1.5, color: C.textPrimary }}>
-                        {cvMatch.coincidencias.map((c, i) => <li key={i} style={{ marginBottom: 6 }}>{c}</li>)}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
+                    <div style={{ border: "1px solid #ccc", borderRadius: 4, padding: 12, background: "#f6fbf6" }}>
+                      <div style={{ ...S.kpiLabel, color: "#0a7d2c", marginBottom: 6 }}>Coincidencias</div>
+                      <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.5 }}>
+                        {cvMatch.coincidencias.map((c, i) => <li key={i} style={{ marginBottom: 4 }}>{c}</li>)}
                       </ul>
                     </div>
-                    <div style={{ border: `1px solid ${C.cardBorder}`, borderRadius: 8, padding: 14, background: "#fff7ed" }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: "#c2410c", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>
-                        Brechas detectadas
-                      </div>
-                      <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, lineHeight: 1.5, color: C.textPrimary }}>
-                        {cvMatch.brechas.map((b, i) => <li key={i} style={{ marginBottom: 6 }}>{b}</li>)}
+                    <div style={{ border: "1px solid #ccc", borderRadius: 4, padding: 12, background: "#fff7e0" }}>
+                      <div style={{ ...S.kpiLabel, color: "#b58900", marginBottom: 6 }}>Brechas</div>
+                      <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.5 }}>
+                        {cvMatch.brechas.map((b, i) => <li key={i} style={{ marginBottom: 4 }}>{b}</li>)}
                       </ul>
                     </div>
-                    <div style={{ border: `1px solid ${C.cardBorder}`, borderRadius: 8, padding: 14, background: cvMatch.redFlags.length > 0 ? "#fef2f2" : C.softBg }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: cvMatch.redFlags.length > 0 ? "#b00020" : C.textMuted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>
-                        Red flags
-                      </div>
+                    <div style={{ border: "1px solid #ccc", borderRadius: 4, padding: 12, background: cvMatch.redFlags.length > 0 ? "#fdecea" : "#fafafa" }}>
+                      <div style={{ ...S.kpiLabel, color: cvMatch.redFlags.length > 0 ? "#b00020" : "#666", marginBottom: 6 }}>Red flags</div>
                       {cvMatch.redFlags.length === 0 ? (
-                        <div style={{ fontSize: 12, color: C.textMuted, fontStyle: "italic" }}>Sin alertas críticas.</div>
+                        <div style={{ fontSize: 12, color: "#666", fontStyle: "italic" }}>Sin alertas críticas.</div>
                       ) : (
-                        <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, lineHeight: 1.5, color: C.textPrimary }}>
-                          {cvMatch.redFlags.map((r, i) => <li key={i} style={{ marginBottom: 6 }}>{r}</li>)}
+                        <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.5 }}>
+                          {cvMatch.redFlags.map((r, i) => <li key={i} style={{ marginBottom: 4 }}>{r}</li>)}
                         </ul>
                       )}
                     </div>
                   </div>
 
-                  {/* Recomendación */}
-                  <div style={{ padding: "12px 16px", background: cvMatch.color === "#0a7d2c" ? "#f0fdf4" : cvMatch.color === "#d97706" ? "#fff7ed" : "#fef2f2", borderLeft: `4px solid ${cvMatch.color}`, borderRadius: 6, fontSize: 13, color: C.textPrimary }}>
+                  <div style={{ padding: "10px 12px", background: cvMatch.color === "#0a7d2c" ? "#f6fbf6" : cvMatch.color === "#b58900" ? "#fff7e0" : "#fdecea", borderLeft: `3px solid ${cvMatch.color}`, borderRadius: 4, fontSize: 13 }}>
                     <strong style={{ color: cvMatch.color, marginRight: 6 }}>Recomendación:</strong>
                     {cvMatch.recomendacion}
                   </div>
@@ -406,51 +376,36 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
             </div>
           )}
         </div>
-      </div>
 
-      {/* Dictamen */}
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 28px 40px" }}>
-        <div style={{ background: C.cardBg, borderRadius: 16, border: `1px solid ${C.cardBorder}`, padding: 32, marginBottom: 20, boxShadow: "0 1px 3px rgba(15,23,42,0.04)" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 24 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-              <div style={{ width: 90, height: 90, borderRadius: "50%", border: `4px solid ${scoreColor}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, background: "#fff" }}>
-                <span style={{ fontSize: 32, fontWeight: 800, color: scoreColor, lineHeight: 1 }}>
+        {/* Score global y dictamen */}
+        <h3 style={S.h3}>Dictamen final</h3>
+        <div style={S.card}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+              <div style={{ width: 80, height: 80, borderRadius: "50%", border: `3px solid ${scoreColor}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, background: "#fff" }}>
+                <span style={{ fontSize: 28, fontWeight: 800, color: scoreColor, lineHeight: 1 }}>
                   {answered.length > 0 ? globalScore : "—"}
                 </span>
-                <span style={{ fontSize: 11, color: C.textMuted, fontWeight: 500 }}>/100</span>
+                <span style={{ fontSize: 10, color: "#666", fontWeight: 600 }}>/100</span>
               </div>
               <div>
-                <p style={{ color: C.textPrimary, fontSize: 20, fontWeight: 700, margin: "0 0 4px 0" }}>Score Global del Candidato</p>
-                <p style={{ color: C.textMuted, fontSize: 12, margin: "8px 0 0 0" }}>{answered.length} de 15 preguntas calificadas</p>
+                <div style={S.kpiLabel}>Score Global del Candidato</div>
+                <div style={{ fontSize: 12, color: "#666", marginTop: 6 }}>{answered.length} de 15 preguntas calificadas</div>
               </div>
             </div>
             <button
               onClick={handleGenerateDictamen}
               disabled={loading || answered.length === 0}
-              style={{
-                background: loading || answered.length === 0 ? C.softBorder : `linear-gradient(135deg, ${C.accent}, ${C.accentDark})`,
-                color: "#fff",
-                border: "none",
-                borderRadius: 12,
-                padding: "14px 28px",
-                fontSize: 15,
-                fontWeight: 700,
-                cursor: loading || answered.length === 0 ? "not-allowed" : "pointer",
-                fontFamily: "'Inter', sans-serif",
-                opacity: loading || answered.length === 0 ? 0.5 : 1,
-                whiteSpace: "nowrap",
-              }}
+              style={{ ...S.btn, opacity: loading || answered.length === 0 ? 0.5 : 1, cursor: loading || answered.length === 0 ? "not-allowed" : "pointer" }}
             >
               {loading ? "Analizando..." : "Generar Dictamen con IA"}
             </button>
           </div>
 
           {aiResult && (
-            <div style={{ marginTop: 28, borderTop: `1px solid ${C.cardBorder}`, paddingTop: 24 }}>
-              <p style={{ color: C.accent, fontSize: 14, fontWeight: 700, margin: "0 0 14px 0", textTransform: "uppercase", letterSpacing: 1 }}>
-                Dictamen General del Candidato
-              </p>
-              <p style={{ color: C.textPrimary, fontSize: 15, lineHeight: 1.7, margin: 0, fontWeight: 400 }}>
+            <div style={{ marginTop: 20, borderTop: "1px solid #e5e5e5", paddingTop: 16 }}>
+              <div style={S.kpiLabel}>Dictamen General</div>
+              <p style={{ fontSize: 14, lineHeight: 1.6, margin: "8px 0 0 0" }}>
                 {aiResult.dictamen}
               </p>
             </div>
@@ -458,21 +413,19 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
         </div>
 
         {aiResult && aiResult.habilidades && aiResult.habilidades.length > 0 && (
-          <div style={{ background: C.cardBg, borderRadius: 16, border: `1px solid ${C.cardBorder}`, padding: "28px 32px", boxShadow: "0 1px 3px rgba(15,23,42,0.04)" }}>
-            <p style={{ color: C.accent, fontSize: 14, fontWeight: 700, margin: "0 0 24px 0", textTransform: "uppercase", letterSpacing: 1 }}>
-              Principales Habilidades Detectadas
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <div style={S.card}>
+            <div style={{ ...S.kpiLabel, marginBottom: 14 }}>Principales habilidades detectadas</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {aiResult.habilidades.map((h, idx) => {
-                const barColor = h.porcentaje <= 40 ? "#c0392b" : h.porcentaje <= 70 ? "#d97706" : "#0a7d2c";
+                const barColor = h.porcentaje <= 40 ? "#b00020" : h.porcentaje <= 70 ? "#b58900" : "#0a7d2c";
                 return (
                   <div key={idx}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                      <span style={{ color: C.textPrimary, fontSize: 14, fontWeight: 600 }}>{h.nombre}</span>
-                      <span style={{ color: barColor, fontSize: 14, fontWeight: 700 }}>{h.porcentaje}%</span>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>{h.nombre}</span>
+                      <span style={{ color: barColor, fontSize: 13, fontWeight: 700 }}>{h.porcentaje}%</span>
                     </div>
-                    <div style={{ width: "100%", height: 10, background: C.softBg, borderRadius: 6, overflow: "hidden" }}>
-                      <div style={{ width: `${h.porcentaje}%`, height: "100%", background: barColor, borderRadius: 6, transition: "width 0.6s ease" }} />
+                    <div style={{ width: "100%", height: 8, background: "#f1f5f9", borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ width: `${h.porcentaje}%`, height: "100%", background: barColor, borderRadius: 4, transition: "width 0.6s ease" }} />
                     </div>
                   </div>
                 );

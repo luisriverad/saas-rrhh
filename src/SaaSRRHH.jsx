@@ -12,76 +12,154 @@ const TABS = [
   { id: "clima", label: "Clima Laboral", num: "2" },
   { id: "denuncia", label: "Línea de Denuncia", num: "3" },
   { id: "cobertura", label: "Cobertura de Plantilla", num: "4" },
-  { id: "rotacion", label: "Rotación", num: "5" },
-  { id: "capacitacion", label: "Capacitación", num: "6" },
-  { id: "seleccion", label: "Proceso de Selección", num: "7" },
+  { id: "seleccion", label: "Proceso de Selección", num: "5" },
+  { id: "rotacion", label: "Rotación", num: "6" },
+  { id: "capacitacion", label: "Capacitación", num: "7" },
 ];
 
-// ---------- estilos base, sin branding ----------
+// ---------- estilos base — paleta cálida profesional, branding naranja de Cobertura ----------
+const FONT_STACK = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
+const COLOR = {
+  ink: "#0f172a",
+  inkSoft: "#1e293b",
+  text: "#334155",
+  textSoft: "#475569",
+  textMuted: "#64748b",
+  border: "#e2e8f0",
+  borderSoft: "#eef2f6",
+  surface: "#ffffff",
+  surfaceSoft: "#fafafa",
+  surfaceWarm: "#fbfaf7",
+  accent: "#c2410c",
+  accentLight: "#ea580c",
+  accentSoft: "#fff7ed",
+  shadow: "0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.03)",
+  shadowHover: "0 4px 12px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.04)",
+};
 const S = {
-  page: { minHeight: "100vh", background: "#ffffff", color: "#000", fontFamily: "system-ui, -apple-system, sans-serif" },
-  topbar: { borderBottom: "1px solid #ccc", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" },
-  title: { fontSize: 20, fontWeight: 700 },
-  subtitle: { fontSize: 12, color: "#666" },
+  page: {
+    minHeight: "100vh",
+    background: COLOR.surface,
+    backgroundImage: "radial-gradient(circle at 0% 0%, rgba(234, 88, 12, 0.035) 0%, transparent 40%), radial-gradient(circle at 100% 100%, rgba(15, 23, 42, 0.025) 0%, transparent 35%)",
+    color: COLOR.ink,
+    fontFamily: FONT_STACK,
+    letterSpacing: "-0.005em",
+  },
+  topbar: {
+    borderBottom: "1px solid " + COLOR.border,
+    padding: "18px 28px",
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    background: COLOR.surface,
+    boxShadow: "0 1px 0 rgba(194, 65, 12, 0.06)",
+    position: "relative",
+  },
+  title: { fontSize: 20, fontWeight: 700, color: COLOR.ink, letterSpacing: "-0.02em" },
+  subtitle: { fontSize: 12, color: COLOR.textMuted, marginTop: 2 },
 
   // Layout principal: sidebar izquierdo + main
   layout: { display: "flex", minHeight: "calc(100vh - 70px)" },
-  main: { flex: 1, padding: 24, maxWidth: "calc(100% - 280px)" },
+  main: { flex: 1, padding: 28, maxWidth: "calc(100% - 280px)" },
   sidebar: {
-    width: 280, flexShrink: 0, borderRight: "1px solid #ccc",
-    background: "#fafafa", padding: "20px 0", position: "sticky", top: 0,
+    width: 280, flexShrink: 0, borderRight: "1px solid " + COLOR.border,
+    background: COLOR.surfaceSoft, padding: "22px 0", position: "sticky", top: 0,
     height: "calc(100vh - 70px)", overflowY: "auto",
   },
   sidebarTitle: {
-    fontSize: 11, fontWeight: 700, color: "#666", textTransform: "uppercase",
-    letterSpacing: 0.8, padding: "0 20px 12px", borderBottom: "1px solid #e5e5e5",
+    fontSize: 10, fontWeight: 700, color: COLOR.textMuted, textTransform: "uppercase",
+    letterSpacing: 1, padding: "0 20px 14px", borderBottom: "1px solid " + COLOR.borderSoft,
   },
   sidebarItem: (active) => ({
-    padding: "12px 20px", fontSize: 13,
+    padding: "11px 20px", fontSize: 13,
     fontWeight: active ? 700 : 500,
-    background: active ? "#fff" : "transparent",
-    borderRight: active ? "3px solid #000" : "3px solid transparent",
+    background: active ? COLOR.surface : "transparent",
+    borderLeft: active ? `3px solid ${COLOR.accent}` : "3px solid transparent",
     cursor: "pointer", display: "flex", alignItems: "center", gap: 10,
-    color: active ? "#000" : "#333",
+    color: active ? COLOR.ink : COLOR.text,
+    transition: "all 0.15s ease",
+    boxShadow: active ? "inset -1px 0 0 " + COLOR.border : "none",
   }),
   sidebarNum: (active) => ({
-    width: 22, height: 22, borderRadius: "50%",
-    background: active ? "#000" : "#e5e5e5",
-    color: active ? "#fff" : "#666",
+    width: 22, height: 22, borderRadius: 6,
+    background: active ? `linear-gradient(135deg, ${COLOR.accentLight} 0%, ${COLOR.accent} 100%)` : "#e2e8f0",
+    color: active ? "#fff" : COLOR.textMuted,
     fontSize: 11, fontWeight: 700,
     display: "flex", alignItems: "center", justifyContent: "center",
     flexShrink: 0,
+    boxShadow: active ? "0 1px 2px rgba(194, 65, 12, 0.25)" : "none",
+    transition: "all 0.15s ease",
   }),
-  sidebarSection: { padding: "20px 20px 12px", marginTop: 16, borderTop: "1px solid #e5e5e5" },
+  sidebarSection: { padding: "22px 20px 14px", marginTop: 12, borderTop: "1px solid " + COLOR.borderSoft },
   sidebarFilter: {
-    width: "100%", padding: "8px 10px", border: "1px solid #ccc",
-    borderRadius: 4, fontSize: 12, background: "#fff", marginBottom: 8,
-    fontFamily: "inherit",
+    width: "100%", padding: "8px 12px", border: "1px solid " + COLOR.border,
+    borderRadius: 6, fontSize: 12, background: COLOR.surface, marginBottom: 8,
+    fontFamily: "inherit", color: COLOR.text,
+    outline: "none",
+    transition: "border-color 0.15s ease, box-shadow 0.15s ease",
   },
 
-  h2: { fontSize: 18, fontWeight: 700, marginBottom: 4 },
-  h3: { fontSize: 14, fontWeight: 700, marginTop: 20, marginBottom: 8 },
-  hint: { fontSize: 12, color: "#666", marginBottom: 16 },
-  card: { border: "1px solid #ccc", borderRadius: 6, padding: 16, marginBottom: 16, background: "#fff" },
-  kpi: { border: "1px solid #ccc", borderRadius: 6, padding: 14, background: "#fff" },
-  kpiLabel: { fontSize: 11, color: "#666", textTransform: "uppercase", letterSpacing: 0.5 },
-  kpiValue: { fontSize: 28, fontWeight: 700, marginTop: 4 },
-  kpiDelta: (positive) => ({ fontSize: 14, color: positive ? "#0a7d2c" : "#b00020", marginTop: 4 }),
+  h2: {
+    fontSize: 20, fontWeight: 700, marginBottom: 6, color: COLOR.ink,
+    letterSpacing: "-0.025em",
+    paddingLeft: 12, borderLeft: `3px solid ${COLOR.accent}`,
+    lineHeight: 1.2,
+  },
+  h3: { fontSize: 14, fontWeight: 700, marginTop: 22, marginBottom: 10, color: COLOR.ink, letterSpacing: "-0.01em" },
+  hint: { fontSize: 12, color: COLOR.textMuted, marginBottom: 16, lineHeight: 1.5 },
+  card: { border: "1px solid " + COLOR.border, borderRadius: 8, padding: 16, marginBottom: 16, background: COLOR.surface, boxShadow: COLOR.shadow },
+  kpi: { border: "1px solid " + COLOR.border, borderRadius: 8, padding: 14, background: COLOR.surface, boxShadow: COLOR.shadow },
+  kpiLabel: { fontSize: 10, fontWeight: 700, color: COLOR.textMuted, textTransform: "uppercase", letterSpacing: 0.8 },
+  kpiValue: { fontSize: 28, fontWeight: 700, marginTop: 4, color: COLOR.ink, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" },
+  kpiDelta: (positive) => ({ fontSize: 14, color: positive ? "#0a7d2c" : "#b00020", marginTop: 4, fontWeight: 600 }),
+  kpiBenchmark: (light) => ({
+    fontSize: 10,
+    color: light === "red" ? "#b00020" : light === "yellow" ? "#d97706" : light === "green" ? "#0a7d2c" : COLOR.textMuted,
+    marginTop: 8,
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    borderTop: `1px dashed ${light === "red" ? "#fca5a5" : light === "yellow" ? "#fcd34d" : light === "green" ? "#86efac" : COLOR.border}`,
+    paddingTop: 6,
+  }),
   grid4: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 },
   grid3: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 },
   grid2: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 },
-  table: { width: "100%", borderCollapse: "collapse", fontSize: 13 },
-  th: { textAlign: "left", padding: "8px 10px", borderBottom: "2px solid #000", background: "#f5f5f5", fontWeight: 700 },
-  td: { padding: "8px 10px", borderBottom: "1px solid #e5e5e5" },
-  input: { width: "100%", padding: "8px 10px", border: "1px solid #ccc", borderRadius: 4, fontSize: 13, fontFamily: "inherit" },
-  btn: { padding: "8px 14px", border: "1px solid #000", background: "#000", color: "#fff", borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: "pointer" },
-  btnGhost: { padding: "8px 14px", border: "1px solid #ccc", background: "#fff", color: "#000", borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: "pointer" },
-  badge: (color) => ({ display: "inline-block", padding: "2px 8px", borderRadius: 10, fontSize: 11, fontWeight: 600, background: color || "#eee", color: "#000" }),
+  table: { width: "100%", borderCollapse: "collapse", fontSize: 13, fontFamily: FONT_STACK },
+  th: {
+    textAlign: "left", padding: "10px 12px",
+    borderBottom: `2px solid ${COLOR.ink}`,
+    background: "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)",
+    fontWeight: 700, fontSize: 11, color: COLOR.textSoft,
+    textTransform: "uppercase", letterSpacing: 0.6,
+  },
+  td: { padding: "10px 12px", borderBottom: `1px solid ${COLOR.borderSoft}`, color: COLOR.text },
+  input: {
+    width: "100%", padding: "9px 12px", border: "1px solid " + COLOR.border, borderRadius: 6,
+    fontSize: 13, fontFamily: FONT_STACK, color: COLOR.text,
+    outline: "none", transition: "border-color 0.15s ease, box-shadow 0.15s ease",
+    background: COLOR.surface,
+  },
+  btn: {
+    padding: "9px 16px", border: "none",
+    background: `linear-gradient(135deg, ${COLOR.accentLight} 0%, ${COLOR.accent} 100%)`,
+    color: "#fff", borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: "pointer",
+    fontFamily: FONT_STACK, letterSpacing: 0.2,
+    boxShadow: "0 1px 2px rgba(194, 65, 12, 0.25)",
+    transition: "transform 0.1s ease, box-shadow 0.15s ease",
+  },
+  btnGhost: {
+    padding: "9px 16px",
+    border: "1px solid " + COLOR.border, background: COLOR.surface, color: COLOR.ink,
+    borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer",
+    fontFamily: FONT_STACK, letterSpacing: 0.2,
+    transition: "background 0.15s ease, border-color 0.15s ease",
+  },
+  badge: (color) => ({ display: "inline-block", padding: "3px 9px", borderRadius: 999, fontSize: 11, fontWeight: 700, background: color || COLOR.borderSoft, color: COLOR.ink, letterSpacing: 0.2 }),
   alert: (kind) => ({
-    padding: "10px 12px", borderRadius: 4, fontSize: 12, marginBottom: 12,
-    background: kind === "danger" ? "#fdecea" : kind === "warn" ? "#fff7e0" : "#eef5ff",
-    border: `1px solid ${kind === "danger" ? "#e74c3c" : kind === "warn" ? "#f39c12" : "#3498db"}`,
-    color: "#000",
+    padding: "11px 14px", borderRadius: 6, fontSize: 12, marginBottom: 12,
+    background: kind === "danger" ? "#fef2f2" : kind === "warn" ? "#fff7ed" : "#eff6ff",
+    border: `1px solid ${kind === "danger" ? "#fca5a5" : kind === "warn" ? "#fdba74" : "#93c5fd"}`,
+    borderLeft: `3px solid ${kind === "danger" ? "#b00020" : kind === "warn" ? "#c2410c" : "#1d4ed8"}`,
+    color: COLOR.inkSoft, lineHeight: 1.5,
   }),
 };
 
@@ -259,54 +337,54 @@ const monthlyBonos = {
 
 const monthlyDashboardKpis = {
   "Ene 2026": [
-    { label: "Costo total nómina (mes)", value: "$7.85M",  delta: "+1.5% vs mes anterior",   up: false, light: "yellow" },
-    { label: "% variable / nómina",      value: "18.5%",   delta: "Límite: 18%",             up: false, light: "red"    },
-    { label: "Rotación anual",           value: "19.8%",   delta: "Costo estimado: $1.9M",   up: false, light: "yellow" },
-    { label: "Clima (último pulso)",     value: "7.0 / 10",delta: "0.0 vs trimestre",        up: true,  light: "green"  },
-    { label: "Cobertura plantilla",      value: "91%",     delta: "14 vacantes abiertas",    up: false, light: "yellow" },
-    { label: "Denuncias activas",        value: "3",       delta: "0 sin Hoja de Ruta",      up: true,  light: "green"  },
-    { label: "Capacitación: ROI promedio", value: "1.6x",  delta: "5 cursos en curso",       up: true,  light: "green"  },
-    { label: "Tiempo medio de cobertura", value: "36 días",delta: "Meta: 30",                up: false, light: "yellow" },
+    { label: "Costo total nómina (mes)", value: "$7.85M",  delta: "+1.5% vs mes anterior",   up: false, light: "yellow", benchmark: "Aceptable: ≤+2% mensual" },
+    { label: "% variable / nómina",      value: "18.5%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
+    { label: "Rotación anual",           value: "19.4%",   delta: "4 bajas YTD · $0.17M",    up: false, light: "yellow", benchmark: "Industria 15-18% · Meta: ≤18%" },
+    { label: "Clima (último pulso)",     value: "7.0 / 10",delta: "0.0 vs trimestre",        up: true,  light: "green",  benchmark: "Meta: ≥7.0 · Excelente: ≥7.5" },
+    { label: "Cobertura plantilla",      value: "91%",     delta: "14 vacantes abiertas",    up: false, light: "yellow", benchmark: "Meta: ≥95%" },
+    { label: "Denuncias activas",        value: "3",       delta: "0 sin Hoja de Ruta",      up: true,  light: "green",  benchmark: "Meta: 0 sin Hoja de Ruta" },
+    { label: "Capacitación: ROI promedio", value: "1.6x",  delta: "5 cursos en curso",       up: true,  light: "green",  benchmark: "Meta: ≥1.5x" },
+    { label: "Tiempo medio de cobertura", value: "36 días",delta: "Meta: 30",                up: false, light: "yellow", benchmark: "SLA: ≤30 días" },
   ],
   "Feb 2026": [
-    { label: "Costo total nómina (mes)", value: "$7.95M",  delta: "+1.3% vs mes anterior",   up: false, light: "yellow" },
-    { label: "% variable / nómina",      value: "19.2%",   delta: "Límite: 18%",             up: false, light: "red"    },
-    { label: "Rotación anual",           value: "20.1%",   delta: "Costo estimado: $1.95M",  up: false, light: "yellow" },
-    { label: "Clima (último pulso)",     value: "7.1 / 10",delta: "+0.1 vs trimestre",       up: true,  light: "green"  },
-    { label: "Cobertura plantilla",      value: "92%",     delta: "12 vacantes abiertas",    up: false, light: "yellow" },
-    { label: "Denuncias activas",        value: "4",       delta: "1 sin Hoja de Ruta",      up: false, light: "yellow" },
-    { label: "Capacitación: ROI promedio", value: "1.7x",  delta: "6 cursos en curso",       up: true,  light: "green"  },
-    { label: "Tiempo medio de cobertura", value: "37 días",delta: "Meta: 30",                up: false, light: "yellow" },
+    { label: "Costo total nómina (mes)", value: "$7.95M",  delta: "+1.3% vs mes anterior",   up: false, light: "yellow", benchmark: "Aceptable: ≤+2% mensual" },
+    { label: "% variable / nómina",      value: "19.2%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
+    { label: "Rotación anual",           value: "19.4%",   delta: "8 bajas YTD · $0.34M",    up: false, light: "yellow", benchmark: "Industria 15-18% · Meta: ≤18%" },
+    { label: "Clima (último pulso)",     value: "7.1 / 10",delta: "+0.1 vs trimestre",       up: true,  light: "green",  benchmark: "Meta: ≥7.0 · Excelente: ≥7.5" },
+    { label: "Cobertura plantilla",      value: "92%",     delta: "12 vacantes abiertas",    up: false, light: "yellow", benchmark: "Meta: ≥95%" },
+    { label: "Denuncias activas",        value: "4",       delta: "1 sin Hoja de Ruta",      up: false, light: "yellow", benchmark: "Meta: 0 sin Hoja de Ruta" },
+    { label: "Capacitación: ROI promedio", value: "1.7x",  delta: "6 cursos en curso",       up: true,  light: "green",  benchmark: "Meta: ≥1.5x" },
+    { label: "Tiempo medio de cobertura", value: "37 días",delta: "Meta: 30",                up: false, light: "yellow", benchmark: "SLA: ≤30 días" },
   ],
   "Mar 2026": [
-    { label: "Costo total nómina (mes)", value: "$8.65M",  delta: "+8.8% vs mes anterior",   up: false, light: "red"    },
-    { label: "% variable / nómina",      value: "24.5%",   delta: "Límite: 18%",             up: false, light: "red"    },
-    { label: "Rotación anual",           value: "21.0%",   delta: "Costo estimado: $2.05M",  up: false, light: "red"    },
-    { label: "Clima (último pulso)",     value: "7.2 / 10",delta: "+0.1 vs trimestre",       up: true,  light: "green"  },
-    { label: "Cobertura plantilla",      value: "93%",     delta: "11 vacantes abiertas",    up: false, light: "yellow" },
-    { label: "Denuncias activas",        value: "5",       delta: "2 sin Hoja de Ruta",      up: false, light: "yellow" },
-    { label: "Capacitación: ROI promedio", value: "1.8x",  delta: "7 cursos en curso",       up: true,  light: "green"  },
-    { label: "Tiempo medio de cobertura", value: "39 días",delta: "Meta: 30",                up: false, light: "yellow" },
+    { label: "Costo total nómina (mes)", value: "$8.65M",  delta: "+8.8% vs mes anterior",   up: false, light: "red",    benchmark: "Aceptable: ≤+2% mensual" },
+    { label: "% variable / nómina",      value: "24.5%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
+    { label: "Rotación anual",           value: "21.0%",   delta: "13 bajas YTD · $0.56M",   up: false, light: "red",    benchmark: "Industria 15-18% · Meta: ≤18%" },
+    { label: "Clima (último pulso)",     value: "7.2 / 10",delta: "+0.1 vs trimestre",       up: true,  light: "green",  benchmark: "Meta: ≥7.0 · Excelente: ≥7.5" },
+    { label: "Cobertura plantilla",      value: "93%",     delta: "11 vacantes abiertas",    up: false, light: "yellow", benchmark: "Meta: ≥95%" },
+    { label: "Denuncias activas",        value: "5",       delta: "2 sin Hoja de Ruta",      up: false, light: "yellow", benchmark: "Meta: 0 sin Hoja de Ruta" },
+    { label: "Capacitación: ROI promedio", value: "1.8x",  delta: "7 cursos en curso",       up: true,  light: "green",  benchmark: "Meta: ≥1.5x" },
+    { label: "Tiempo medio de cobertura", value: "39 días",delta: "Meta: 30",                up: false, light: "yellow", benchmark: "SLA: ≤30 días" },
   ],
   "Abr 2026": [
-    { label: "Costo total nómina (mes)", value: "$8.42M",  delta: "+4.2% vs mes anterior",   up: false, light: "yellow" },
-    { label: "% variable / nómina",      value: "23.1%",   delta: "Límite: 18%",             up: false, light: "red"    },
-    { label: "Rotación anual",           value: "21.3%",   delta: "Costo estimado: $2.1M",   up: false, light: "red"    },
-    { label: "Clima (último pulso)",     value: "7.2 / 10",delta: "+0.3 vs trimestre",       up: true,  light: "green"  },
-    { label: "Cobertura plantilla",      value: "92%",     delta: "12 vacantes abiertas",    up: false, light: "yellow" },
-    { label: "Denuncias activas",        value: "5",       delta: "2 sin Hoja de Ruta",      up: false, light: "yellow" },
-    { label: "Capacitación: ROI promedio", value: "1.8x",  delta: "8 cursos en curso",       up: true,  light: "green"  },
-    { label: "Tiempo medio de cobertura", value: "38 días",delta: "Meta: 30",                up: false, light: "yellow" },
+    { label: "Costo total nómina (mes)", value: "$8.42M",  delta: "+4.2% vs mes anterior",   up: false, light: "yellow", benchmark: "Aceptable: ≤+2% mensual" },
+    { label: "% variable / nómina",      value: "23.1%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
+    { label: "Rotación anual",           value: "20.6%",   delta: "17 bajas YTD · $0.73M",   up: false, light: "red",    benchmark: "Industria 15-18% · Meta: ≤18%" },
+    { label: "Clima (último pulso)",     value: "7.2 / 10",delta: "+0.3 vs trimestre",       up: true,  light: "green",  benchmark: "Meta: ≥7.0 · Excelente: ≥7.5" },
+    { label: "Cobertura plantilla",      value: "92%",     delta: "12 vacantes abiertas",    up: false, light: "yellow", benchmark: "Meta: ≥95%" },
+    { label: "Denuncias activas",        value: "5",       delta: "2 sin Hoja de Ruta",      up: false, light: "yellow", benchmark: "Meta: 0 sin Hoja de Ruta" },
+    { label: "Capacitación: ROI promedio", value: "1.8x",  delta: "8 cursos en curso",       up: true,  light: "green",  benchmark: "Meta: ≥1.5x" },
+    { label: "Tiempo medio de cobertura", value: "38 días",delta: "Meta: 30",                up: false, light: "yellow", benchmark: "SLA: ≤30 días" },
   ],
   "May 2026": [
-    { label: "Costo total nómina (mes)", value: "$8.10M",  delta: "−3.8% vs mes anterior",   up: true,  light: "green"  },
-    { label: "% variable / nómina",      value: "19.8%",   delta: "Límite: 18%",             up: false, light: "yellow" },
-    { label: "Rotación anual",           value: "20.5%",   delta: "Costo estimado: $2.0M",   up: true,  light: "yellow" },
-    { label: "Clima (último pulso)",     value: "7.4 / 10",delta: "+0.2 vs trimestre",       up: true,  light: "green"  },
-    { label: "Cobertura plantilla",      value: "94%",     delta: "8 vacantes abiertas",     up: true,  light: "green"  },
-    { label: "Denuncias activas",        value: "4",       delta: "1 sin Hoja de Ruta",      up: true,  light: "yellow" },
-    { label: "Capacitación: ROI promedio", value: "1.9x",  delta: "9 cursos en curso",       up: true,  light: "green"  },
-    { label: "Tiempo medio de cobertura", value: "35 días",delta: "Meta: 30",                up: false, light: "green"  },
+    { label: "Costo total nómina (mes)", value: "$8.10M",  delta: "−3.8% vs mes anterior",   up: true,  light: "green",  benchmark: "Aceptable: ≤+2% mensual" },
+    { label: "% variable / nómina",      value: "19.8%",   delta: "Límite: 18%",             up: false, light: "yellow", benchmark: "Política interna: 18%" },
+    { label: "Rotación anual",           value: "17.4%",   delta: "18 bajas YTD · $0.77M",   up: true,  light: "yellow", benchmark: "Industria 15-18% · Meta: ≤18%" },
+    { label: "Clima (último pulso)",     value: "7.4 / 10",delta: "+0.2 vs trimestre",       up: true,  light: "green",  benchmark: "Meta: ≥7.0 · Excelente: ≥7.5" },
+    { label: "Cobertura plantilla",      value: "94%",     delta: "8 vacantes abiertas",     up: true,  light: "green",  benchmark: "Meta: ≥95%" },
+    { label: "Denuncias activas",        value: "4",       delta: "1 sin Hoja de Ruta",      up: true,  light: "yellow", benchmark: "Meta: 0 sin Hoja de Ruta" },
+    { label: "Capacitación: ROI promedio", value: "1.9x",  delta: "9 cursos en curso",       up: true,  light: "green",  benchmark: "Meta: ≥1.5x" },
+    { label: "Tiempo medio de cobertura", value: "35 días",delta: "Meta: 30",                up: false, light: "green", benchmark: "SLA: ≤30 días" },
   ],
 };
 
@@ -398,6 +476,7 @@ function Dashboard({ go, periodo = "Abr 2026" }) {
               <div style={S.kpiLabel}>{k.label}</div>
               <div style={S.kpiValue}>{k.value}</div>
               <div style={S.kpiDelta(k.light === "green" || k.up)}>{k.delta}</div>
+              {k.benchmark && <div style={S.kpiBenchmark(k.light)}>Benchmark · {k.benchmark}</div>}
             </div>
             <TrafficLight light={k.light} />
           </div>
@@ -739,6 +818,7 @@ function Nomina({ periodo = "Abr 2026" }) {
             <div style={S.kpiLabel}>Nómina base total</div>
             <div style={S.kpiValue}>{fmt(totales.base)}</div>
             <div style={{ fontSize: 14, color: cmpColor(dBase), marginTop: 4 }}>{fmtDelta(dBase)}</div>
+            <div style={S.kpiBenchmark(cmpLight(dBase))}>Benchmark · Estable vs media móvil (±2%)</div>
           </div>
           <TrafficLight light={cmpLight(dBase)} />
         </div>
@@ -747,6 +827,7 @@ function Nomina({ periodo = "Abr 2026" }) {
             <div style={S.kpiLabel}>Compensación variable</div>
             <div style={S.kpiValue}>{fmt(totales.variable)}</div>
             <div style={{ fontSize: 14, color: cmpColor(dVar), marginTop: 4 }}>{fmtDelta(dVar)}</div>
+            <div style={S.kpiBenchmark(cmpLight(dVar))}>Benchmark · Variación esperada ≤±3% vs MA</div>
           </div>
           <TrafficLight light={cmpLight(dVar)} />
         </div>
@@ -755,6 +836,7 @@ function Nomina({ periodo = "Abr 2026" }) {
             <div style={S.kpiLabel}>Total nómina</div>
             <div style={S.kpiValue}>{fmt(totales.total)}</div>
             <div style={{ fontSize: 14, color: cmpColor(dTot), marginTop: 4 }}>{fmtDelta(dTot)}</div>
+            <div style={S.kpiBenchmark(cmpLight(dTot))}>Benchmark · Aceptable: ≤+2% vs MA</div>
           </div>
           <TrafficLight light={cmpLight(dTot)} />
         </div>
@@ -765,6 +847,7 @@ function Nomina({ periodo = "Abr 2026" }) {
             <div style={S.kpiDelta(variacionPp <= 0)}>
               {variacionPp >= 0 ? "+" : ""}{variacionPp.toFixed(1)}% vs límite ({limiteConsolidado}%)
             </div>
+            <div style={S.kpiBenchmark(semaforoVariable)}>Benchmark · Política interna: {limiteConsolidado}%</div>
           </div>
           <TrafficLight light={semaforoVariable} />
         </div>
@@ -2231,9 +2314,479 @@ const INSTRUMENTOS = [
 
 const AREAS_LIST = ["Toda la empresa", "Comercial", "Posventa", "Operaciones", "Administración", "Dirección"];
 
+// 12 gerentes y directores activos con ciclo 360° completado o en curso
+const EVALUADOS_360 = [
+  {
+    evaluado: "L. Martínez", puesto: "Gerente Comercial", area: "Comercial", jefe: "F. Domínguez (Dir. Comercial Norte)",
+    ciclo: "Q1 2026", totalEvaluadores: 8, desglose: "1 jefe · 3 pares · 3 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 4.0, pares: 3.9, equipo: 4.2, jefe: 4.1 },
+      { nombre: "Comunicación efectiva",        auto: 3.9, pares: 4.1, equipo: 3.75, jefe: 4.0 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 4.2, pares: 4.4, equipo: 4.3, jefe: 4.25 },
+      { nombre: "Toma de decisiones",           auto: 4.4, pares: 3.7, equipo: 3.5, jefe: 3.9 },
+      { nombre: "Desarrollo de talento",        auto: 3.5, pares: 3.9, equipo: 4.2, jefe: 4.0 },
+      { nombre: "Resultados y ejecución",       auto: 4.3, pares: 4.2, equipo: 4.1, jefe: 4.4 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Excelente para alinear al equipo en momentos críticos. Podría delegar más decisiones operativas." },
+      { rater: "Equipo", texto: "Es accesible y nos respalda con dirección. Nos gustaría tener más espacio para proponer iniciativas." },
+      { rater: "Jefe", texto: "Sólida ejecución comercial. Trabajar en visión a 12-18 meses, no solo trimestre." },
+    ],
+  },
+  {
+    evaluado: "R. Solís", puesto: "Gerente de Finanzas", area: "Administración", jefe: "S. Ramírez (Dir. Administrativo)",
+    ciclo: "Q1 2026", totalEvaluadores: 7, desglose: "1 jefe · 3 pares · 2 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 3.5, pares: 3.4, equipo: 3.2, jefe: 3.6 },
+      { nombre: "Comunicación efectiva",        auto: 3.2, pares: 3.0, equipo: 2.9, jefe: 3.1 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 3.8, pares: 3.5, equipo: 3.4, jefe: 3.7 },
+      { nombre: "Toma de decisiones",           auto: 4.5, pares: 4.3, equipo: 4.0, jefe: 4.4 },
+      { nombre: "Desarrollo de talento",        auto: 3.0, pares: 2.8, equipo: 2.7, jefe: 3.0 },
+      { nombre: "Resultados y ejecución",       auto: 4.7, pares: 4.6, equipo: 4.5, jefe: 4.7 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Rigor analítico excelente. A veces se traba en detalles y demora decisiones operativas." },
+      { rater: "Equipo", texto: "Sabe muchísimo, pero la comunicación es seca. Cuesta acercarse a pedir feedback." },
+      { rater: "Jefe", texto: "Owner técnico impecable. Plan de desarrollo: habilidades blandas y mentoría a su equipo." },
+    ],
+  },
+  {
+    evaluado: "G. Pérez", puesto: "Gerente Comercial Centro", area: "Comercial", jefe: "L. Martínez (Gte. Comercial)",
+    ciclo: "Q1 2026", totalEvaluadores: 9, desglose: "1 jefe · 3 pares · 4 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 4.6, pares: 3.8, equipo: 3.2, jefe: 4.0 },
+      { nombre: "Comunicación efectiva",        auto: 4.2, pares: 3.5, equipo: 2.8, jefe: 3.6 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 4.0, pares: 3.2, equipo: 2.9, jefe: 3.4 },
+      { nombre: "Toma de decisiones",           auto: 4.5, pares: 4.0, equipo: 3.5, jefe: 4.1 },
+      { nombre: "Desarrollo de talento",        auto: 3.8, pares: 3.0, equipo: 2.5, jefe: 3.2 },
+      { nombre: "Resultados y ejecución",       auto: 4.8, pares: 4.5, equipo: 4.2, jefe: 4.6 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Top performer en cuota, pero su estilo demandante deja heridos en el equipo." },
+      { rater: "Equipo", texto: "Cumple resultado pero al precio del bienestar. 4 bajas voluntarias de su equipo en 6 meses." },
+      { rater: "Jefe", texto: "Resultados brillantes. Urge plan de coaching en liderazgo de personas — costo de rotación está siendo alto." },
+    ],
+  },
+  {
+    evaluado: "L. Cano", puesto: "Gerente de Posventa", area: "Posventa", jefe: "C. Mendoza (Dir. Operaciones)",
+    ciclo: "Q4 2025", totalEvaluadores: 10, desglose: "1 jefe · 3 pares · 5 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 4.0, pares: 3.0, equipo: 2.3, jefe: 2.8 },
+      { nombre: "Comunicación efectiva",        auto: 3.8, pares: 2.8, equipo: 2.1, jefe: 2.7 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 3.5, pares: 2.5, equipo: 2.0, jefe: 2.5 },
+      { nombre: "Toma de decisiones",           auto: 4.2, pares: 3.2, equipo: 2.8, jefe: 3.0 },
+      { nombre: "Desarrollo de talento",        auto: 3.5, pares: 2.4, equipo: 1.8, jefe: 2.3 },
+      { nombre: "Resultados y ejecución",       auto: 4.3, pares: 3.5, equipo: 3.1, jefe: 3.4 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Conoce profundamente la operación, pero el clima en sus talleres es preocupante." },
+      { rater: "Equipo", texto: "Trato hostil y desigualdad en asignación de órdenes. 5 bajas voluntarias en taller Sur en 8 meses." },
+      { rater: "Jefe", texto: "Brecha alta entre autoevaluación y resto. Intervención de clima en marcha. Plan de acción a 90 días." },
+    ],
+  },
+  {
+    evaluado: "M. Vargas", puesto: "Supervisor de Turno 2", area: "Operaciones", jefe: "C. Mendoza (Dir. Operaciones)",
+    ciclo: "Q1 2026", totalEvaluadores: 6, desglose: "1 jefe · 1 par · 3 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 3.5, pares: 3.0, equipo: 3.2, jefe: 3.0 },
+      { nombre: "Comunicación efectiva",        auto: 3.2, pares: 3.0, equipo: 3.3, jefe: 3.0 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 3.8, pares: 3.5, equipo: 3.7, jefe: 3.5 },
+      { nombre: "Toma de decisiones",           auto: 3.0, pares: 2.7, equipo: 2.8, jefe: 2.8 },
+      { nombre: "Desarrollo de talento",        auto: 3.5, pares: 2.8, equipo: 3.0, jefe: 2.9 },
+      { nombre: "Resultados y ejecución",       auto: 3.6, pares: 3.2, equipo: 3.3, jefe: 3.2 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Joven en el rol, todavía consolida autoridad. Buena disposición a aprender." },
+      { rater: "Equipo", texto: "Es justo y nos escucha. A veces no defiende decisiones ante presión de Dirección." },
+      { rater: "Jefe", texto: "Promesa de talento. Pasar por Programa de Liderazgo de Piso (cohorte H2 2026)." },
+    ],
+  },
+  {
+    evaluado: "C. Mendoza", puesto: "Director de Operaciones", area: "Operaciones", jefe: "Dirección General",
+    ciclo: "Q4 2025", totalEvaluadores: 11, desglose: "1 jefe · 4 pares · 5 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 4.5, pares: 4.4, equipo: 4.6, jefe: 4.5 },
+      { nombre: "Comunicación efectiva",        auto: 4.3, pares: 4.2, equipo: 4.5, jefe: 4.4 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 4.5, pares: 4.6, equipo: 4.7, jefe: 4.6 },
+      { nombre: "Toma de decisiones",           auto: 4.4, pares: 4.5, equipo: 4.3, jefe: 4.5 },
+      { nombre: "Desarrollo de talento",        auto: 4.0, pares: 4.3, equipo: 4.5, jefe: 4.4 },
+      { nombre: "Resultados y ejecución",       auto: 4.6, pares: 4.5, equipo: 4.6, jefe: 4.7 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Referente del comité. Equilibra resultados y desarrollo de gente como pocos." },
+      { rater: "Equipo", texto: "Crea espacio para que crezcamos. Nos defiende ante otras áreas." },
+      { rater: "Jefe", texto: "Listo para responsabilidades más grandes. Plan de sucesión a Dirección General iniciado." },
+    ],
+  },
+  {
+    evaluado: "A. Herrera", puesto: "Director de Tecnología", area: "Dirección", jefe: "Dirección General",
+    ciclo: "Q1 2026", totalEvaluadores: 8, desglose: "1 jefe · 3 pares · 3 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 4.2, pares: 3.6, equipo: 3.4, jefe: 3.7 },
+      { nombre: "Comunicación efectiva",        auto: 3.5, pares: 2.8, equipo: 2.7, jefe: 2.9 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 3.8, pares: 3.0, equipo: 3.5, jefe: 3.2 },
+      { nombre: "Toma de decisiones",           auto: 4.6, pares: 4.3, equipo: 4.4, jefe: 4.4 },
+      { nombre: "Desarrollo de talento",        auto: 4.0, pares: 3.5, equipo: 4.0, jefe: 3.6 },
+      { nombre: "Resultados y ejecución",       auto: 4.7, pares: 4.5, equipo: 4.5, jefe: 4.6 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Visión técnica excepcional. La traducción al lenguaje del negocio es el cuello de botella." },
+      { rater: "Equipo", texto: "Nos respalda técnicamente. Los temas de personas no son su fuerte — los esquiva." },
+      { rater: "Jefe", texto: "Activo crítico. Plan de desarrollo: comunicación ejecutiva y storytelling con negocio." },
+    ],
+  },
+  {
+    evaluado: "P. Castaño", puesto: "Gerente de Recursos Humanos", area: "Administración", jefe: "S. Ramírez (Dir. Administrativo)",
+    ciclo: "Q1 2026", totalEvaluadores: 9, desglose: "1 jefe · 4 pares · 3 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 3.8, pares: 3.5, equipo: 3.7, jefe: 3.6 },
+      { nombre: "Comunicación efectiva",        auto: 4.2, pares: 4.0, equipo: 4.3, jefe: 4.1 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 4.0, pares: 3.8, equipo: 4.1, jefe: 3.9 },
+      { nombre: "Toma de decisiones",           auto: 3.5, pares: 3.2, equipo: 3.0, jefe: 3.3 },
+      { nombre: "Desarrollo de talento",        auto: 4.3, pares: 4.1, equipo: 4.4, jefe: 4.2 },
+      { nombre: "Resultados y ejecución",       auto: 3.5, pares: 3.0, equipo: 3.2, jefe: 3.1 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Empatía y escucha sobresalen. Cierra acciones lento — los planes de RH demoran trimestres." },
+      { rater: "Equipo", texto: "Es la jefa más humana que hemos tenido. Necesitamos más músculo de ejecución arriba." },
+      { rater: "Jefe", texto: "Rol estratégico. Reforzar disciplina de seguimiento y KPIs de RH (rotación, NPS interno)." },
+    ],
+  },
+  {
+    evaluado: "F. Domínguez", puesto: "Director Comercial Norte", area: "Comercial", jefe: "Dirección General",
+    ciclo: "Q4 2025", totalEvaluadores: 10, desglose: "1 jefe · 4 pares · 4 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 4.5, pares: 3.5, equipo: 4.3, jefe: 4.4 },
+      { nombre: "Comunicación efectiva",        auto: 4.3, pares: 3.4, equipo: 4.0, jefe: 4.1 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 3.8, pares: 2.8, equipo: 4.0, jefe: 3.5 },
+      { nombre: "Toma de decisiones",           auto: 4.5, pares: 4.0, equipo: 4.4, jefe: 4.5 },
+      { nombre: "Desarrollo de talento",        auto: 4.2, pares: 3.7, equipo: 4.3, jefe: 4.2 },
+      { nombre: "Resultados y ejecución",       auto: 4.6, pares: 4.4, equipo: 4.5, jefe: 4.7 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Owner indiscutible de Comercial Norte. En comité a veces es difícil cerrar acuerdos cross-área con él." },
+      { rater: "Equipo", texto: "Es nuestro defensor número uno. Crece a su gente sin pedir nada a cambio." },
+      { rater: "Jefe", texto: "Resultados consistentes. Plan: trabajar colaboración horizontal con otras direcciones." },
+    ],
+  },
+  {
+    evaluado: "I. Salazar", puesto: "Gerente de Compras y Logística", area: "Operaciones", jefe: "C. Mendoza (Dir. Operaciones)",
+    ciclo: "Q1 2026", totalEvaluadores: 7, desglose: "1 jefe · 2 pares · 3 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 3.8, pares: 3.5, equipo: 3.6, jefe: 3.5 },
+      { nombre: "Comunicación efectiva",        auto: 3.5, pares: 3.3, equipo: 3.5, jefe: 3.4 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 3.6, pares: 3.7, equipo: 3.8, jefe: 3.7 },
+      { nombre: "Toma de decisiones",           auto: 4.3, pares: 4.0, equipo: 4.0, jefe: 4.2 },
+      { nombre: "Desarrollo de talento",        auto: 3.3, pares: 3.1, equipo: 3.0, jefe: 3.0 },
+      { nombre: "Resultados y ejecución",       auto: 4.5, pares: 4.4, equipo: 4.3, jefe: 4.5 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Detallista y confiable. Cuesta sacarla del modo operativo a pensar a 18 meses." },
+      { rater: "Equipo", texto: "Conoce a cada proveedor por nombre. Espacio para empoderarnos en decisiones diarias." },
+      { rater: "Jefe", texto: "Sólida en operación. Plan: ejercicios de visión estratégica + KPIs de innovación." },
+    ],
+  },
+  {
+    evaluado: "E. Quintero", puesto: "Gerente de Marketing", area: "Comercial", jefe: "F. Domínguez (Dir. Comercial Norte)",
+    ciclo: "Q1 2026", totalEvaluadores: 6, desglose: "1 jefe · 2 pares · 2 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 4.3, pares: 3.8, equipo: 4.2, jefe: 3.7 },
+      { nombre: "Comunicación efectiva",        auto: 4.5, pares: 4.4, equipo: 4.6, jefe: 4.3 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 4.2, pares: 4.0, equipo: 4.3, jefe: 3.9 },
+      { nombre: "Toma de decisiones",           auto: 3.5, pares: 3.0, equipo: 3.2, jefe: 2.8 },
+      { nombre: "Desarrollo de talento",        auto: 4.0, pares: 3.8, equipo: 4.1, jefe: 3.7 },
+      { nombre: "Resultados y ejecución",       auto: 3.5, pares: 2.8, equipo: 3.0, jefe: 2.7 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Creatividad y energía únicas en el comité. La disciplina de cierre/timeline es el reto." },
+      { rater: "Equipo", texto: "Inspira y cree en nosotros. A veces los proyectos cambian de rumbo a mitad de camino." },
+      { rater: "Jefe", texto: "Crítico fortalecer ejecución: KR trimestrales + revisión semanal de avance + sponsor del comité." },
+    ],
+  },
+  {
+    evaluado: "S. Ramírez", puesto: "Director Administrativo", area: "Dirección", jefe: "Dirección General",
+    ciclo: "Q4 2025", totalEvaluadores: 10, desglose: "1 jefe · 4 pares · 4 equipo · auto", escala: 5,
+    competencias: [
+      { nombre: "Liderazgo y dirección",        auto: 4.0, pares: 4.1, equipo: 4.0, jefe: 4.2 },
+      { nombre: "Comunicación efectiva",        auto: 4.0, pares: 4.0, equipo: 3.9, jefe: 4.1 },
+      { nombre: "Colaboración y trabajo en equipo", auto: 4.2, pares: 4.4, equipo: 4.3, jefe: 4.3 },
+      { nombre: "Toma de decisiones",           auto: 3.5, pares: 3.0, equipo: 3.2, jefe: 3.1 },
+      { nombre: "Desarrollo de talento",        auto: 3.8, pares: 4.0, equipo: 4.1, jefe: 4.0 },
+      { nombre: "Resultados y ejecución",       auto: 4.0, pares: 4.0, equipo: 3.9, jefe: 4.0 },
+    ],
+    comentarios: [
+      { rater: "Pares", texto: "Dueño de procesos impecable. Aversión al riesgo lo lleva a sobre-analizar decisiones." },
+      { rater: "Equipo", texto: "Respaldo total cuando hay tormenta. Querríamos más autonomía para movernos rápido." },
+      { rater: "Jefe", texto: "Ancla del comité. Plan: framework decisional con timeboxing para acelerar definiciones." },
+    ],
+  },
+];
+
+// Bajas de los últimos 90 días con encuesta de salida aplicada
+const BAJAS_SALIDA = [
+  {
+    empleado: "M. Hernández", area: "Comercial", puesto: "Ejecutivo de cuenta sr.", jefe: "L. Martínez",
+    fechaIngreso: "2023-08-15", fechaBaja: "2026-04-18", antiguedad: "2 años 8 meses",
+    razonPrelim: "Sueldo / compensación", enviadaPor: "Correo", estado: "Completada", scoreCaso: "6 / 10",
+    respuestas: [
+      { pregunta: "Razón principal de salida", respuesta: "Recibí una oferta con +30% de compensación y mejores prestaciones." },
+      { pregunta: "¿Recomendarías a un amigo trabajar aquí? (1-10)", respuesta: "6 — Equipo bueno, pero el techo salarial es bajo y los aumentos llegan tarde." },
+      { pregunta: "¿Qué pudo haber sido mejor?", respuesta: "Plan de carrera más claro, rangos salariales públicos y promociones con base en evidencia, no en antigüedad." },
+      { pregunta: "¿Cómo fue tu relación con tu jefe directo? (1-5)", respuesta: "4 — Me apoyó en momentos clave; me hubiera gustado más feedback frecuente." },
+      { pregunta: "¿Recibiste el onboarding y desarrollo esperados?", respuesta: "Onboarding sí. Desarrollo parcial — capacitación formal nunca arrancó tras el primer año." },
+    ],
+    alertas: ["3ª salida de Comercial este Q por motivo salarial — escalar a Compensaciones para revisar banda."],
+  },
+  {
+    empleado: "Javier Ortega", area: "Comercial", puesto: "Gerente Comercial Regional", jefe: "Dir. General",
+    fechaIngreso: "2017-09-12", fechaBaja: "2026-03-22", antiguedad: "8 años 6 meses",
+    razonPrelim: "Mejor oferta (competencia)", enviadaPor: "Presencial", estado: "Completada", scoreCaso: "7 / 10",
+    respuestas: [
+      { pregunta: "Razón principal de salida", respuesta: "OEM competidor con paquete +25% y oportunidad de Dirección Comercial Regional." },
+      { pregunta: "¿Recomendarías a un amigo trabajar aquí? (1-10)", respuesta: "7 — Buen aprendizaje pero techo de crecimiento bajo para perfiles senior." },
+      { pregunta: "¿Qué pudo haber sido mejor?", respuesta: "Honestidad sobre el plan de sucesión. Llevo 2 años pidiendo promoción sin respuesta clara." },
+      { pregunta: "¿Cómo fue tu relación con tu jefe directo? (1-5)", respuesta: "5 — Excelente relación profesional con Dirección General." },
+      { pregunta: "¿Recibiste el onboarding y desarrollo esperados?", respuesta: "Sí en mis primeros 4 años. Después se estancó." },
+    ],
+    alertas: ["Pérdida de talento crítico — cartera Tier-1 migrando. Revisar plan de retención de mandos."],
+  },
+  {
+    empleado: "Beatriz Cordero", area: "Administración", puesto: "Asistente de RH Sr.", jefe: "Dir. RH",
+    fechaIngreso: "2020-02-19", fechaBaja: "2026-03-12", antiguedad: "6 años 1 mes",
+    razonPrelim: "Cambio de sector", enviadaPor: "Correo", estado: "Completada", scoreCaso: "7 / 10",
+    respuestas: [
+      { pregunta: "Razón principal de salida", respuesta: "Migro a consultoría especializada en RH con paquete +30% y exposición a múltiples industrias." },
+      { pregunta: "¿Recomendarías a un amigo trabajar aquí? (1-10)", respuesta: "7 — Buena empresa, pero el área de RH necesita modernizarse." },
+      { pregunta: "¿Qué pudo haber sido mejor?", respuesta: "Mayor inversión en HRIS y automatización. Tareas manuales saturan al equipo." },
+      { pregunta: "¿Cómo fue tu relación con tu jefe directo? (1-5)", respuesta: "5 — Mi jefa es excepcional, lo voy a extrañar." },
+      { pregunta: "¿Recibiste el onboarding y desarrollo esperados?", respuesta: "Sí — incluso financiaron parte de mi certificación SHRM." },
+    ],
+    alertas: ["Sucesión no preparada. 3 procesos críticos requieren redistribución urgente."],
+  },
+  {
+    empleado: "Alejandro Méndez", area: "Comercial", puesto: "Asesor Comercial Sr.", jefe: "G. Pérez",
+    fechaIngreso: "2021-02-18", fechaBaja: "2026-03-12", antiguedad: "5 años 1 mes",
+    razonPrelim: "Mejor oferta", enviadaPor: "Correo", estado: "Completada", scoreCaso: "5 / 10",
+    respuestas: [
+      { pregunta: "Razón principal de salida", respuesta: "Migración a sector financiero con +20% y mejor estructura de comisiones." },
+      { pregunta: "¿Recomendarías a un amigo trabajar aquí? (1-10)", respuesta: "5 — Equipo bueno, pero el ritmo de G. Pérez quema y los aumentos no compensan." },
+      { pregunta: "¿Qué pudo haber sido mejor?", respuesta: "Revisar la estructura de comisiones — bajamos cuota desde hace 2 años." },
+      { pregunta: "¿Cómo fue tu relación con tu jefe directo? (1-5)", respuesta: "3 — Exigente al extremo. Reconoce poco, exige mucho." },
+      { pregunta: "¿Recibiste el onboarding y desarrollo esperados?", respuesta: "Onboarding sí. Desarrollo parcial — programa Sr no se completó." },
+    ],
+    alertas: ["Top performer perdido. Patrón con G. Pérez confirma diagnóstico 360°."],
+  },
+  {
+    empleado: "Diana Castro", area: "Posventa", puesto: "Recepcionista de Servicio", jefe: "L. Cano",
+    fechaIngreso: "2023-11-27", fechaBaja: "2026-04-03", antiguedad: "2 años 4 meses",
+    razonPrelim: "Ambiente / falta de crecimiento", enviadaPor: "WhatsApp", estado: "Completada", scoreCaso: "3 / 10",
+    respuestas: [
+      { pregunta: "Razón principal de salida", respuesta: "Pedí promoción a Coordinadora de Servicio, me dijeron 'no perfil'. No vi otro camino." },
+      { pregunta: "¿Recomendarías a un amigo trabajar aquí? (1-10)", respuesta: "3 — No al taller Sur. Hay favoritismo y trato dispar entre el equipo." },
+      { pregunta: "¿Qué pudo haber sido mejor?", respuesta: "Liderazgo del jefe directo. La rotación del taller es por una sola persona." },
+      { pregunta: "¿Cómo fue tu relación con tu jefe directo? (1-5)", respuesta: "2 — Frío y selectivo en a quién apoya." },
+      { pregunta: "¿Recibiste el onboarding y desarrollo esperados?", respuesta: "No. Aprendí sola observando a las que llevan más tiempo." },
+    ],
+    alertas: ["3ª baja consecutiva del mismo taller con mismo motivo. Intervención de clima iniciada."],
+  },
+  {
+    empleado: "Roberto Núñez", area: "Comercial", puesto: "Asesor Comercial Jr.", jefe: "G. Pérez",
+    fechaIngreso: "2024-10-08", fechaBaja: "2026-04-20", antiguedad: "1 año 6 meses",
+    razonPrelim: "Mejor oferta", enviadaPor: "Correo", estado: "Completada", scoreCaso: "6 / 10",
+    respuestas: [
+      { pregunta: "Razón principal de salida", respuesta: "Distribuidor competidor me ofreció +15% para el mismo puesto." },
+      { pregunta: "¿Recomendarías a un amigo trabajar aquí? (1-10)", respuesta: "6 — Buena marca, pero sueldo Jr abajo del mercado." },
+      { pregunta: "¿Qué pudo haber sido mejor?", respuesta: "Que la empresa hiciera contraoferta. Ni siquiera lo intentaron." },
+      { pregunta: "¿Cómo fue tu relación con tu jefe directo? (1-5)", respuesta: "3 — G. Pérez exige mucho a los Jr, casi sin coaching." },
+      { pregunta: "¿Recibiste el onboarding y desarrollo esperados?", respuesta: "Onboarding parcial. Mi mentor (Alejandro) renunció a la par." },
+    ],
+    alertas: ["Banda salarial Jr requiere ajuste — 3 bajas en 6 meses con mismo motivo."],
+  },
+  {
+    empleado: "Lucía Aguilar", area: "Comercial", puesto: "Asesor Comercial Jr.", jefe: "G. Pérez",
+    fechaIngreso: "2024-01-14", fechaBaja: "2026-04-06", antiguedad: "2 años 3 meses",
+    razonPrelim: "Sueldo debajo del mercado", enviadaPor: "Correo", estado: "Completada", scoreCaso: "4 / 10",
+    respuestas: [
+      { pregunta: "Razón principal de salida", respuesta: "Otra empresa ofreció +25%. La mediana del mercado para mi perfil está $4K arriba." },
+      { pregunta: "¿Recomendarías a un amigo trabajar aquí? (1-10)", respuesta: "4 — Solo si te urge empleo. Para crecer, no es el lugar." },
+      { pregunta: "¿Qué pudo haber sido mejor?", respuesta: "Banda salarial transparente y revisiones anuales sin pelear por ellas." },
+      { pregunta: "¿Cómo fue tu relación con tu jefe directo? (1-5)", respuesta: "3 — G. Pérez delega y desaparece, vuelve a presionar resultados." },
+      { pregunta: "¿Recibiste el onboarding y desarrollo esperados?", respuesta: "Onboarding sí. Desarrollo no — 'estamos muy ocupados'." },
+    ],
+    alertas: ["Caso de negocio armado para Comité: subir banda Jr 8-12%."],
+  },
+  {
+    empleado: "Karla Romero", area: "Posventa", puesto: "Asesor de Servicio", jefe: "L. Cano",
+    fechaIngreso: "2024-07-07", fechaBaja: "2026-03-27", antiguedad: "1 año 8 meses",
+    razonPrelim: "Ambiente del taller", enviadaPor: "WhatsApp", estado: "Completada", scoreCaso: "2 / 10",
+    respuestas: [
+      { pregunta: "Razón principal de salida", respuesta: "Imposible seguir bajo el liderazgo actual del taller Sur." },
+      { pregunta: "¿Recomendarías a un amigo trabajar aquí? (1-10)", respuesta: "2 — Solo si NO es para el taller Sur." },
+      { pregunta: "¿Qué pudo haber sido mejor?", respuesta: "Que RH actuara con los reportes que pasamos. Hubo señales suficientes." },
+      { pregunta: "¿Cómo fue tu relación con tu jefe directo? (1-5)", respuesta: "1 — Hostigamiento. Reporté 2 veces sin acción." },
+      { pregunta: "¿Recibiste el onboarding y desarrollo esperados?", respuesta: "No. Aprendí solo de mis compañeras." },
+    ],
+    alertas: ["Caso a escalar a Compliance. Patrón de reportes ignorados confirmado."],
+  },
+  {
+    empleado: "Valeria Núñez", area: "Comercial", puesto: "Asesor Comercial Jr.", jefe: "G. Pérez",
+    fechaIngreso: "2025-02-11", fechaBaja: "2026-04-15", antiguedad: "1 año 2 meses",
+    razonPrelim: "Reubicación + mejor oferta", enviadaPor: "Correo", estado: "Completada", scoreCaso: "7 / 10",
+    respuestas: [
+      { pregunta: "Razón principal de salida", respuesta: "Mi pareja se reubica a otra ciudad y un competidor allá me ofreció el mismo puesto con +15%." },
+      { pregunta: "¿Recomendarías a un amigo trabajar aquí? (1-10)", respuesta: "7 — Bueno para arrancar carrera comercial." },
+      { pregunta: "¿Qué pudo haber sido mejor?", respuesta: "Esquema de trabajo remoto para puestos comerciales. Mi salida pudo evitarse." },
+      { pregunta: "¿Cómo fue tu relación con tu jefe directo? (1-5)", respuesta: "3 — G. Pérez es eficaz pero distante. Falta cercanía con Jr." },
+      { pregunta: "¿Recibiste el onboarding y desarrollo esperados?", respuesta: "Onboarding sí. Desarrollo arrancó tarde." },
+    ],
+    alertas: ["Caso para abrir discusión de remoto en Comercial."],
+  },
+  {
+    empleado: "Sofía Beltrán", area: "Operaciones", puesto: "Operador A", jefe: "C. Reyes (ex-Sup.)",
+    fechaIngreso: "2025-07-15", fechaBaja: "2026-03-18", antiguedad: "8 meses",
+    razonPrelim: "Desempeño en periodo de prueba", enviadaPor: "Presencial", estado: "Completada", scoreCaso: "5 / 10",
+    respuestas: [
+      { pregunta: "Razón principal de salida", respuesta: "Baja involuntaria. Reconozco que no alcancé la curva esperada en soldadura." },
+      { pregunta: "¿Recomendarías a un amigo trabajar aquí? (1-10)", respuesta: "5 — Trato justo, pero el periodo de prueba es muy exigente sin suficiente capacitación previa." },
+      { pregunta: "¿Qué pudo haber sido mejor?", respuesta: "Pruebas técnicas más realistas en selección. Hubiera identificado el mismatch antes." },
+      { pregunta: "¿Cómo fue tu relación con tu jefe directo? (1-5)", respuesta: "4 — C. Reyes fue claro y me dio chances. La baja fue justa." },
+      { pregunta: "¿Recibiste el onboarding y desarrollo esperados?", respuesta: "Onboarding sí (2 semanas). Desarrollo insuficiente para curva real del puesto." },
+    ],
+    alertas: ["Revisar pruebas técnicas de selección para soldadura."],
+  },
+];
+
+// Ingresos de los últimos 90 días con encuesta de bienvenida aplicada (Día 30/60/90)
+const INGRESOS_BIENVENIDA = [
+  {
+    empleado: "J. Castillo", area: "Comercial", puesto: "Ejecutivo de cuenta jr.", jefe: "L. Martínez",
+    fechaIngreso: "2026-02-14", checkpoint: "Día 60", enviadaPor: "WhatsApp", estado: "Completada", scoreCaso: "4.0 / 5",
+    respuestas: [
+      { pregunta: "¿Qué tan bien recibiste el onboarding? (1-5)", respuesta: "4 — Buen recibimiento del equipo, materiales claros." },
+      { pregunta: "¿Tienes claridad de tu rol y objetivos? (1-5)", respuesta: "3 — Las cuotas cambiaron 2 veces en los primeros 30 días, eso confunde." },
+      { pregunta: "¿Tu equipo te ha hecho sentir bienvenido? (1-5)", respuesta: "5 — El equipo me adoptó desde el día 1, muy buen ambiente." },
+      { pregunta: "¿Tienes las herramientas que necesitas?", respuesta: "No — Acceso parcial al CRM y falta licencia de Sales Navigator." },
+      { pregunta: "¿Recomendarías unirse a la empresa? (1-10)", respuesta: "8" },
+    ],
+    alertas: ["Falta licencia de Sales Navigator — ticket #4521 abierto con TI hace 45 días."],
+  },
+  {
+    empleado: "M. Sánchez", area: "Comercial", puesto: "Asesor Comercial Sr.", jefe: "G. Pérez",
+    fechaIngreso: "2026-02-24", checkpoint: "Día 60", enviadaPor: "Correo", estado: "Completada", scoreCaso: "3.4 / 5",
+    respuestas: [
+      { pregunta: "¿Qué tan bien recibiste el onboarding? (1-5)", respuesta: "3 — El primer día no había computadora lista, perdí casi 2 días esperando equipo." },
+      { pregunta: "¿Tienes claridad de tu rol y objetivos? (1-5)", respuesta: "3 — Las cuotas se asignaron en mes 2; pasé los primeros 30 días sin meta clara." },
+      { pregunta: "¿Tu equipo te ha hecho sentir bienvenido? (1-5)", respuesta: "4 — Equipo amable, pero noto que están saturados (varias bajas recientes)." },
+      { pregunta: "¿Tienes las herramientas que necesitas?", respuesta: "Sí — pero tardaron 3 semanas en darme acceso al ERP." },
+      { pregunta: "¿Recomendarías unirse a la empresa? (1-10)", respuesta: "6" },
+    ],
+    alertas: ["Onboarding logístico fallido — equipo no listo el día 1. Acceso a sistemas demorado."],
+  },
+  {
+    empleado: "A. Vargas", area: "Operaciones", puesto: "Operador B", jefe: "M. Vargas (Sup. Turno 2)",
+    fechaIngreso: "2026-02-28", checkpoint: "Día 30", enviadaPor: "Presencial", estado: "Completada", scoreCaso: "4.4 / 5",
+    respuestas: [
+      { pregunta: "¿Qué tan bien recibiste el onboarding? (1-5)", respuesta: "5 — Excelente capacitación técnica con buddy asignado, muy claro." },
+      { pregunta: "¿Tienes claridad de tu rol y objetivos? (1-5)", respuesta: "4 — Claros KPIs de turno desde el día 1." },
+      { pregunta: "¿Tu equipo te ha hecho sentir bienvenido? (1-5)", respuesta: "5 — Buen equipo de turno, todos colaborativos." },
+      { pregunta: "¿Tienes las herramientas que necesitas?", respuesta: "Sí — EPP completo entregado el primer día." },
+      { pregunta: "¿Recomendarías unirse a la empresa? (1-10)", respuesta: "9" },
+    ],
+    alertas: [],
+  },
+  {
+    empleado: "L. Romo", area: "Posventa", puesto: "Mecánico A", jefe: "L. Cano",
+    fechaIngreso: "2026-03-05", checkpoint: "Día 30", enviadaPor: "WhatsApp", estado: "Completada", scoreCaso: "3.0 / 5",
+    respuestas: [
+      { pregunta: "¿Qué tan bien recibiste el onboarding? (1-5)", respuesta: "3 — Aprendí en el camino, no hubo plan estructurado." },
+      { pregunta: "¿Tienes claridad de tu rol y objetivos? (1-5)", respuesta: "3 — Me asignaron a taller Sur, sé qué hacer pero el ambiente es raro." },
+      { pregunta: "¿Tu equipo te ha hecho sentir bienvenido? (1-5)", respuesta: "3 — Compañeros sí. El jefe es muy seco con los nuevos." },
+      { pregunta: "¿Tienes las herramientas que necesitas?", respuesta: "Sí." },
+      { pregunta: "¿Recomendarías unirse a la empresa? (1-10)", respuesta: "5 — A taller Sur no recomendaría." },
+    ],
+    alertas: ["Confirma diagnóstico de clima en taller Sur (L. Cano) — incluso ingresos perciben el problema."],
+  },
+  {
+    empleado: "P. Ibarra", area: "Administración", puesto: "Auxiliar Contable", jefe: "R. Solís",
+    fechaIngreso: "2026-03-10", checkpoint: "Día 30", enviadaPor: "Correo", estado: "Completada", scoreCaso: "4.2 / 5",
+    respuestas: [
+      { pregunta: "¿Qué tan bien recibiste el onboarding? (1-5)", respuesta: "4 — Manual de procesos claro, buddy asignado." },
+      { pregunta: "¿Tienes claridad de tu rol y objetivos? (1-5)", respuesta: "4 — KPIs definidos desde la 1ª semana." },
+      { pregunta: "¿Tu equipo te ha hecho sentir bienvenido? (1-5)", respuesta: "4 — Equipo profesional, formal pero amable." },
+      { pregunta: "¿Tienes las herramientas que necesitas?", respuesta: "Sí — todo listo desde el día 1." },
+      { pregunta: "¿Recomendarías unirse a la empresa? (1-10)", respuesta: "9" },
+    ],
+    alertas: [],
+  },
+  {
+    empleado: "C. Bermúdez", area: "Comercial", puesto: "Asesor Comercial Jr.", jefe: "G. Pérez",
+    fechaIngreso: "2026-03-15", checkpoint: "Día 60", enviadaPor: "Correo", estado: "Completada", scoreCaso: "3.2 / 5",
+    respuestas: [
+      { pregunta: "¿Qué tan bien recibiste el onboarding? (1-5)", respuesta: "4 — Onboarding formal estuvo bien." },
+      { pregunta: "¿Tienes claridad de tu rol y objetivos? (1-5)", respuesta: "3 — Cuotas reasignadas a mitad de Q, sin explicación clara." },
+      { pregunta: "¿Tu equipo te ha hecho sentir bienvenido? (1-5)", respuesta: "3 — Equipo desgastado por las bajas recientes; siento la presión." },
+      { pregunta: "¿Tienes las herramientas que necesitas?", respuesta: "Sí." },
+      { pregunta: "¿Recomendarías unirse a la empresa? (1-10)", respuesta: "5 — Depende del equipo. Centro Comercial está bajo presión." },
+    ],
+    alertas: ["Ingreso reportando moral baja del equipo G. Pérez — confirma patrón identificado."],
+  },
+  {
+    empleado: "T. Mendiola", area: "Posventa", puesto: "Recepcionista de Servicio", jefe: "L. Cano",
+    fechaIngreso: "2026-03-22", checkpoint: "Día 60", enviadaPor: "WhatsApp", estado: "Completada", scoreCaso: "2.6 / 5",
+    respuestas: [
+      { pregunta: "¿Qué tan bien recibiste el onboarding? (1-5)", respuesta: "2 — No hubo onboarding formal, me 'subieron' a operar el día 2." },
+      { pregunta: "¿Tienes claridad de tu rol y objetivos? (1-5)", respuesta: "2 — Nadie me explicó cómo se mide mi desempeño." },
+      { pregunta: "¿Tu equipo te ha hecho sentir bienvenido? (1-5)", respuesta: "4 — Compañeras sí. Jefe distante." },
+      { pregunta: "¿Tienes las herramientas que necesitas?", respuesta: "No — sin acceso al sistema de citas, lo tramito a través de otra compañera." },
+      { pregunta: "¿Recomendarías unirse a la empresa? (1-10)", respuesta: "3 — A este taller, no." },
+    ],
+    alertas: ["Onboarding nulo en taller Sur. Confirma diagnóstico — escalar urgente a Operaciones."],
+  },
+  {
+    empleado: "D. Robles", area: "Operaciones", puesto: "Operador A", jefe: "C. Reyes (ex-Sup.)",
+    fechaIngreso: "2026-04-01", checkpoint: "Día 30", enviadaPor: "Presencial", estado: "Completada", scoreCaso: "4.6 / 5",
+    respuestas: [
+      { pregunta: "¿Qué tan bien recibiste el onboarding? (1-5)", respuesta: "5 — Programa formal de 2 semanas con buddy." },
+      { pregunta: "¿Tienes claridad de tu rol y objetivos? (1-5)", respuesta: "5 — Indicadores claros y revisión semanal." },
+      { pregunta: "¿Tu equipo te ha hecho sentir bienvenido? (1-5)", respuesta: "4 — Equipo bueno, ritmo intenso." },
+      { pregunta: "¿Tienes las herramientas que necesitas?", respuesta: "Sí." },
+      { pregunta: "¿Recomendarías unirse a la empresa? (1-10)", respuesta: "9" },
+    ],
+    alertas: [],
+  },
+  {
+    empleado: "E. Castañeda", area: "Comercial", puesto: "Asesor Comercial Jr.", jefe: "L. Martínez (interino)",
+    fechaIngreso: "2026-04-05", checkpoint: "Día 30", enviadaPor: "Correo", estado: "Completada", scoreCaso: "3.6 / 5",
+    respuestas: [
+      { pregunta: "¿Qué tan bien recibiste el onboarding? (1-5)", respuesta: "4 — Bien estructurado, materiales nuevos del refresh 2026." },
+      { pregunta: "¿Tienes claridad de tu rol y objetivos? (1-5)", respuesta: "3 — Cambio de jefe directo (Javier Ortega salió) generó confusión inicial." },
+      { pregunta: "¿Tu equipo te ha hecho sentir bienvenido? (1-5)", respuesta: "4 — Equipo en transición, pero respetuoso." },
+      { pregunta: "¿Tienes las herramientas que necesitas?", respuesta: "Sí." },
+      { pregunta: "¿Recomendarías unirse a la empresa? (1-10)", respuesta: "7" },
+    ],
+    alertas: ["Ingreso impactado por la salida de Javier Ortega. Reasignación de jefe pendiente."],
+  },
+  {
+    empleado: "B. Lozano", area: "Administración", puesto: "Asistente de RH", jefe: "P. Castaño",
+    fechaIngreso: "2026-04-12", checkpoint: "Día 30", enviadaPor: "Correo", estado: "En curso", scoreCaso: "—",
+    respuestas: [
+      { pregunta: "¿Qué tan bien recibiste el onboarding? (1-5)", respuesta: "4 — En transición tras la salida de Beatriz Cordero." },
+      { pregunta: "¿Tienes claridad de tu rol y objetivos? (1-5)", respuesta: "3 — Procesos en redefinición, hay zonas grises." },
+      { pregunta: "¿Tu equipo te ha hecho sentir bienvenido? (1-5)", respuesta: "5 — Equipo muy receptivo." },
+      { pregunta: "¿Tienes las herramientas que necesitas?", respuesta: "Pendiente de respuesta" },
+      { pregunta: "¿Recomendarías unirse a la empresa? (1-10)", respuesta: "Pendiente" },
+    ],
+    alertas: ["Reemplazo de Beatriz Cordero — onboarding parcial por procesos en transferencia."],
+  },
+];
+
 function Clima() {
   const [modal, setModal] = useState({ open: false, instrumento: null, mode: null });
   const [audiencia, setAudiencia] = useState("Toda la empresa");
+  const [selected360Idx, setSelected360Idx] = useState(0);
+  const [selectedSalidaIdx, setSelectedSalidaIdx] = useState(0);
+  const [selectedBienvenidaIdx, setSelectedBienvenidaIdx] = useState(0);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fechaHoy = new Date().toISOString().slice(0, 10);
   const fechaPlus7 = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
   const [fechaLimite, setFechaLimite] = useState(fechaPlus7);
@@ -2354,20 +2907,32 @@ function Clima() {
       <p style={S.hint}>Diagnósticos rápidos, 360° formal y encuestas de salida — todo en un solo lugar.</p>
 
       <div style={S.grid3}>
-        <div style={S.kpi}>
-          <div style={S.kpiLabel}>Pulso semanal (último)</div>
-          <div style={S.kpiValue}>7.2 / 10</div>
-          <div style={S.kpiDelta(true)}>+0.3 vs semana anterior</div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Pulso semanal (último)</div>
+            <div style={S.kpiValue}>7.2 / 10</div>
+            <div style={S.kpiDelta(true)}>+0.3 vs semana anterior</div>
+            <div style={S.kpiBenchmark("green")}>Benchmark · Meta: ≥7.0 · Excelente: ≥7.5</div>
+          </div>
+          <TrafficLight light="green" />
         </div>
-        <div style={S.kpi}>
-          <div style={S.kpiLabel}>eNPS</div>
-          <div style={S.kpiValue}>+18</div>
-          <div style={S.kpiDelta(false)}>Promotores 42% / Detractores 24%</div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>eNPS</div>
+            <div style={S.kpiValue}>+18</div>
+            <div style={S.kpiDelta(false)}>Promotores 42% / Detractores 24%</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · Saludable: ≥+20 · Líder: ≥+30</div>
+          </div>
+          <TrafficLight light="yellow" />
         </div>
-        <div style={S.kpi}>
-          <div style={S.kpiLabel}>Tasa de respuesta</div>
-          <div style={S.kpiValue}>68%</div>
-          <div style={S.kpiDelta(true)}>168 / 248 colaboradores</div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Tasa de respuesta</div>
+            <div style={S.kpiValue}>68%</div>
+            <div style={S.kpiDelta(true)}>168 / 248 colaboradores</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · Meta: ≥75% · Mínimo válido: ≥60%</div>
+          </div>
+          <TrafficLight light="yellow" />
         </div>
       </div>
 
@@ -2696,7 +3261,7 @@ function Clima() {
             )}
 
             {modal.mode === "ver" && modal.instrumento.id === "360" && (() => {
-              const r = modal.instrumento.resultado360;
+              const r = EVALUADOS_360[selected360Idx];
               const raters = [
                 { key: "auto",   label: "Auto",   color: "#475569", grad: "linear-gradient(180deg, #94a3b8 0%, #64748b 100%)" },
                 { key: "pares",  label: "Pares",  color: "#0f172a", grad: "linear-gradient(180deg, #334155 0%, #1e293b 100%)" },
@@ -2722,9 +3287,32 @@ function Clima() {
                 <>
                   {/* Header */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 14, paddingBottom: 12, borderBottom: "1px solid #e2e8f0" }}>
-                    <div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>{r.evaluado}</div>
-                      <div style={{ fontSize: 12, color: "#64748b" }}>{r.puesto} · {r.ciclo}</div>
+                    <div style={{ position: "relative" }}>
+                      <button
+                        onClick={() => setPickerOpen(!pickerOpen)}
+                        style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "transparent", border: "none", padding: 0, cursor: "pointer", fontSize: 16, fontWeight: 700, color: "#0f172a", textAlign: "left", fontFamily: "inherit" }}
+                      >
+                        {r.evaluado}
+                        <span style={{ fontSize: 11, color: "#64748b", border: "1px solid #cbd5e1", borderRadius: 4, padding: "2px 6px", fontWeight: 600 }}>Cambiar ▾</span>
+                      </button>
+                      <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>{r.puesto} · {r.area} · Jefe: {r.jefe} · {r.ciclo}</div>
+                      {pickerOpen && (
+                        <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", border: "1px solid #ccc", borderRadius: 6, boxShadow: "0 8px 24px rgba(15,23,42,0.18)", zIndex: 200, minWidth: 320, maxHeight: 320, overflowY: "auto" }}>
+                          <div style={{ ...S.kpiLabel, padding: "10px 12px 6px", borderBottom: "1px solid #f1f5f9" }}>Selecciona evaluado · {EVALUADOS_360.length} gerentes y directores</div>
+                          {EVALUADOS_360.map((ev, i) => (
+                            <div
+                              key={i}
+                              onClick={() => { setSelected360Idx(i); setPickerOpen(false); }}
+                              style={{ padding: "10px 12px", cursor: "pointer", borderBottom: i < EVALUADOS_360.length - 1 ? "1px solid #f1f5f9" : "none", background: i === selected360Idx ? "#eef5ff" : "#fff", fontSize: 13 }}
+                              onMouseEnter={(e) => { if (i !== selected360Idx) e.currentTarget.style.background = "#f8fafc"; }}
+                              onMouseLeave={(e) => { if (i !== selected360Idx) e.currentTarget.style.background = "#fff"; }}
+                            >
+                              <div style={{ fontWeight: 700 }}>{ev.evaluado}</div>
+                              <div style={{ fontSize: 11, color: "#64748b" }}>{ev.puesto} · {ev.ciclo}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div style={{ textAlign: "right" }}>
                       <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.8 }}>Promedio global</div>
@@ -2861,18 +3449,45 @@ function Clima() {
             })()}
 
             {modal.mode === "ver" && modal.instrumento.individual && modal.instrumento.casoEjemplo && (() => {
-              const c = modal.instrumento.casoEjemplo;
               const esBaja = modal.instrumento.id === "salida";
+              const lista = esBaja ? BAJAS_SALIDA : INGRESOS_BIENVENIDA;
+              const selIdx = esBaja ? selectedSalidaIdx : selectedBienvenidaIdx;
+              const setSelIdx = esBaja ? setSelectedSalidaIdx : setSelectedBienvenidaIdx;
+              const c = lista[selIdx];
+              const headerTitle = esBaja ? `${lista.length} bajas en los últimos 90 días` : `${lista.length} ingresos en los últimos 90 días`;
               return (
                 <>
                   {/* Header del caso */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 14, paddingBottom: 12, borderBottom: "1px solid #e2e8f0" }}>
-                    <div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>{c.empleado}</div>
-                      <div style={{ fontSize: 12, color: "#64748b" }}>{c.puesto} · {c.area} · Jefe: {c.jefe}</div>
+                    <div style={{ position: "relative" }}>
+                      <button
+                        onClick={() => setPickerOpen(!pickerOpen)}
+                        style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "transparent", border: "none", padding: 0, cursor: "pointer", fontSize: 16, fontWeight: 700, color: "#0f172a", textAlign: "left", fontFamily: "inherit" }}
+                      >
+                        {c.empleado}
+                        <span style={{ fontSize: 11, color: "#64748b", border: "1px solid #cbd5e1", borderRadius: 4, padding: "2px 6px", fontWeight: 600 }}>Cambiar ▾</span>
+                      </button>
+                      <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>{c.puesto} · {c.area} · Jefe: {c.jefe}</div>
+                      {pickerOpen && (
+                        <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", border: "1px solid #ccc", borderRadius: 6, boxShadow: "0 8px 24px rgba(15,23,42,0.18)", zIndex: 200, minWidth: 340, maxHeight: 360, overflowY: "auto" }}>
+                          <div style={{ ...S.kpiLabel, padding: "10px 12px 6px", borderBottom: "1px solid #f1f5f9" }}>{headerTitle}</div>
+                          {lista.map((p, i) => (
+                            <div
+                              key={i}
+                              onClick={() => { setSelIdx(i); setPickerOpen(false); }}
+                              style={{ padding: "10px 12px", cursor: "pointer", borderBottom: i < lista.length - 1 ? "1px solid #f1f5f9" : "none", background: i === selIdx ? "#eef5ff" : "#fff", fontSize: 13 }}
+                              onMouseEnter={(e) => { if (i !== selIdx) e.currentTarget.style.background = "#f8fafc"; }}
+                              onMouseLeave={(e) => { if (i !== selIdx) e.currentTarget.style.background = "#fff"; }}
+                            >
+                              <div style={{ fontWeight: 700 }}>{p.empleado}</div>
+                              <div style={{ fontSize: 11, color: "#64748b" }}>{p.puesto} · {p.area} · {esBaja ? `Baja ${p.fechaBaja}` : `Ingreso ${p.fechaIngreso} · ${p.checkpoint}`}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <span style={{ ...S.badge("#e8f5e9"), fontSize: 11 }}>{c.estado}</span>
+                      <span style={{ ...S.badge(c.estado === "Completada" ? "#e8f5e9" : "#fff7e0"), fontSize: 11 }}>{c.estado}</span>
                       <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>Enviada por {c.enviadaPor}</div>
                     </div>
                   </div>
@@ -3009,8 +3624,13 @@ const INCIDENCIAS = [
     id: "DN-024", fecha: "12-abr", tipo: "Acoso laboral", area: "Comercial",
     estado: "En investigación", hr: "Sí", severidad: "Alta",
     canal: "Línea ética 800 (anónima)",
-    denunciante: "Anónimo · Colaborador del área Comercial",
-    denunciado: "Gerente de Comercial (J. B.)",
+    denunciante: { anonimo: true, descripcion: "Colaborador del área Comercial", relacion: "Reporte directo del denunciado" },
+    denunciado: {
+      nombre: "Jorge Briones", empNo: "EMP-0103", area: "Comercial",
+      puesto: "Gerente Comercial Oriente", jefe: "F. Domínguez (Dir. Comercial Norte)",
+      antiguedad: "4 años 2 meses", fechaIngreso: "06-feb-2022",
+      reportes: 9, sueldo: 42000, expediente: "Sin sanciones previas · 1 reporte cerrado sin acción (2024)",
+    },
     confidencialidad: "Estricta",
     descripcion: "Reporte de trato hostil, gritos en juntas y comentarios despectivos hacia integrantes del equipo durante los últimos 3 meses. Cuatro testigos anónimos respaldan los hechos.",
     evidencias: [
@@ -3038,8 +3658,28 @@ const INCIDENCIAS = [
     id: "DN-025", fecha: "18-abr", tipo: "Conflicto interpersonal", area: "Posventa",
     estado: "Abierta", hr: "No", severidad: "Media",
     canal: "Conversación directa con HRBP",
-    denunciante: "T. Aguilar · Supervisora Posventa",
-    denunciado: "Dos técnicos del mismo turno",
+    denunciante: {
+      anonimo: false, nombre: "Teresa Aguilar", empNo: "EMP-0218", area: "Posventa",
+      puesto: "Supervisora de Posventa Turno A", jefe: "L. Cano (Gte. Posventa)",
+      antiguedad: "5 años 7 meses", relacion: "Jefa directa de ambos denunciados",
+    },
+    denunciado: {
+      colectivo: true,
+      personas: [
+        {
+          nombre: "Daniel Vargas", empNo: "EMP-0341", area: "Posventa",
+          puesto: "Técnico Sr. (Turno A)", jefe: "T. Aguilar (Sup. Posventa)",
+          antiguedad: "3 años 2 meses", fechaIngreso: "12-feb-2023",
+          sueldo: 18500, expediente: "1 amonestación verbal previa (jul-2025)",
+        },
+        {
+          nombre: "Iván Mora", empNo: "EMP-0162", area: "Posventa",
+          puesto: "Técnico Sr. (Turno A)", jefe: "T. Aguilar (Sup. Posventa)",
+          antiguedad: "4 años 9 meses", fechaIngreso: "20-jul-2021",
+          sueldo: 19200, expediente: "Sin sanciones previas · evaluación 'cumple' últimos 2 años",
+        },
+      ],
+    },
     confidencialidad: "Estándar",
     descripcion: "Conflicto recurrente entre dos técnicos del turno matutino que está afectando el flujo de servicio. Ya hubo 2 quejas de clientes por demoras atribuibles a la fricción del equipo.",
     evidencias: [
@@ -3058,8 +3698,13 @@ const INCIDENCIAS = [
     id: "DN-026", fecha: "20-abr", tipo: "Sospecha de fraude", area: "Administración",
     estado: "En investigación", hr: "Sí", severidad: "Crítica",
     canal: "Línea ética 800 (anónima)",
-    denunciante: "Anónimo · Colaborador de Administración",
-    denunciado: "Auxiliar contable (A. M.)",
+    denunciante: { anonimo: true, descripcion: "Colaborador de Administración (mismo equipo del denunciado)", relacion: "Compañero de área con acceso al ERP" },
+    denunciado: {
+      nombre: "Alfredo Mendoza", empNo: "EMP-0277", area: "Administración",
+      puesto: "Auxiliar Contable Sr.", jefe: "R. Solís (Gte. Finanzas)",
+      antiguedad: "6 años 1 mes", fechaIngreso: "15-mar-2020",
+      reportes: 0, sueldo: 21500, expediente: "Sin sanciones previas · evaluación 'supera' últimos 3 años · usuario power-user del ERP",
+    },
     confidencialidad: "Estricta · Comité Ejecutivo",
     descripcion: "Sospecha de duplicación de facturas a proveedor único en los últimos 90 días. Monto estimado en revisión: $480K. Auditoría interna ya replicó la inconsistencia en muestreo.",
     evidencias: [
@@ -3087,8 +3732,13 @@ const INCIDENCIAS = [
     id: "DN-027", fecha: "22-abr", tipo: "Discriminación", area: "Operaciones",
     estado: "Abierta", hr: "No", severidad: "Alta",
     canal: "Línea ética 800 (anónima)",
-    denunciante: "Anónimo · Colaboradora de Operaciones",
-    denunciado: "Supervisor de planta (R. C.)",
+    denunciante: { anonimo: true, descripcion: "Colaboradora de Operaciones (Planta 2)", relacion: "Reporte directo del denunciado" },
+    denunciado: {
+      nombre: "Ricardo Cardona", empNo: "EMP-0089", area: "Operaciones",
+      puesto: "Supervisor de Planta 2", jefe: "C. Mendoza (Dir. Operaciones)",
+      antiguedad: "8 años 3 meses", fechaIngreso: "08-ene-2018",
+      reportes: 22, sueldo: 32000, expediente: "Sin sanciones previas · evaluación 'cumple' · 2 reportes informales de RH en 2024 sin formalizar",
+    },
     confidencialidad: "Estricta",
     descripcion: "Reporte de trato diferenciado en asignación de turnos y oportunidades de capacitación entre colaboradores hombres y mujeres del mismo nivel. Datos preliminares de RH respaldan el patrón.",
     evidencias: [
@@ -3107,8 +3757,17 @@ const INCIDENCIAS = [
     id: "DN-028", fecha: "25-abr", tipo: "Violación de política", area: "Comercial",
     estado: "Resuelta", hr: "Sí", severidad: "Media",
     canal: "Reporte directo del Gerente",
-    denunciante: "Gerente Comercial · L. Martínez",
-    denunciado: "Ejecutivo de cuenta (F. S.)",
+    denunciante: {
+      anonimo: false, nombre: "Luis Martínez", empNo: "EMP-0017", area: "Comercial",
+      puesto: "Gerente Comercial", jefe: "F. Domínguez (Dir. Comercial Norte)",
+      antiguedad: "9 años 4 meses", relacion: "Jefe del Director Comercial del denunciado",
+    },
+    denunciado: {
+      nombre: "Francisco Suárez", empNo: "EMP-0445", area: "Comercial",
+      puesto: "Ejecutivo de Cuenta Sr.", jefe: "G. Pérez (Gte. Comercial Centro)",
+      antiguedad: "3 años 0 meses", fechaIngreso: "08-may-2023",
+      reportes: 0, sueldo: 26500, expediente: "Top performer 2024-2025 · sin sanciones previas · cuota +18% YTD",
+    },
     confidencialidad: "Estándar",
     descripcion: "Uso de descuento por encima del rango autorizado en 3 oportunidades sin aprobación previa del Director. Impacto: -$185K en margen del trimestre.",
     evidencias: [
@@ -3134,6 +3793,30 @@ const INCIDENCIAS = [
 
 function Denuncia() {
   const [openId, setOpenId] = useState(null);
+  const [pwdRequestId, setPwdRequestId] = useState(null);
+  const [pwdInput, setPwdInput] = useState("");
+  const [pwdError, setPwdError] = useState(false);
+
+  const intentarAbrir = (id) => {
+    setPwdRequestId(id);
+    setPwdInput("");
+    setPwdError(false);
+  };
+  const validarPassword = () => {
+    if (pwdInput === "12345") {
+      setOpenId(pwdRequestId);
+      setPwdRequestId(null);
+      setPwdInput("");
+      setPwdError(false);
+    } else {
+      setPwdError(true);
+    }
+  };
+  const cancelarPassword = () => {
+    setPwdRequestId(null);
+    setPwdInput("");
+    setPwdError(false);
+  };
   const incidencia = INCIDENCIAS.find((i) => i.id === openId);
 
   const estadoBadgeColor = (estado) =>
@@ -3151,10 +3834,38 @@ function Denuncia() {
       </p>
 
       <div style={S.grid4}>
-        <div style={S.kpi}><div style={S.kpiLabel}>Activas</div><div style={S.kpiValue}>5</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Sin Hoja de Ruta</div><div style={S.kpiValue}>2</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Resueltas (mes)</div><div style={S.kpiValue}>3</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Tiempo medio resolución</div><div style={S.kpiValue}>22 días</div></div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Activas</div>
+            <div style={S.kpiValue}>5</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · Histórico mensual: 3-6</div>
+          </div>
+          <TrafficLight light="yellow" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Sin Hoja de Ruta</div>
+            <div style={S.kpiValue}>2</div>
+            <div style={S.kpiBenchmark("red")}>Benchmark · Meta: 0 (toda activa con plan)</div>
+          </div>
+          <TrafficLight light="red" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Resueltas (mes)</div>
+            <div style={S.kpiValue}>3</div>
+            <div style={S.kpiBenchmark("green")}>Benchmark · Meta: ≥3 / mes</div>
+          </div>
+          <TrafficLight light="green" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Tiempo medio resolución</div>
+            <div style={S.kpiValue}>22 días</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · SLA interno: ≤15 días</div>
+          </div>
+          <TrafficLight light="yellow" />
+        </div>
       </div>
 
       <h3 style={S.h3}>Bandeja de incidencias</h3>
@@ -3186,7 +3897,7 @@ function Denuncia() {
                   : <span style={S.badge("#fdecea")}>Faltante</span>}
               </td>
               <td style={S.td}>
-                <button style={S.btnGhost} onClick={() => setOpenId(i.id)}>Abrir</button>
+                <button style={S.btnGhost} onClick={() => intentarAbrir(i.id)}>Abrir</button>
               </td>
             </tr>
           ))}
@@ -3217,6 +3928,67 @@ function Denuncia() {
           </tbody>
         </table>
       </div>
+
+      {pwdRequestId && (
+        <div
+          onClick={cancelarPassword}
+          style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.65)",
+            display: "flex", alignItems: "center", justifyContent: "center", zIndex: 110,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff", borderRadius: 8, padding: 24,
+              width: 420, maxWidth: "92vw", border: "1px solid #ccc",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: "50%",
+                background: "#fdecea", border: "1px solid #fca5a5",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 18, fontWeight: 800, color: "#b00020",
+              }}>!</div>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>Información confidencial</div>
+                <div style={{ fontSize: 12, color: "#475569", marginTop: 2 }}>Password requerido para abrir folio {pwdRequestId}</div>
+              </div>
+            </div>
+
+            <div style={{ ...S.kpiLabel, marginBottom: 6, marginTop: 14 }}>Password</div>
+            <input
+              type="password"
+              autoFocus
+              value={pwdInput}
+              onChange={(e) => { setPwdInput(e.target.value); if (pwdError) setPwdError(false); }}
+              onKeyDown={(e) => { if (e.key === "Enter") validarPassword(); if (e.key === "Escape") cancelarPassword(); }}
+              placeholder="Ingresa el password"
+              style={{
+                width: "100%", padding: "10px 12px",
+                border: `1px solid ${pwdError ? "#b00020" : "#ccc"}`,
+                borderRadius: 4, fontSize: 14, fontFamily: "inherit",
+                boxSizing: "border-box", outline: "none",
+              }}
+            />
+            {pwdError && (
+              <div style={{ fontSize: 12, color: "#b00020", marginTop: 6, fontWeight: 600 }}>
+                Password incorrecto. Intenta de nuevo.
+              </div>
+            )}
+
+            <div style={{ fontSize: 11, color: "#64748b", marginTop: 14, padding: "8px 10px", background: "#f8fafc", borderLeft: "3px solid #cbd5e1", borderRadius: 2 }}>
+              El acceso a expedientes de la Línea de Denuncia queda registrado en bitácora. Sólo personal autorizado del Comité Ético y RH puede consultar.
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+              <button style={S.btnGhost} onClick={cancelarPassword}>Cancelar</button>
+              <button style={S.btn} onClick={validarPassword}>Abrir expediente</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {incidencia && (
         <div
@@ -3262,15 +4034,73 @@ function Denuncia() {
                 : <span style={S.badge("#fdecea")}>Hoja de Ruta faltante</span>}
             </div>
 
-            {/* Partes involucradas */}
+            {/* Partes involucradas — detalle completo */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-              <div style={S.kpi}>
-                <div style={S.kpiLabel}>Denunciante</div>
-                <div style={{ fontSize: 13, fontWeight: 600, marginTop: 4 }}>{incidencia.denunciante}</div>
+              {/* Denunciante */}
+              <div style={{ ...S.kpi, padding: 14 }}>
+                <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Denunciante</div>
+                {incidencia.denunciante.anonimo ? (
+                  <>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>Anónimo</div>
+                    <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>{incidencia.denunciante.descripcion}</div>
+                    {incidencia.denunciante.relacion && (
+                      <div style={{ fontSize: 11, color: "#64748b", marginTop: 6, fontStyle: "italic" }}>Relación: {incidencia.denunciante.relacion}</div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>{incidencia.denunciante.nombre}</div>
+                      <span style={{ fontSize: 10, color: "#64748b", fontFamily: "monospace" }}>{incidencia.denunciante.empNo}</span>
+                    </div>
+                    <div style={{ fontSize: 12, color: "#475569", marginTop: 2 }}>{incidencia.denunciante.puesto} · {incidencia.denunciante.area}</div>
+                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 6 }}>
+                      <strong>Jefe:</strong> {incidencia.denunciante.jefe}<br />
+                      <strong>Antigüedad:</strong> {incidencia.denunciante.antiguedad}
+                    </div>
+                    {incidencia.denunciante.relacion && (
+                      <div style={{ fontSize: 11, color: "#64748b", marginTop: 4, fontStyle: "italic" }}>Relación: {incidencia.denunciante.relacion}</div>
+                    )}
+                  </>
+                )}
               </div>
-              <div style={S.kpi}>
-                <div style={S.kpiLabel}>Denunciado</div>
-                <div style={{ fontSize: 13, fontWeight: 600, marginTop: 4 }}>{incidencia.denunciado}</div>
+
+              {/* Denunciado */}
+              <div style={{ ...S.kpi, padding: 14, borderColor: "#fca5a5", background: "#fff7f7" }}>
+                <div style={{ ...S.kpiLabel, marginBottom: 6, color: "#b00020" }}>Denunciado{incidencia.denunciado.colectivo ? "s" : ""}</div>
+                {incidencia.denunciado.colectivo ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {incidencia.denunciado.personas.map((p, i) => (
+                      <div key={i} style={{ paddingTop: i > 0 ? 8 : 0, borderTop: i > 0 ? "1px dashed #fca5a5" : "none" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>{p.nombre}</div>
+                          <span style={{ fontSize: 10, color: "#64748b", fontFamily: "monospace" }}>{p.empNo}</span>
+                        </div>
+                        <div style={{ fontSize: 12, color: "#475569", marginTop: 2 }}>{p.puesto} · {p.area}</div>
+                        <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                          <strong>Jefe:</strong> {p.jefe} · <strong>Antig.:</strong> {p.antiguedad} · <strong>Sueldo:</strong> ${p.sueldo.toLocaleString("es-MX")}
+                        </div>
+                        <div style={{ fontSize: 11, color: "#64748b", marginTop: 4, fontStyle: "italic" }}>{p.expediente}</div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>{incidencia.denunciado.nombre}</div>
+                      <span style={{ fontSize: 10, color: "#64748b", fontFamily: "monospace" }}>{incidencia.denunciado.empNo}</span>
+                    </div>
+                    <div style={{ fontSize: 12, color: "#475569", marginTop: 2 }}>{incidencia.denunciado.puesto} · {incidencia.denunciado.area}</div>
+                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 6 }}>
+                      <strong>Jefe:</strong> {incidencia.denunciado.jefe}<br />
+                      <strong>Antigüedad:</strong> {incidencia.denunciado.antiguedad} (ingreso {incidencia.denunciado.fechaIngreso})<br />
+                      <strong>Reportes directos:</strong> {incidencia.denunciado.reportes} · <strong>Sueldo:</strong> ${incidencia.denunciado.sueldo.toLocaleString("es-MX")}
+                    </div>
+                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 6, fontStyle: "italic", borderTop: "1px dashed #fca5a5", paddingTop: 6 }}>
+                      <strong>Expediente:</strong> {incidencia.denunciado.expediente}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -3379,14 +4209,158 @@ function Denuncia() {
 // 4. COBERTURA DE PLANTILLA
 // =============================================================
 function Cobertura({ onAbrirGuia }) {
+  const [vacanteAbierta, setVacanteAbierta] = useState(null);
+
+  const etapasReclutamiento = [
+    "Solicitud (vacante autorizada)",
+    "Sourcing y atracción",
+    "Filtro de CV",
+    "Entrevista RH",
+    "Pruebas (técnicas / psicométricas)",
+    "Entrevista con área solicitante",
+    "Entrevista final / Dirección",
+    "Oferta económica",
+    "Verificación de referencias",
+    "Contratación",
+    "Onboarding 30-60-90+",
+  ];
+
   const vacantes = [
-    { id: "REQ-101", puesto: "Asesor Comercial Sr.", area: "Comercial", solicita: "G. Pérez", abierta: 12, etapa: "Entrevistas", candidatos: 6 },
-    { id: "REQ-102", puesto: "Mecánico A", area: "Posventa", solicita: "L. Cano", abierta: 28, etapa: "Sourcing", candidatos: 2 },
-    { id: "REQ-103", puesto: "Contador General", area: "Administración", solicita: "R. Solís", abierta: 64, etapa: "Oferta", candidatos: 1 },
-    { id: "REQ-104", puesto: "Gerente Operaciones", area: "Operaciones", solicita: "Dirección", abierta: 71, etapa: "Entrevistas", candidatos: 3 },
-    { id: "REQ-105", puesto: "Asistente RH", area: "RH", solicita: "Dir. RH", abierta: 4, etapa: "Sourcing", candidatos: 0 },
-    { id: "REQ-106", puesto: "Supervisor Posventa Turno B", area: "Posventa", solicita: "L. Cano", abierta: 18, etapa: "Filtro CV", candidatos: 4 },
-    { id: "REQ-107", puesto: "Analista Financiero Jr.", area: "Administración", solicita: "R. Solís", abierta: 36, etapa: "Entrevistas", candidatos: 5 },
+    {
+      id: "REQ-101", puesto: "Asesor Comercial Sr.", area: "Comercial", gerenciaFuncional: "Comercial Centro",
+      solicita: "G. Pérez", solicitanteNombre: "Guillermo Pérez", solicitantePuesto: "Gerente Comercial Centro",
+      jefeDirectoFuturo: "Guillermo Pérez",
+      fechaApertura: "08-abr-2026", fechaObjetivo: "08-may-2026", abierta: 12,
+      etapa: "Entrevistas", etapaActualIdx: 6, candidatos: 6,
+      razon: "Reemplazo de Alejandro Méndez (B-003) — salida voluntaria 12-mar-2026",
+      aprobadoPor: "Comité de Plantilla (08-abr-2026)",
+      bandaMin: 26000, bandaMediana: 30000, bandaMax: 34000,
+      bonoFirmaTarget: 5000, bonoTrimestralTarget: 6000,
+      prestaciones: "Ley + GMM + Vales $2,000/mes",
+      canalReclutamiento: "LinkedIn + Referidos + Headhunter ligero",
+      responsableRH: "Paola Castaño (Gte. RH)",
+      jobPostings: ["LinkedIn (87 aplicaciones)", "Indeed (32)", "Referidos internos (4)"],
+      candidatosTop: [
+        { id: "CAND-1042", nombre: "Ana Ramírez", score: 8.5, etapa: "Entrevista final", estado: "Avanzando" },
+        { id: "CAND-1058", nombre: "Javier Torres", score: 7.2, etapa: "Pruebas técnicas", estado: "Avanzando" },
+      ],
+      observaciones: "Vacante crítica para Q2. A. Ramírez es top del pipeline (referida por A. Méndez, el que salió). G. Pérez tiene patrón de bajas Jr — atención al onboarding.",
+    },
+    {
+      id: "REQ-102", puesto: "Mecánico A", area: "Posventa", gerenciaFuncional: "Taller Sucursal Norte",
+      solicita: "L. Cano", solicitanteNombre: "Lorenzo Cano", solicitantePuesto: "Gerente de Posventa",
+      jefeDirectoFuturo: "Teresa Aguilar (Sup. Posventa Turno A)",
+      fechaApertura: "02-abr-2026", fechaObjetivo: "02-may-2026", abierta: 28,
+      etapa: "Sourcing", etapaActualIdx: 4, candidatos: 2,
+      razon: "Reemplazo de Daniel Vázquez (B-011) — salida voluntaria 14-feb-2026 (cambio de giro)",
+      aprobadoPor: "Comité de Plantilla (02-abr-2026)",
+      bandaMin: 15000, bandaMediana: 18000, bandaMax: 21000,
+      bonoFirmaTarget: 0, bonoTrimestralTarget: 0,
+      prestaciones: "Ley + GMM básico + Vales $1,200",
+      canalReclutamiento: "Bolsa CONALEP + Referidos del taller",
+      responsableRH: "Paola Castaño (Gte. RH)",
+      jobPostings: ["Bolsa CONALEP (18 aplicaciones)", "OCC Mundial (9)"],
+      candidatosTop: [
+        { id: "CAND-1063", nombre: "Mauricio Gómez", score: 7.8, etapa: "Pruebas técnicas", estado: "Avanzando" },
+      ],
+      observaciones: "Vacante de baja prioridad por estar en sucursal Norte (no Sur que es la crítica). Pool pequeño · evaluar subir banda 10% si no se cubre en 30 días.",
+    },
+    {
+      id: "REQ-103", puesto: "Contador General", area: "Administración", gerenciaFuncional: "Finanzas",
+      solicita: "R. Solís", solicitanteNombre: "Rodrigo Solís", solicitantePuesto: "Gerente de Finanzas",
+      jefeDirectoFuturo: "Rodrigo Solís",
+      fechaApertura: "25-mar-2026", fechaObjetivo: "25-abr-2026", abierta: 64,
+      etapa: "Oferta", etapaActualIdx: 7, candidatos: 1,
+      razon: "Reemplazo de Patricia Lozano (B-004) — salida voluntaria 15-ene-2026 (reubicación familiar)",
+      aprobadoPor: "Director Administrativo (S. Ramírez) — 25-mar-2026",
+      bandaMin: 35000, bandaMediana: 38000, bandaMax: 42000,
+      bonoFirmaTarget: 0, bonoTrimestralTarget: 12000,
+      prestaciones: "Ley + GMM Plus + Vales $2,500 + Auto utilitario",
+      canalReclutamiento: "Headhunter especializado en Finanzas (fee 15%)",
+      responsableRH: "Paola Castaño (Gte. RH)",
+      jobPostings: ["Headhunter exclusivo (5 finalistas)"],
+      candidatosTop: [
+        { id: "CAND-1071", nombre: "Sofía Vega", score: 9.1, etapa: "Oferta económica", estado: "Oferta en revisión por +10.5% sobre presupuesto" },
+      ],
+      observaciones: "ALERTA · 64 días abierta (vs SLA 30). Oferta enviada $42K vs presupuesto $38K — pendiente aprobación de S. Ramírez. Si no cierra en 14 días, escalar.",
+    },
+    {
+      id: "REQ-104", puesto: "Gerente de Operaciones (Planta 1)", area: "Operaciones", gerenciaFuncional: "Operaciones Planta 1",
+      solicita: "Dirección", solicitanteNombre: "Carlos Mendoza", solicitantePuesto: "Director de Operaciones",
+      jefeDirectoFuturo: "Carlos Mendoza",
+      fechaApertura: "10-feb-2026", fechaObjetivo: "10-abr-2026", abierta: 71,
+      etapa: "Onboarding", etapaActualIdx: 10, candidatos: 3,
+      razon: "Jubilación planeada del gerente anterior (12 años de servicio)",
+      aprobadoPor: "Dirección General (10-feb-2026)",
+      bandaMin: 55000, bandaMediana: 58000, bandaMax: 65000,
+      bonoFirmaTarget: 30000, bonoTrimestralTarget: 18000,
+      prestaciones: "Ley + GMM Plus + Auto + Vales $3,000 + Bono anual 2 meses",
+      canalReclutamiento: "Headhunter ejecutivo (búsqueda confidencial)",
+      responsableRH: "Paola Castaño + Carlos Mendoza",
+      jobPostings: ["Búsqueda confidencial vía headhunter (3 finalistas)"],
+      candidatosTop: [
+        { id: "CAND-0987", nombre: "Pedro Núñez", score: 8.9, etapa: "Onboarding Día 60", estado: "Contratado · adaptación excelente" },
+      ],
+      observaciones: "Vacante CERRADA. Pedro Núñez ingresó 01-abr-2026 · Día 60 con score 4.5/5. Mantener visible hasta cumplir 90 días.",
+    },
+    {
+      id: "REQ-105", puesto: "Asistente de RH Sr.", area: "Administración", gerenciaFuncional: "RH",
+      solicita: "Dir. RH", solicitanteNombre: "Paola Castaño", solicitantePuesto: "Gerente de Recursos Humanos",
+      jefeDirectoFuturo: "Paola Castaño",
+      fechaApertura: "14-mar-2026", fechaObjetivo: "14-jun-2026", abierta: 4,
+      etapa: "Sourcing", etapaActualIdx: 2, candidatos: 0,
+      razon: "Reemplazo de Beatriz Cordero (B-014) — salida voluntaria 12-mar-2026 (cambio a consultoría)",
+      aprobadoPor: "Director Administrativo (S. Ramírez) — 14-mar-2026",
+      bandaMin: 19000, bandaMediana: 22000, bandaMax: 25000,
+      bonoFirmaTarget: 0, bonoTrimestralTarget: 0,
+      prestaciones: "Ley + GMM + Vales $1,800",
+      canalReclutamiento: "Referidos internos + LinkedIn",
+      responsableRH: "Paola Castaño (auto-PM)",
+      jobPostings: ["Referidos internos (4 candidatos)", "LinkedIn ads (5 aplicaciones)"],
+      candidatosTop: [
+        { id: "CAND-1085", nombre: "Karen Robles", score: 0, etapa: "Filtro de CV", estado: "Pre-evaluación" },
+      ],
+      observaciones: "Vacante crítica para RH. Operando con redundancia temporal de B. Lozano (ingreso reciente). Procesos de onboarding y clima dependen del cierre rápido.",
+    },
+    {
+      id: "REQ-106", puesto: "Supervisor Posventa Turno B", area: "Posventa", gerenciaFuncional: "Taller Sucursal Sur",
+      solicita: "L. Cano", solicitanteNombre: "Lorenzo Cano", solicitantePuesto: "Gerente de Posventa",
+      jefeDirectoFuturo: "Lorenzo Cano (en revisión)",
+      fechaApertura: "20-abr-2026", fechaObjetivo: "20-jun-2026", abierta: 18,
+      etapa: "Filtro CV", etapaActualIdx: 3, candidatos: 4,
+      razon: "Nueva posición por crecimiento del Turno B + rotación documentada del taller (3 bajas voluntarias en 6 meses)",
+      aprobadoPor: "L. Cano + C. Mendoza · con OBSERVACIÓN de intervención de clima",
+      bandaMin: 24000, bandaMediana: 28000, bandaMax: 32000,
+      bonoFirmaTarget: 0, bonoTrimestralTarget: 6000,
+      prestaciones: "Ley + GMM + Vales $2,000",
+      canalReclutamiento: "LinkedIn + Bolsa de trabajo + Headhunter ligero",
+      responsableRH: "Paola Castaño (Gte. RH)",
+      jobPostings: ["LinkedIn (22 aplicaciones)", "OCC Mundial (14)"],
+      candidatosTop: [
+        { id: "CAND-1090", nombre: "Ramón Cabral", score: 7.4, etapa: "Entrevista RH (programada)", estado: "Avanzando · con observación de jefe directo" },
+      ],
+      observaciones: "ALERTA · vacante con observación: tras el diagnóstico crítico del taller Sur (B-005, B-006, B-012), C. Mendoza está revisando si el nuevo supervisor debe reportar a L. Cano o tener jefe directo distinto.",
+    },
+    {
+      id: "REQ-107", puesto: "Analista Financiero Jr.", area: "Administración", gerenciaFuncional: "Finanzas",
+      solicita: "R. Solís", solicitanteNombre: "Rodrigo Solís", solicitantePuesto: "Gerente de Finanzas",
+      jefeDirectoFuturo: "Sofía Vega (futura Contadora Gral.) o R. Solís",
+      fechaApertura: "16-abr-2026", fechaObjetivo: "16-jun-2026", abierta: 36,
+      etapa: "Entrevistas", etapaActualIdx: 5, candidatos: 5,
+      razon: "Reemplazo de Andrés Solano (B-013) — salida voluntaria 04-mar-2026 (promoción a Contador General en otra empresa)",
+      aprobadoPor: "Director Administrativo (S. Ramírez) — 16-abr-2026",
+      bandaMin: 17000, bandaMediana: 19000, bandaMax: 22000,
+      bonoFirmaTarget: 0, bonoTrimestralTarget: 4500,
+      prestaciones: "Ley + GMM básico + Vales $1,500",
+      canalReclutamiento: "LinkedIn + Universidades (recién egresados)",
+      responsableRH: "Paola Castaño (Gte. RH)",
+      jobPostings: ["LinkedIn (45 aplicaciones)", "Bolsa universitaria UNAM/ITAM/IPN (28)"],
+      candidatosTop: [
+        { nombre: "C. Bermúdez", score: 7.5, etapa: "Pruebas técnicas", estado: "Avanzando" },
+        { nombre: "L. Estrada", score: 7.1, etapa: "Pruebas técnicas", estado: "Avanzando" },
+      ],
+      observaciones: "Pool joven y diverso. Caso de prevención: el reemplazo no debe quedarse 'estancado' como pasó con Solano (motivo de su salida fue falta de crecimiento — ver pestaña Rotación).",
+    },
   ];
 
   const solicitudesMensuales = [
@@ -3464,10 +4438,38 @@ function Cobertura({ onAbrirGuia }) {
       </div>
 
       <div style={S.grid4}>
-        <div style={S.kpi}><div style={S.kpiLabel}>Plantilla autorizada</div><div style={S.kpiValue}>248</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Cubierta</div><div style={S.kpiValue}>228</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>% cobertura</div><div style={S.kpiValue}>92%</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Vacantes &gt; 60 días</div><div style={S.kpiValue}>2</div></div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Plantilla autorizada</div>
+            <div style={S.kpiValue}>248</div>
+            <div style={S.kpiBenchmark("green")}>Benchmark · Plan anual 2026: 248</div>
+          </div>
+          <TrafficLight light="green" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Cubierta</div>
+            <div style={S.kpiValue}>228</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · Objetivo: 248 (autorizado)</div>
+          </div>
+          <TrafficLight light="yellow" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>% cobertura</div>
+            <div style={S.kpiValue}>92%</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · Meta: ≥95% · Crítico: &lt;90%</div>
+          </div>
+          <TrafficLight light="yellow" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Vacantes &gt; 60 días</div>
+            <div style={S.kpiValue}>2</div>
+            <div style={S.kpiBenchmark("red")}>Benchmark · Meta: 0 · Alerta: ≥1</div>
+          </div>
+          <TrafficLight light="red" />
+        </div>
       </div>
 
       <h3 style={S.h3}>Solicitudes — mes a mes y acumulado</h3>
@@ -3653,6 +4655,7 @@ function Cobertura({ onAbrirGuia }) {
       </div>
 
       <h3 style={S.h3}>Vacantes abiertas</h3>
+      <p style={{ ...S.hint, marginTop: -4 }}>Haz click en cualquier vacante para ver el expediente completo.</p>
       <table style={S.table}>
         <thead>
           <tr>
@@ -3664,11 +4667,18 @@ function Cobertura({ onAbrirGuia }) {
             <th style={S.th}>Etapa actual</th>
             <th style={S.th}>Candidatos</th>
             <th style={S.th}>Estado</th>
+            <th style={S.th}></th>
           </tr>
         </thead>
         <tbody>
           {vacantes.map((v) => (
-            <tr key={v.id}>
+            <tr
+              key={v.id}
+              onClick={() => setVacanteAbierta(v)}
+              style={{ cursor: "pointer" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            >
               <td style={S.td}><strong>{v.id}</strong></td>
               <td style={S.td}>{v.puesto}</td>
               <td style={S.td}>{v.area}</td>
@@ -3681,63 +4691,712 @@ function Cobertura({ onAbrirGuia }) {
                   : v.abierta > 30 ? <span style={S.badge("#fff7e0")}>Alerta</span>
                   : <span style={S.badge("#e8f5e9")}>OK</span>}
               </td>
+              <td style={{ ...S.td, textAlign: "right", color: "#64748b", fontSize: 12 }}>Ver expediente →</td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Modal de vacante */}
+      {vacanteAbierta && (() => {
+        const v = vacanteAbierta;
+        const pctAvance = Math.round(((v.etapaActualIdx + 1) / etapasReclutamiento.length) * 100);
+        const sla = 30;
+        const slaPct = Math.min(100, (v.abierta / sla) * 100);
+        const slaColor = v.abierta > 60 ? "#b00020" : v.abierta > 30 ? "#d97706" : "#0a7d2c";
+        const gradAvance = pctAvance >= 100
+          ? "linear-gradient(90deg, #71b248 0%, #5a9438 100%)"
+          : pctAvance >= 60
+          ? "linear-gradient(90deg, #ea580c 0%, #c2410c 100%)"
+          : "linear-gradient(90deg, #64748b 0%, #475569 100%)";
+        return (
+          <div
+            onClick={() => setVacanteAbierta(null)}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{ background: "#fff", borderRadius: 8, padding: 24, width: 1080, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto", border: "1px solid #ccc" }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, paddingBottom: 12, borderBottom: "1px solid #e2e8f0" }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
+                    <span style={{ ...S.kpiLabel, color: "#64748b" }}>{v.id}</span>
+                    {v.abierta > 60
+                      ? <span style={S.badge("#fdecea")}>Crítica</span>
+                      : v.abierta > 30
+                      ? <span style={S.badge("#fff7e0")}>Alerta</span>
+                      : <span style={S.badge("#e8f5e9")}>OK</span>}
+                    <span style={S.badge("#f1f5f9")}>{v.etapa}</span>
+                  </div>
+                  <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>{v.puesto}</h3>
+                  <div style={{ fontSize: 13, color: "#475569", marginTop: 4 }}>{v.area} · {v.gerenciaFuncional}</div>
+                </div>
+                <button onClick={() => setVacanteAbierta(null)} style={{ border: "none", background: "transparent", fontSize: 22, cursor: "pointer", color: "#666", lineHeight: 1 }}>×</button>
+              </div>
+
+              {/* KPIs */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 10, marginBottom: 16 }}>
+                <div style={{ ...S.kpi, padding: 12 }}>
+                  <div style={S.kpiLabel}>Días abierta</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4, color: slaColor }}>{v.abierta}</div>
+                  <div style={{ position: "relative", height: 5, background: "#f1f5f9", borderRadius: 3, marginTop: 6, overflow: "hidden" }}>
+                    <div style={{ position: "absolute", inset: 0, width: `${slaPct}%`, background: slaColor, borderRadius: 3 }} />
+                  </div>
+                  <div style={{ fontSize: 10, color: "#666", marginTop: 4 }}>SLA: ≤30 días</div>
+                </div>
+                <div style={{ ...S.kpi, padding: 12 }}>
+                  <div style={S.kpiLabel}>% Avance (11 etapas)</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{pctAvance}%</div>
+                  <div style={{ position: "relative", height: 5, background: "#f1f5f9", borderRadius: 3, marginTop: 6, overflow: "hidden" }}>
+                    <div style={{ position: "absolute", inset: 0, width: `${pctAvance}%`, background: gradAvance, borderRadius: 3 }} />
+                  </div>
+                </div>
+                <div style={{ ...S.kpi, padding: 12 }}>
+                  <div style={S.kpiLabel}>Candidatos en pipeline</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{v.candidatos}</div>
+                  <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{v.candidatosTop.length} top destacados</div>
+                </div>
+                <div style={{ ...S.kpi, padding: 12 }}>
+                  <div style={S.kpiLabel}>Fecha objetivo</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, marginTop: 4 }}>{v.fechaObjetivo}</div>
+                  <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>Apertura: {v.fechaApertura}</div>
+                </div>
+              </div>
+
+              {/* Solicitante + Económico */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+                <div style={{ ...S.card, marginBottom: 0 }}>
+                  <div style={{ ...S.kpiLabel, marginBottom: 8 }}>Solicitante y aprobación</div>
+                  <div style={{ fontSize: 13, lineHeight: 1.6 }}>
+                    <div><strong>Solicitante:</strong> {v.solicitanteNombre}</div>
+                    <div style={{ color: "#475569", marginBottom: 6 }}>{v.solicitantePuesto}</div>
+                    <div><strong>Jefe directo futuro:</strong> {v.jefeDirectoFuturo}</div>
+                    <div><strong>Aprobado por:</strong> {v.aprobadoPor}</div>
+                    <div><strong>Responsable RH:</strong> {v.responsableRH}</div>
+                  </div>
+                  <div style={{ marginTop: 10, padding: "8px 10px", background: "#f8fafc", borderLeft: "3px solid #cbd5e1", borderRadius: 2, fontSize: 12, color: "#475569", lineHeight: 1.5 }}>
+                    <strong>Razón:</strong> {v.razon}
+                  </div>
+                </div>
+                <div style={{ ...S.card, marginBottom: 0 }}>
+                  <div style={{ ...S.kpiLabel, marginBottom: 8 }}>Banda salarial autorizada</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Mín</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, marginTop: 2 }}>${v.bandaMin.toLocaleString("es-MX")}</div>
+                    </div>
+                    <div style={{ flex: 1, position: "relative", height: 8, background: "#f1f5f9", borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ position: "absolute", left: "33%", top: 0, bottom: 0, width: "34%", background: "linear-gradient(90deg, #ea580c 0%, #c2410c 100%)", borderRadius: 4 }} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Máx</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, marginTop: 2 }}>${v.bandaMax.toLocaleString("es-MX")}</div>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "center", fontSize: 11, color: "#666", marginBottom: 10 }}>
+                    Mediana objetivo: <strong style={{ color: "#0f172a" }}>${v.bandaMediana.toLocaleString("es-MX")}</strong>
+                  </div>
+                  <div style={{ fontSize: 12, lineHeight: 1.6, borderTop: "1px solid #e5e5e5", paddingTop: 8 }}>
+                    <div><strong>Bono firma target:</strong> {v.bonoFirmaTarget > 0 ? `$${v.bonoFirmaTarget.toLocaleString("es-MX")}` : "—"}</div>
+                    <div><strong>Bono trimestral target:</strong> {v.bonoTrimestralTarget > 0 ? `$${v.bonoTrimestralTarget.toLocaleString("es-MX")}` : "—"}</div>
+                    <div><strong>Prestaciones:</strong> {v.prestaciones}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sourcing */}
+              <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Sourcing y canales</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8, fontSize: 12 }}>
+                {v.jobPostings.map((j, i) => (
+                  <span key={i} style={{ padding: "4px 10px", background: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: 4 }}>{j}</span>
+                ))}
+              </div>
+              <div style={{ fontSize: 12, color: "#475569", marginBottom: 16 }}><strong>Estrategia:</strong> {v.canalReclutamiento}</div>
+
+              {/* Candidatos top */}
+              <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Candidatos destacados ({v.candidatosTop.length} de {v.candidatos})</div>
+              {v.candidatosTop.length > 0 ? (
+                <table style={{ ...S.table, marginBottom: 16, fontSize: 12 }}>
+                  <thead>
+                    <tr>
+                      <th style={S.th}>Candidato</th>
+                      <th style={S.th}>Score</th>
+                      <th style={S.th}>Etapa</th>
+                      <th style={S.th}>Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {v.candidatosTop.map((c, i) => (
+                      <tr key={i}>
+                        <td style={S.td}>
+                          <strong>{c.nombre}</strong>
+                          {c.id && <div style={{ fontSize: 10, color: "#666", fontFamily: "monospace" }}>{c.id}</div>}
+                        </td>
+                        <td style={S.td}>{c.score > 0 ? c.score.toFixed(1) : "—"}</td>
+                        <td style={S.td}>{c.etapa}</td>
+                        <td style={S.td}>{c.estado}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div style={{ fontSize: 12, color: "#666", padding: "10px 12px", background: "#f8fafc", borderRadius: 4, marginBottom: 16, fontStyle: "italic" }}>
+                  Sin candidatos en pipeline aún. Sourcing en curso.
+                </div>
+              )}
+
+              {/* Checklist de etapas */}
+              <div style={{ ...S.kpiLabel, marginBottom: 8 }}>Checklist · Etapas del proceso</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 16 }}>
+                {etapasReclutamiento.map((etapa, idx) => {
+                  const isDone = idx < v.etapaActualIdx + 1;
+                  const isCurrent = idx === v.etapaActualIdx;
+                  return (
+                    <div key={idx} style={{
+                      display: "flex", alignItems: "center", gap: 10,
+                      padding: "8px 12px",
+                      background: isDone ? "#f6fbf6" : isCurrent ? "#fff7ed" : "#fafafa",
+                      border: `1px solid ${isDone ? "#86efac" : isCurrent ? "#fed7aa" : "#e5e5e5"}`,
+                      borderRadius: 4,
+                    }}>
+                      <div style={{
+                        width: 20, height: 20, borderRadius: "50%",
+                        background: isDone ? "#0a7d2c" : isCurrent ? "#c2410c" : "#cbd5e1",
+                        color: "#fff",
+                        fontSize: 11, fontWeight: 700,
+                        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                      }}>
+                        {isDone && !isCurrent ? "✓" : idx + 1}
+                      </div>
+                      <span style={{ fontSize: 13, fontWeight: isCurrent ? 700 : 500, color: "#0f172a", flex: 1 }}>{etapa}</span>
+                      {isCurrent && <span style={{ fontSize: 10, color: "#c2410c", fontWeight: 700, padding: "1px 6px", background: "#ffedd5", borderRadius: 10 }}>EN CURSO</span>}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Observaciones */}
+              <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Observaciones</div>
+              <div style={{ fontSize: 13, padding: "10px 12px", background: "#fff7e0", borderLeft: "3px solid #d97706", borderRadius: 4, marginBottom: 16, lineHeight: 1.5 }}>
+                {v.observaciones}
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingTop: 12, borderTop: "1px solid #eee" }}>
+                <button style={S.btn} onClick={() => setVacanteAbierta(null)}>Cerrar</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
 
 // =============================================================
-// 5. ROTACIÓN
+// 6. ROTACIÓN
 // =============================================================
 function Rotacion() {
+  const [conceptoAbierto, setConceptoAbierto] = useState(null);
+  const [bajaSeleccionadaId, setBajaSeleccionadaId] = useState(null);
+
   const bajas = [
-    { area: "Comercial", n: 12, motivo: "Mejor oferta", tipo: "Voluntaria" },
-    { area: "Posventa", n: 8, motivo: "Ambiente", tipo: "Voluntaria" },
-    { area: "Operaciones", n: 4, motivo: "Desempeño", tipo: "Involuntaria" },
+    { area: "Comercial", n: 7, motivo: "Mejor oferta", tipo: "Voluntaria" },
+    { area: "Posventa", n: 4, motivo: "Ambiente", tipo: "Voluntaria" },
+    { area: "Operaciones", n: 3, motivo: "Desempeño", tipo: "Involuntaria" },
     { area: "Administración", n: 3, motivo: "Personal", tipo: "Voluntaria" },
   ];
 
   const costoUnitario = {
-    directos: 25000, indirectos: 18000, ocultos: 35000, hundidos: 22000,
+    directos: 25000, indirectos: 18000,
   };
   const totalBajas = bajas.reduce((a, r) => a + r.n, 0);
-  const costoTotal = (costoUnitario.directos + costoUnitario.indirectos + costoUnitario.ocultos + costoUnitario.hundidos) * totalBajas;
+  const costoTotal = (costoUnitario.directos + costoUnitario.indirectos) * totalBajas;
+
+  // Bajas representativas del periodo (8 de 27) — cada una con perfil completo y costo específico por concepto.
+  const bajasRecientes = [
+    {
+      id: "B-001", empNo: "EMP-0287", nombre: "Javier Ortega", email: "javier.ortega@empresa.com.mx",
+      area: "Comercial", gerenciaFuncional: "Dirección Comercial Norte", puesto: "Gerente Comercial Regional",
+      fechaIngreso: "12-sep-2017", fechaAviso: "08-mar-2026", fecha: "22-mar-2026",
+      años: 8.6, sueldo: 55000, sueldoIntegrado: 62700,
+      jefe: "Lic. M. Hernández (Dir. Gral.)", reportes: 6,
+      motivo: "Mejor oferta (competencia directa)",
+      motivoExtendido: "Migra a un OEM competidor con paquete 25% superior. Llevaba 2 años buscando promoción interna sin éxito; la última revisión salarial extraordinaria fue rechazada por Comité en Ene 2026.",
+      observacionesJefe: "Excelente desempeño y relación con cartera. La fuga era predecible: no había plan de carrera ni revisión salarial extraordinaria. Reemplazo difícil; 2 cuentas Tier-1 ya migraron parcialmente con él.",
+      tipo: "Voluntaria",
+      costos: { directo: 62500, indirecto: 38000, oculto: 95000, hundido: 78000 },
+    },
+    {
+      id: "B-002", empNo: "EMP-0156", nombre: "Carlos Reyes", email: "carlos.reyes@empresa.com.mx",
+      area: "Operaciones", gerenciaFuncional: "Operaciones Planta 2", puesto: "Supervisor de Turno",
+      fechaIngreso: "03-oct-2018", fechaAviso: "22-ene-2026", fecha: "05-feb-2026",
+      años: 7.4, sueldo: 35000, sueldoIntegrado: 39200,
+      jefe: "L. Cano (Gte. Operaciones)", reportes: 14,
+      motivo: "Desempeño debajo del estándar",
+      motivoExtendido: "Tres evaluaciones consecutivas en zona 'Mejorar'. PIP cerrado sin recuperación; baja involuntaria con convenio. Reincidencia en errores de paro de línea (3 eventos > 2h en 2025).",
+      observacionesJefe: "Conocía profundamente la planta, pero su capacidad de liderazgo no creció al ritmo del puesto. La baja era inevitable; convenio liquidado al 70% del finiquito de ley.",
+      tipo: "Involuntaria",
+      costos: { directo: 48200, indirecto: 22500, oculto: 52000, hundido: 41000 },
+    },
+    {
+      id: "B-003", empNo: "EMP-0324", nombre: "Alejandro Méndez", email: "alejandro.mendez@empresa.com.mx",
+      area: "Comercial", gerenciaFuncional: "Comercial Centro", puesto: "Asesor Comercial Sr.",
+      fechaIngreso: "18-feb-2021", fechaAviso: "26-feb-2026", fecha: "12-mar-2026",
+      años: 5.2, sueldo: 28000, sueldoIntegrado: 31800,
+      jefe: "G. Pérez (Gte. Comercial Centro)", reportes: 0,
+      motivo: "Mejor oferta (otra industria)",
+      motivoExtendido: "Cambia a sector financiero con paquete +20% y mejor estructura de comisiones. Tenía conversaciones desde Dic 2025 — RH no detectó la señal.",
+      observacionesJefe: "Top performer del trimestre. Pérdida sensible para cuota Q2. Recomendado revisar paquete de retención del resto del equipo Sr.",
+      tipo: "Voluntaria",
+      costos: { directo: 32800, indirecto: 18500, oculto: 38500, hundido: 26000 },
+    },
+    {
+      id: "B-004", empNo: "EMP-0419", nombre: "Patricia Lozano", email: "patricia.lozano@empresa.com.mx",
+      area: "Administración", gerenciaFuncional: "Finanzas", puesto: "Analista Financiero",
+      fechaIngreso: "05-jul-2021", fechaAviso: "06-ene-2026", fecha: "15-ene-2026",
+      años: 4.8, sueldo: 26000, sueldoIntegrado: 29100,
+      jefe: "R. Solís (Gte. Finanzas)", reportes: 0,
+      motivo: "Reubicación familiar",
+      motivoExtendido: "Su pareja fue trasladada a Querétaro. Solicitó esquema remoto que no se autorizó por política de área. Salida amigable.",
+      observacionesJefe: "Excelente analista. Se ofreció recomendación abierta y opción de regresar. Caso útil para reabrir discusión de trabajo remoto en Finanzas.",
+      tipo: "Voluntaria",
+      costos: { directo: 28900, indirecto: 17200, oculto: 34000, hundido: 22500 },
+    },
+    {
+      id: "B-005", empNo: "EMP-0512", nombre: "Mariana Ortiz", email: "mariana.ortiz@empresa.com.mx",
+      area: "Posventa", gerenciaFuncional: "Taller Sucursal Sur", puesto: "Mecánico A",
+      fechaIngreso: "10-ene-2023", fechaAviso: "13-feb-2026", fecha: "28-feb-2026",
+      años: 3.1, sueldo: 18000, sueldoIntegrado: 20100,
+      jefe: "L. Cano (Gte. Posventa)", reportes: 0,
+      motivo: "Ambiente del taller",
+      motivoExtendido: "Entrevista de salida menciona trato hostil del jefe directo y desigualdad en asignación de órdenes de trabajo. 2 reportes previos a RH en 2025 sin acción documentada.",
+      observacionesJefe: "RH detecta patrón: 3 bajas voluntarias del mismo taller en 6 meses, todas con el mismo motivo. Se programó intervención de clima en Mar 2026.",
+      tipo: "Voluntaria",
+      costos: { directo: 19500, indirecto: 14800, oculto: 28000, hundido: 15500 },
+    },
+    {
+      id: "B-006", empNo: "EMP-0598", nombre: "Diana Castro", email: "diana.castro@empresa.com.mx",
+      area: "Posventa", gerenciaFuncional: "Taller Sucursal Sur", puesto: "Recepcionista de Servicio",
+      fechaIngreso: "27-nov-2023", fechaAviso: "18-mar-2026", fecha: "03-abr-2026",
+      años: 2.3, sueldo: 14000, sueldoIntegrado: 15700,
+      jefe: "L. Cano (Gte. Posventa)", reportes: 0,
+      motivo: "Ambiente / falta de crecimiento",
+      motivoExtendido: "Misma razón que Ortiz (B-005) — mismo taller, mismo jefe. Solicitó crecimiento a Coord. Servicio y se le negó por 'no perfil'.",
+      observacionesJefe: "Confirma patrón sistemático en taller Sur. Caso escalado a Dirección de Operaciones para revisión del liderazgo de la sucursal.",
+      tipo: "Voluntaria",
+      costos: { directo: 14200, indirecto: 12500, oculto: 22000, hundido: 9800 },
+    },
+    {
+      id: "B-007", empNo: "EMP-0701", nombre: "Roberto Núñez", email: "roberto.nunez@empresa.com.mx",
+      area: "Comercial", gerenciaFuncional: "Comercial Sur", puesto: "Asesor Comercial Jr.",
+      fechaIngreso: "08-oct-2024", fechaAviso: "07-abr-2026", fecha: "20-abr-2026",
+      años: 1.5, sueldo: 18000, sueldoIntegrado: 20500,
+      jefe: "G. Pérez (Gte. Comercial Centro)", reportes: 0,
+      motivo: "Mejor oferta (puesto idéntico)",
+      motivoExtendido: "Distribuidor competidor lo invitó con sueldo +15%. Sin contraoferta posible por política para puestos Jr.",
+      observacionesJefe: "Buen reclutamiento, dejó cuota a 60% YTD. Indica que el sueldo de entrada para Jr está por debajo del mercado local.",
+      tipo: "Voluntaria",
+      costos: { directo: 11800, indirecto: 14000, oculto: 25000, hundido: 8500 },
+    },
+    {
+      id: "B-008", empNo: "EMP-0732", nombre: "Sofía Beltrán", email: "sofia.beltran@empresa.com.mx",
+      area: "Operaciones", gerenciaFuncional: "Operaciones Planta 2", puesto: "Operador A",
+      fechaIngreso: "15-jul-2025", fechaAviso: "—", fecha: "18-mar-2026",
+      años: 0.8, sueldo: 13500, sueldoIntegrado: 15100,
+      jefe: "C. Reyes (Supervisor Turno)", reportes: 0,
+      motivo: "Desempeño en periodo de prueba",
+      motivoExtendido: "Baja involuntaria al término del periodo de prueba extendido. Reportó dificultad para alcanzar curva esperada en línea de soldadura.",
+      observacionesJefe: "Caso de mismatch perfil-puesto. Recomendado revisar pruebas técnicas previas a la contratación para operadores de soldadura.",
+      tipo: "Involuntaria",
+      costos: { directo: 6500, indirecto: 11800, oculto: 18500, hundido: 4500 },
+    },
+    {
+      id: "B-009", empNo: "EMP-0421", nombre: "Alberto Galindo", email: "alberto.galindo@empresa.com.mx",
+      area: "Comercial", gerenciaFuncional: "Comercial Centro", puesto: "Asesor Comercial Sr.",
+      fechaIngreso: "06-ago-2021", fechaAviso: "20-ene-2026", fecha: "08-feb-2026",
+      años: 4.5, sueldo: 26000, sueldoIntegrado: 29500,
+      jefe: "G. Pérez (Gte. Comercial Centro)", reportes: 0,
+      motivo: "Mejor oferta (mismo sector)",
+      motivoExtendido: "Distribuidor competidor en zona poniente lo contrató con paquete +18% más bono de firma. Su salida arrastró al Jr. Roberto Núñez (B-007) que era su mentee.",
+      observacionesJefe: "Patrón preocupante: 2 voluntarias del mismo equipo en 3 meses con destino al mismo competidor. Se requiere auditoría de paquete vs mercado y revisión del esquema de comisiones.",
+      tipo: "Voluntaria",
+      costos: { directo: 27500, indirecto: 18000, oculto: 34000, hundido: 22000 },
+    },
+    {
+      id: "B-010", empNo: "EMP-0688", nombre: "Lucía Aguilar", email: "lucia.aguilar@empresa.com.mx",
+      area: "Comercial", gerenciaFuncional: "Comercial Sur", puesto: "Asesor Comercial Jr.",
+      fechaIngreso: "14-ene-2024", fechaAviso: "23-mar-2026", fecha: "06-abr-2026",
+      años: 2.0, sueldo: 17000, sueldoIntegrado: 19200,
+      jefe: "G. Pérez (Gte. Comercial Centro)", reportes: 0,
+      motivo: "Sueldo debajo del mercado local",
+      motivoExtendido: "Entrevista de salida revela que la mediana de mercado para su perfil está en $20-22K. Ya tenía 3 ofertas externas pendientes al renunciar.",
+      observacionesJefe: "Tercera baja del equipo Jr en Q1 con la misma razón. Caso fuerte para subir banda salarial de entrada o repensar la estructura de comisiones temprana.",
+      tipo: "Voluntaria",
+      costos: { directo: 13800, indirecto: 13500, oculto: 24000, hundido: 9500 },
+    },
+    {
+      id: "B-011", empNo: "EMP-0398", nombre: "Daniel Vázquez", email: "daniel.vazquez@empresa.com.mx",
+      area: "Posventa", gerenciaFuncional: "Taller Sucursal Norte", puesto: "Mecánico B",
+      fechaIngreso: "11-oct-2021", fechaAviso: "30-ene-2026", fecha: "14-feb-2026",
+      años: 4.4, sueldo: 16000, sueldoIntegrado: 18100,
+      jefe: "L. Cano (Gte. Posventa)", reportes: 0,
+      motivo: "Cambio de giro (independiente)",
+      motivoExtendido: "Abre su propio taller mecánico con socio. Llevaba 18 meses con plan de salida documentado.",
+      observacionesJefe: "Salida planeada, sin acrimonia. Sigue siendo proveedor ocasional. Útil mantener buena relación por su red de clientes Tier-2.",
+      tipo: "Voluntaria",
+      costos: { directo: 18200, indirecto: 12800, oculto: 22000, hundido: 13500 },
+    },
+    {
+      id: "B-012", empNo: "EMP-0712", nombre: "Karla Romero", email: "karla.romero@empresa.com.mx",
+      area: "Posventa", gerenciaFuncional: "Taller Sucursal Sur", puesto: "Asesor de Servicio",
+      fechaIngreso: "07-jul-2024", fechaAviso: "13-mar-2026", fecha: "27-mar-2026",
+      años: 1.7, sueldo: 15000, sueldoIntegrado: 16900,
+      jefe: "L. Cano (Gte. Posventa)", reportes: 0,
+      motivo: "Ambiente del taller",
+      motivoExtendido: "Tercera baja consecutiva del taller Sur por el mismo motivo (después de Ortiz B-005 y Castro B-006). Patrón sistemático con el mismo jefe directo.",
+      observacionesJefe: "Confirma diagnóstico: el taller Sur tiene problema de liderazgo. Intervención formal autorizada por Dirección de Operaciones para Abr-May 2026.",
+      tipo: "Voluntaria",
+      costos: { directo: 11500, indirecto: 12000, oculto: 19500, hundido: 8000 },
+    },
+    {
+      id: "B-013", empNo: "EMP-0455", nombre: "Andrés Solano", email: "andres.solano@empresa.com.mx",
+      area: "Administración", gerenciaFuncional: "Contabilidad", puesto: "Auxiliar Contable Sr.",
+      fechaIngreso: "02-may-2022", fechaAviso: "18-feb-2026", fecha: "04-mar-2026",
+      años: 3.8, sueldo: 17000, sueldoIntegrado: 19100,
+      jefe: "R. Solís (Gte. Finanzas)", reportes: 0,
+      motivo: "Promoción en otra empresa",
+      motivoExtendido: "Asciende a Contador General en una empresa más pequeña. Crecimiento que aquí no podía darse en menos de 3-4 años por estructura organizacional.",
+      observacionesJefe: "Excelente colaborador con curva clara. Refleja que la estructura de Contabilidad no tiene escalones intermedios atractivos para perfiles ambiciosos.",
+      tipo: "Voluntaria",
+      costos: { directo: 19200, indirecto: 13500, oculto: 26000, hundido: 14500 },
+    },
+    {
+      id: "B-014", empNo: "EMP-0233", nombre: "Beatriz Cordero", email: "beatriz.cordero@empresa.com.mx",
+      area: "Administración", gerenciaFuncional: "RH", puesto: "Asistente de RH Sr.",
+      fechaIngreso: "19-feb-2020", fechaAviso: "—", fecha: "12-mar-2026",
+      años: 6.1, sueldo: 22000, sueldoIntegrado: 24700,
+      jefe: "Dir. RH", reportes: 0,
+      motivo: "Cambio de sector (consultoría)",
+      motivoExtendido: "Migra a firma de consultoría en RH con paquete +30%. Llevaba 14 meses preparándose con certificación SHRM por su cuenta.",
+      observacionesJefe: "Pérdida significativa para el área. Su salida obliga a redistribuir 3 procesos críticos (onboarding, clima y compensaciones). Sucesión no estaba lista.",
+      tipo: "Voluntaria",
+      costos: { directo: 31500, indirecto: 16800, oculto: 36000, hundido: 28500 },
+    },
+    {
+      id: "B-015", empNo: "EMP-0814", nombre: "Hugo Marín", email: "hugo.marin@empresa.com.mx",
+      area: "Operaciones", gerenciaFuncional: "Operaciones Planta 1", puesto: "Operador A",
+      fechaIngreso: "23-sep-2023", fechaAviso: "08-ene-2026", fecha: "29-ene-2026",
+      años: 2.4, sueldo: 14000, sueldoIntegrado: 15700,
+      jefe: "M. Vargas (Supervisor Turno 2)", reportes: 0,
+      motivo: "Faltas reiteradas e incumplimientos",
+      motivoExtendido: "Baja involuntaria documentada tras 4 amonestaciones escritas y 1 PIP fallido. Tres incidentes de tardanza > 60 min en 30 días.",
+      observacionesJefe: "Caso recurrente del turno 2. Hay patrón de relajamiento que requiere revisión del liderazgo del supervisor a cargo.",
+      tipo: "Involuntaria",
+      costos: { directo: 12800, indirecto: 11500, oculto: 20000, hundido: 9800 },
+    },
+    {
+      id: "B-016", empNo: "EMP-0775", nombre: "Valeria Núñez", email: "valeria.nunez@empresa.com.mx",
+      area: "Comercial", gerenciaFuncional: "Comercial Centro", puesto: "Asesor Comercial Jr.",
+      fechaIngreso: "11-feb-2025", fechaAviso: "01-abr-2026", fecha: "15-abr-2026",
+      años: 1.2, sueldo: 17000, sueldoIntegrado: 19100,
+      jefe: "G. Pérez (Gte. Comercial Centro)", reportes: 0,
+      motivo: "Mejor oferta (misma industria, otra plaza)",
+      motivoExtendido: "Se muda a distribuidor competidor en otra ciudad por reubicación de pareja + paquete +15%. Salida amigable.",
+      observacionesJefe: "Cuarta baja consecutiva del equipo Comercial Centro en Q1-Q2. Patrón consistente: paquete competitivo bajo de entrada. Caso de negocio armado para Comité.",
+      tipo: "Voluntaria",
+      costos: { directo: 10500, indirecto: 13000, oculto: 23000, hundido: 7200 },
+    },
+    {
+      id: "B-017", empNo: "EMP-0142", nombre: "Fernando Aldama", email: "fernando.aldama@empresa.com.mx",
+      area: "Comercial", gerenciaFuncional: "Comercial Norte", puesto: "Jefe de Tienda",
+      fechaIngreso: "14-jun-2019", fechaAviso: "—", fecha: "11-feb-2026",
+      años: 6.7, sueldo: 32000, sueldoIntegrado: 36100,
+      jefe: "Gerencia Comercial Norte (vacante)", reportes: 9,
+      motivo: "Desempeño y faltas a integridad",
+      motivoExtendido: "Baja involuntaria por hallazgos en auditoría interna: descuentos no autorizados a clientes vinculados. Hechos documentados con evidencia y reportados a Compliance.",
+      observacionesJefe: "Salida obligada por hallazgos de Compliance. Caso de severidad alta — sucesión del puesto pendiente. Reemplazo se busca con due diligence reforzada.",
+      tipo: "Involuntaria",
+      costos: { directo: 44500, indirecto: 21000, oculto: 48000, hundido: 38500 },
+    },
+  ];
+
+  // Notas personalizadas sobre el desglose, por baja y concepto. Si no hay, se usa la nota genérica del concepto.
+  const notasPersonalizadas = {
+    "B-001": {
+      directo: {
+        "Indemnización 90 días (LFT Art. 50)": "3 meses × sueldo integrado $62,700/mes — capado por LFT a $35,000",
+        "Vacaciones pendientes + prima vacacional": "16 días no gozados de 2025 + prima 25%",
+        "Aguinaldo proporcional": "78 días devengados (ene-mar 2026)",
+        "Prima de antigüedad (12 días/año)": "12 días × 8.6 años, capado a 2 SM ($414/día)",
+      },
+      indirecto: {
+        "Agencia / headhunter / job boards": "Headhunter especializado en mando comercial — fee 18% sueldo anual",
+        "Tiempo de RH (sourcing + entrevistas)": "~45 horas (3 rondas, 6 finalistas, comité de selección)",
+        "Capacitación inicial (3-4 semanas)": "Inmersión a cartera y gobernanza con consultor externo",
+      },
+      oculto: {
+        "Productividad reducida (primeros 6 meses)": "Cartera migró parcialmente — reemplazo requiere 9 meses para recuperar cuota",
+        "Errores y reprocesos imputables": "Pérdida estimada de 2 cuentas Tier-1 (auditado por Comercial)",
+        "Tiempo de supervisión adicional": "Director General asume 8 h/sem hasta integración del reemplazo",
+        "Conocimiento perdido (contexto, relaciones)": "Red de contactos con 14 distribuidores aliados — no transferible",
+      },
+      hundido: {
+        "Cursos formales tomados": "Diplomado Sales Mgmt INCAE + Negociación Wharton (online)",
+        "Certificaciones pagadas por la empresa": "Certificación de marca OEM × 3 renovaciones anuales",
+        "Mentoría y coaching ejecutivo": "18 meses con consultor externo (Coaching Ejecutivo Tier 1)",
+        "Tiempo invertido por managers": "Sesiones quincenales con Dirección General durante 4 años",
+      },
+    },
+    "B-002": {
+      directo: {
+        "Indemnización 90 días (LFT Art. 50)": "Convenio al 70% del finiquito de ley (baja involuntaria documentada)",
+        "Prima de antigüedad (12 días/año)": "12 días × 7.4 años, sin tope (no aplicaba)",
+      },
+      oculto: {
+        "Productividad reducida (primeros 6 meses)": "Línea de producción operó a 75% durante 4 meses",
+        "Errores y reprocesos imputables": "2 eventos de paro durante el PIP × $18K c/u",
+      },
+      hundido: {
+        "Cursos formales tomados": "Lean Manufacturing + Liderazgo de Piso",
+        "Certificaciones pagadas por la empresa": "Certif. Seguridad Industrial NOM-019 (3 renovaciones)",
+      },
+    },
+    "B-003": {
+      directo: {
+        "Indemnización 90 días (LFT Art. 50)": "3 meses × sueldo integrado $31,800",
+        "Vacaciones pendientes + prima vacacional": "11 días pendientes + prima 25%",
+      },
+      indirecto: {
+        "Agencia / headhunter / job boards": "Job boards premium + referido interno (fee híbrido)",
+      },
+      oculto: {
+        "Productividad reducida (primeros 6 meses)": "Top performer — reemplazo Jr a 40% de cuota los primeros 6 meses",
+      },
+      hundido: {
+        "Cursos formales tomados": "Programa interno de Asesor Sr (16 semanas) + Negociación Avanzada",
+      },
+    },
+    "B-004": {
+      directo: {
+        "Indemnización 90 días (LFT Art. 50)": "No aplicó — renuncia voluntaria. Sólo finiquito de ley",
+        "Prima de antigüedad (12 días/año)": "12 días × 4.8 años, capado a 2 SM",
+      },
+      hundido: {
+        "Certificaciones pagadas por la empresa": "Certif. NIIF Plenas + curso de Power BI avanzado",
+      },
+    },
+    "B-008": {
+      directo: {
+        "Indemnización 90 días (LFT Art. 50)": "Periodo de prueba — sólo días trabajados, sin indemnización 90 días",
+        "Prima de antigüedad (12 días/año)": "0.8 años — monto mínimo",
+      },
+      hundido: {
+        "Cursos formales tomados": "Capacitación inicial de operador (2 semanas)",
+        "Mentoría y coaching ejecutivo": "No aplica para nivel operativo en periodo de prueba",
+      },
+    },
+  };
+
+  // Factor de escalamiento por componente — refleja cómo cada componente varía con el perfil del colaborador.
+  // Algunos componentes son fijos (gastos admin), otros escalan con sueldo o antigüedad, otros sólo aplican a ciertos perfiles.
+  const sueldoPromedio = 25000;
+  const antiguedadPromedio = 4.2;
+  const escalaPorComponente = {
+    directo: {
+      "Indemnización 90 días (LFT Art. 50)": (b) => Math.min(2.3, b.sueldoIntegrado / 20000) * (b.años < 1 ? 0.2 : 1),
+      "Vacaciones pendientes + prima vacacional": (b) => (b.sueldo / sueldoPromedio) * (Math.min(b.años, 5) / antiguedadPromedio),
+      "Aguinaldo proporcional": (b) => b.sueldo / sueldoPromedio,
+      "Prima de antigüedad (12 días/año)": (b) => Math.min(b.sueldo / sueldoPromedio, 1.65) * (b.años / antiguedadPromedio),
+      "Gastos administrativos y notariales": (b) => 1 + (b.tipo === "Involuntaria" ? 0.25 : 0),
+    },
+    indirecto: {
+      "Agencia / headhunter / job boards": (b) => Math.pow(b.sueldo / sueldoPromedio, 1.4),
+      "Tiempo de RH (sourcing + entrevistas)": (b) => 0.7 + 0.5 * (b.sueldo / sueldoPromedio),
+      "Pruebas técnicas y psicométricas": () => 1,
+      "Onboarding y materiales": (b) => 0.85 + 0.15 * (b.sueldo / sueldoPromedio),
+      "Capacitación inicial (3-4 semanas)": (b) => 0.8 + 0.4 * (b.sueldo / sueldoPromedio),
+    },
+    oculto: {
+      "Productividad reducida (primeros 6 meses)": (b) => Math.pow(b.sueldo / sueldoPromedio, 1.3),
+      "Errores y reprocesos imputables": (b) => 0.6 + 0.6 * (b.sueldo / sueldoPromedio),
+      "Tiempo de supervisión adicional": (b) => 0.8 + 0.4 * (b.sueldo / sueldoPromedio),
+      "Impacto en clima del equipo": (b) => b.tipo === "Voluntaria" ? 1.1 : 0.6,
+      "Conocimiento perdido (contexto, relaciones)": (b) => (b.años / antiguedadPromedio) * (b.sueldo / sueldoPromedio),
+    },
+    hundido: {
+      "Cursos formales tomados": (b) => b.años / antiguedadPromedio,
+      "Certificaciones pagadas por la empresa": (b) => b.años / antiguedadPromedio,
+      "Mentoría y coaching ejecutivo": (b) => b.sueldo >= 30000 ? (b.años / antiguedadPromedio) * 1.4 : 0.15,
+      "Tiempo invertido por managers": (b) => Math.min(b.años / antiguedadPromedio, 2),
+      "Conocimiento de procesos internos": (b) => b.años / antiguedadPromedio,
+    },
+  };
+
+  // Calcula el desglose personalizado: aplica escalamiento por componente y normaliza al total real de la baja.
+  // Devuelve cada componente con monto personalizado, % de variación vs el estándar de la empresa, y nota personalizada si existe.
+  const breakdownPersonalizado = (baja, concepto) => {
+    const target = baja.costos[concepto.campoCosto];
+    const factores = concepto.desglose.map((d) => {
+      const fn = escalaPorComponente[concepto.key]?.[d.label];
+      return fn ? fn(baja) : 1;
+    });
+    const rawValues = concepto.desglose.map((d, i) => d.monto * factores[i]);
+    const rawSum = rawValues.reduce((a, b) => a + b, 0) || 1;
+    const ajuste = target / rawSum;
+    const overrides = notasPersonalizadas[baja.id]?.[concepto.key] || {};
+    return concepto.desglose.map((d, i) => {
+      const monto = Math.round((rawValues[i] * ajuste) / 100) * 100;
+      const variacionPct = ((monto - d.monto) / d.monto) * 100;
+      return {
+        label: d.label,
+        monto,
+        montoEstandar: d.monto,
+        variacionPct,
+        nota: overrides[d.label] || d.nota,
+      };
+    });
+  };
+
+  const conceptosCosto = [
+    {
+      key: "directo",
+      campoCosto: "directo",
+      concepto: "Liquidación / finiquito",
+      tipo: "Directo",
+      tipoColor: "#fdecea",
+      monto: 25000,
+      descripcion: "Erogaciones legales obligatorias al término de la relación laboral. Son los más visibles porque pasan por nómina y contabilidad.",
+      formulaBase: "Calculado para una baja con 4.2 años promedio de antigüedad y sueldo mensual de $25,000. El costo real escala con antigüedad × sueldo integrado.",
+      desglose: [
+        { label: "Indemnización 90 días (LFT Art. 50)", monto: 15000, nota: "3 meses de salario integrado" },
+        { label: "Vacaciones pendientes + prima vacacional", monto: 3500, nota: "Días no gozados a la fecha de baja" },
+        { label: "Aguinaldo proporcional", monto: 2800, nota: "Días devengados del año en curso" },
+        { label: "Prima de antigüedad (12 días/año)", monto: 2500, nota: "Tope: 2 salarios mínimos × días" },
+        { label: "Gastos administrativos y notariales", monto: 1200, nota: "Tramitación y firma de convenio" },
+      ],
+      casosDetalle: "El costo aumenta con la antigüedad y el sueldo integrado. Las bajas voluntarias suelen liquidar 40-60% menos vía convenio.",
+      mitigacion: "Difícil de mitigar — son obligaciones legales. Sí se puede optimizar negociando convenios o renuncias voluntarias documentadas.",
+      mitigacionColor: "#fff7e0",
+    },
+    {
+      key: "indirecto",
+      campoCosto: "indirecto",
+      concepto: "Reclutamiento + capacitación reemplazo",
+      tipo: "Indirecto",
+      tipoColor: "#eef5ff",
+      monto: 18000,
+      descripcion: "Costo de reemplazar a la persona: atraer al nuevo candidato, evaluarlo y ponerlo operativo.",
+      formulaBase: "Promedio por baja basado en histórico 2025-2026. Escala con el nivel del puesto: posiciones senior o de mando duplican el costo de búsqueda.",
+      desglose: [
+        { label: "Agencia / headhunter / job boards", monto: 9000, nota: "15% del sueldo anual o fee fijo" },
+        { label: "Tiempo de RH (sourcing + entrevistas)", monto: 3500, nota: "~22 horas × $160/h cargado" },
+        { label: "Pruebas técnicas y psicométricas", monto: 1200, nota: "Batería estándar por puesto" },
+        { label: "Onboarding y materiales", monto: 1800, nota: "Equipo, accesos, kit de bienvenida" },
+        { label: "Capacitación inicial (3-4 semanas)", monto: 2500, nota: "Instructor + tiempo del nuevo colaborador" },
+      ],
+      casosDetalle: "Los puestos gerenciales y de Comercial Sr. concentran el mayor costo de reemplazo por el uso de headhunter externo.",
+      mitigacion: "Banco de talento pre-calificado, referidos internos y onboarding documentado reducen este costo entre 25-40%.",
+      mitigacionColor: "#f6fbf6",
+    },
+  ];
 
   return (
     <div>
-      <h2 style={S.h2}>5. Rotación</h2>
+      <h2 style={S.h2}>6. Rotación</h2>
       <p style={S.hint}>
         % de rotación por área + costo total de cada baja: directos, indirectos, ocultos y hundidos.
         El objetivo es ponerle precio a algo que normalmente nadie cuantifica.
       </p>
 
       <div style={S.grid4}>
-        <div style={S.kpi}><div style={S.kpiLabel}>Bajas YTD</div><div style={S.kpiValue}>{totalBajas}</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>% rotación anualizada</div><div style={S.kpiValue}>21.3%</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Costo unitario promedio</div><div style={S.kpiValue}>$100,000</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Costo total estimado</div><div style={S.kpiValue}>${(costoTotal / 1000000).toFixed(2)}M</div></div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Bajas YTD</div>
+            <div style={S.kpiValue}>{totalBajas}</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · Meta anual: ≤30 bajas</div>
+          </div>
+          <TrafficLight light="yellow" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>% rotación anualizada</div>
+            <div style={S.kpiValue}>20.6%</div>
+            <div style={S.kpiBenchmark("red")}>Benchmark · Industria 15-18% · Meta: ≤18%</div>
+          </div>
+          <TrafficLight light="red" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Costo unitario promedio</div>
+            <div style={S.kpiValue}>$43,000</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · Histórico promedio: $38,000</div>
+          </div>
+          <TrafficLight light="yellow" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Costo total estimado</div>
+            <div style={S.kpiValue}>${(costoTotal / 1000000).toFixed(2)}M</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · Presupuesto anual: $1.0M</div>
+          </div>
+          <TrafficLight light="yellow" />
+        </div>
       </div>
 
       <h3 style={S.h3}>Anatomía del costo por baja</h3>
-      <table style={S.table}>
-        <thead>
-          <tr>
-            <th style={S.th}>Concepto</th>
-            <th style={S.th}>Tipo</th>
-            <th style={S.th}>Monto unitario</th>
-            <th style={S.th}>Total ({totalBajas} bajas)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td style={S.td}>Liquidación / finiquito</td><td style={S.td}>Directo</td><td style={S.td}>$25,000</td><td style={S.td}>${(25000 * totalBajas).toLocaleString("es-MX")}</td></tr>
-          <tr><td style={S.td}>Reclutamiento + capacitación reemplazo</td><td style={S.td}>Indirecto</td><td style={S.td}>$18,000</td><td style={S.td}>${(18000 * totalBajas).toLocaleString("es-MX")}</td></tr>
-          <tr><td style={S.td}>Curva de aprendizaje + errores + clima</td><td style={S.td}>Oculto</td><td style={S.td}>$35,000</td><td style={S.td}>${(35000 * totalBajas).toLocaleString("es-MX")}</td></tr>
-          <tr><td style={S.td}>Capacitación previa perdida</td><td style={S.td}>Hundido</td><td style={S.td}>$22,000</td><td style={S.td}>${(22000 * totalBajas).toLocaleString("es-MX")}</td></tr>
-        </tbody>
-      </table>
+      <p style={{ ...S.hint, marginTop: -4 }}>Haz click en cada concepto para ver el desglose.</p>
+      {(() => {
+        const mesesMap = { ene: 0, feb: 1, mar: 2, abr: 3, may: 4, jun: 5, jul: 6, ago: 7, sep: 8, oct: 9, nov: 10, dic: 11 };
+        const parseBajaFecha = (s) => {
+          const parts = s.split("-");
+          return new Date(parseInt(parts[2]), mesesMap[parts[1]], parseInt(parts[0]));
+        };
+        const maxDate = bajasRecientes.reduce((m, b) => {
+          const d = parseBajaFecha(b.fecha);
+          return d > m ? d : m;
+        }, new Date(0));
+        const nombreMesActual = Object.keys(mesesMap).find((k) => mesesMap[k] === maxDate.getMonth());
+        const labelMesActual = nombreMesActual ? `${nombreMesActual.charAt(0).toUpperCase() + nombreMesActual.slice(1)} ${maxDate.getFullYear()}` : "—";
+        const bajasMesActual = bajasRecientes.filter((b) => {
+          const d = parseBajaFecha(b.fecha);
+          return d.getMonth() === maxDate.getMonth() && d.getFullYear() === maxDate.getFullYear();
+        }).length;
+        return (
+          <table style={S.table}>
+            <thead>
+              <tr>
+                <th style={S.th}>Concepto</th>
+                <th style={S.th}>Tipo</th>
+                <th style={S.th}>Bajas del mes ({labelMesActual})</th>
+                <th style={S.th}>Bajas acumuladas ({totalBajas} bajas acumuladas)</th>
+                <th style={S.th}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {conceptosCosto.map((c) => (
+                <tr
+                  key={c.key}
+                  onClick={() => {
+                    setConceptoAbierto(c);
+                    const masReciente = [...bajasRecientes].sort((a, b) => b.costos[c.campoCosto] - a.costos[c.campoCosto])[0];
+                    setBajaSeleccionadaId(masReciente.id);
+                  }}
+                  style={{ cursor: "pointer" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <td style={S.td}><strong>{c.concepto}</strong></td>
+                  <td style={S.td}><span style={S.badge(c.tipoColor)}>{c.tipo}</span></td>
+                  <td style={S.td}>{bajasMesActual}</td>
+                  <td style={S.td}>{totalBajas}</td>
+                  <td style={{ ...S.td, textAlign: "right", color: "#64748b", fontSize: 12 }}>Ver desglose →</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        );
+      })()}
 
       <h3 style={S.h3}>Rotación por área</h3>
       <table style={S.table}>
@@ -3762,34 +5421,1000 @@ function Rotacion() {
           ))}
         </tbody>
       </table>
+
+      {conceptoAbierto && (
+        <div
+          onClick={() => setConceptoAbierto(null)}
+          style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
+            display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff", borderRadius: 8, padding: 24,
+              width: 1080, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto",
+              border: "1px solid #ccc",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                  <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>{conceptoAbierto.concepto}</h3>
+                  <span style={S.badge(conceptoAbierto.tipoColor)}>{conceptoAbierto.tipo}</span>
+                </div>
+                <p style={{ ...S.hint, margin: 0 }}>{conceptoAbierto.descripcion}</p>
+              </div>
+              <button
+                onClick={() => setConceptoAbierto(null)}
+                style={{ border: "none", background: "transparent", fontSize: 22, cursor: "pointer", color: "#666", lineHeight: 1 }}
+                aria-label="Cerrar"
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, margin: "16px 0" }}>
+              <div style={{ ...S.kpi, padding: 12 }}>
+                <div style={S.kpiLabel}>Monto unitario promedio</div>
+                <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>${conceptoAbierto.monto.toLocaleString("es-MX")}</div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>por cada baja</div>
+              </div>
+              <div style={{ ...S.kpi, padding: 12 }}>
+                <div style={S.kpiLabel}>Impacto YTD ({totalBajas} bajas)</div>
+                <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4, color: "#b00020" }}>${(conceptoAbierto.monto * totalBajas).toLocaleString("es-MX")}</div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
+                  {((conceptoAbierto.monto / (costoUnitario.directos + costoUnitario.indirectos)) * 100).toFixed(0)}% del costo total por baja
+                </div>
+              </div>
+              <div style={{ ...S.kpi, padding: 12 }}>
+                <div style={S.kpiLabel}>Rango observado</div>
+                <div style={{ fontSize: 16, fontWeight: 700, marginTop: 4 }}>
+                  ${Math.min(...bajasRecientes.map((b) => b.costos[conceptoAbierto.campoCosto])).toLocaleString("es-MX")} – ${Math.max(...bajasRecientes.map((b) => b.costos[conceptoAbierto.campoCosto])).toLocaleString("es-MX")}
+                </div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>entre las {bajasRecientes.length} bajas YTD</div>
+              </div>
+            </div>
+
+            <p style={{ fontSize: 11, color: "#666", fontStyle: "italic", marginBottom: 12 }}>
+              {conceptoAbierto.formulaBase}
+            </p>
+
+            {/* Caso seleccionado: perfil + desglose personalizado */}
+            {(() => {
+              const baja = bajasRecientes.find((b) => b.id === bajaSeleccionadaId) || bajasRecientes[0];
+              const costoPersonal = baja.costos[conceptoAbierto.campoCosto];
+              const desvPct = ((costoPersonal - conceptoAbierto.monto) / conceptoAbierto.monto) * 100;
+              const desvColor = desvPct > 20 ? "#b00020" : desvPct < -20 ? "#0a7d2c" : "#64748b";
+              const desglose = breakdownPersonalizado(baja, conceptoAbierto);
+              return (
+                <div style={{ border: "1px solid #ccc", borderRadius: 6, padding: 16, marginBottom: 16, background: "#fff" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12, gap: 12 }}>
+                    <div>
+                      <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Caso seleccionado</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                        <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>{baja.nombre}</h3>
+                        <span style={{ fontSize: 11, color: "#666", fontFamily: "monospace" }}>{baja.empNo}</span>
+                        <span style={S.badge(baja.tipo === "Voluntaria" ? "#eef5ff" : "#fdecea")}>{baja.tipo}</span>
+                      </div>
+                      <div style={{ fontSize: 12, color: "#475569", marginTop: 2 }}>
+                        {baja.puesto} · {baja.gerenciaFuncional}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={S.kpiLabel}>Costo {conceptoAbierto.tipo.toLowerCase()} de este caso</div>
+                      <div style={{ fontSize: 22, fontWeight: 800, marginTop: 2 }}>${costoPersonal.toLocaleString("es-MX")}</div>
+                      <div style={{ fontSize: 11, color: desvColor, fontWeight: 700 }}>
+                        {desvPct >= 0 ? "+" : ""}{desvPct.toFixed(0)}% vs promedio
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Datos del expediente */}
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 12, padding: "10px 12px", background: "#fafafa", borderRadius: 4, border: "1px solid #e5e5e5", fontSize: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Área</div>
+                      <div style={{ fontWeight: 600, marginTop: 2 }}>{baja.area}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Jefe directo</div>
+                      <div style={{ fontWeight: 600, marginTop: 2 }}>{baja.jefe}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Antigüedad</div>
+                      <div style={{ fontWeight: 600, marginTop: 2 }}>{baja.años} años</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Reportes directos</div>
+                      <div style={{ fontWeight: 600, marginTop: 2 }}>{baja.reportes}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Sueldo nominal</div>
+                      <div style={{ fontWeight: 600, marginTop: 2 }}>${baja.sueldo.toLocaleString("es-MX")}/mes</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Sueldo integrado</div>
+                      <div style={{ fontWeight: 600, marginTop: 2 }}>${baja.sueldoIntegrado.toLocaleString("es-MX")}/mes</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Fecha de ingreso</div>
+                      <div style={{ fontWeight: 600, marginTop: 2 }}>{baja.fechaIngreso}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Fecha efectiva de baja</div>
+                      <div style={{ fontWeight: 600, marginTop: 2 }}>{baja.fecha}</div>
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: 12 }}>
+                    <div style={{ ...S.kpiLabel, marginBottom: 4 }}>Motivo de baja</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{baja.motivo}</div>
+                    <div style={{ fontSize: 12, color: "#475569", lineHeight: 1.5 }}>{baja.motivoExtendido}</div>
+                  </div>
+
+                  <div style={{ padding: "10px 12px", background: "#fff7e0", border: "1px solid #f0d999", borderRadius: 4, marginBottom: 14 }}>
+                    <div style={{ ...S.kpiLabel, marginBottom: 4 }}>Observaciones del jefe directo</div>
+                    <div style={{ fontSize: 12, color: "#0f172a", lineHeight: 1.5 }}>{baja.observacionesJefe}</div>
+                  </div>
+
+                  {/* Desglose personalizado */}
+                  <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Desglose para {baja.nombre.split(" ")[0]}</div>
+                  <table style={{ ...S.table, marginBottom: 0 }}>
+                    <thead>
+                      <tr>
+                        <th style={S.th}>Componente</th>
+                        <th style={S.th}>Estándar</th>
+                        <th style={S.th}>Este caso</th>
+                        <th style={S.th}>% variación vs estándar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(() => {
+                        const variacionTotalPct = ((costoPersonal - conceptoAbierto.monto) / conceptoAbierto.monto) * 100;
+                        const maxAbsVar = Math.max(50, ...desglose.map((d) => Math.abs(d.variacionPct)), Math.abs(variacionTotalPct));
+                        const renderVarBar = (v) => {
+                          const positivo = v >= 0;
+                          const ancho = (Math.abs(v) / maxAbsVar) * 50; // 0-50% del bar
+                          const color = positivo ? "#b00020" : "#0a7d2c";
+                          return (
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              <div style={{ flex: 1, position: "relative", height: 8, background: "#f1f5f9", borderRadius: 4, minWidth: 110, overflow: "hidden" }}>
+                                <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: "#cbd5e1" }} />
+                                <div style={{
+                                  position: "absolute",
+                                  left: positivo ? "50%" : `${50 - ancho}%`,
+                                  width: `${ancho}%`,
+                                  top: 0, bottom: 0,
+                                  background: color, borderRadius: 2,
+                                }} />
+                              </div>
+                              <span style={{ fontSize: 12, fontWeight: 700, minWidth: 56, textAlign: "right", color }}>
+                                {positivo ? "+" : ""}{v.toFixed(0)}%
+                              </span>
+                            </div>
+                          );
+                        };
+                        return (
+                          <>
+                            {desglose.map((d, i) => (
+                              <tr key={i}>
+                                <td style={S.td}>
+                                  <div style={{ fontWeight: 600 }}>{d.label}</div>
+                                  <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{d.nota}</div>
+                                </td>
+                                <td style={{ ...S.td, whiteSpace: "nowrap", color: "#475569" }}>${d.montoEstandar.toLocaleString("es-MX")}</td>
+                                <td style={{ ...S.td, fontWeight: 700, whiteSpace: "nowrap" }}>${d.monto.toLocaleString("es-MX")}</td>
+                                <td style={S.td}>{renderVarBar(d.variacionPct)}</td>
+                              </tr>
+                            ))}
+                            <tr style={{ background: "#fafafa" }}>
+                              <td style={{ ...S.td, fontWeight: 700 }}>Total para este caso</td>
+                              <td style={{ ...S.td, fontWeight: 700, color: "#475569" }}>${conceptoAbierto.monto.toLocaleString("es-MX")}</td>
+                              <td style={{ ...S.td, fontWeight: 700 }}>${costoPersonal.toLocaleString("es-MX")}</td>
+                              <td style={S.td}>{renderVarBar(variacionTotalPct)}</td>
+                            </tr>
+                          </>
+                        );
+                      })()}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
+
+            {/* Cambiar caso seleccionado */}
+            <div style={{ ...S.kpiLabel, marginBottom: 8 }}>Cambiar caso · {bajasRecientes.length} bajas YTD (click en cualquier fila para ver su desglose)</div>
+            <p style={{ ...S.hint, marginTop: 0, marginBottom: 10 }}>{conceptoAbierto.casosDetalle}</p>
+            <div style={{ overflowX: "auto", marginBottom: 16 }}>
+              <table style={{ ...S.table, fontSize: 12 }}>
+                <thead>
+                  <tr>
+                    <th style={S.th}>Empleado</th>
+                    <th style={S.th}>Área / Puesto</th>
+                    <th style={S.th}>Antig.</th>
+                    <th style={S.th}>Jefe directo</th>
+                    <th style={S.th}>Motivo</th>
+                    <th style={S.th}>Fecha</th>
+                    <th style={S.th}>Tipo</th>
+                    <th style={{ ...S.th, textAlign: "right" }}>Costo {conceptoAbierto.tipo.toLowerCase()}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...bajasRecientes]
+                    .sort((a, b) => b.costos[conceptoAbierto.campoCosto] - a.costos[conceptoAbierto.campoCosto])
+                    .map((b) => {
+                      const costo = b.costos[conceptoAbierto.campoCosto];
+                      const desvPct = ((costo - conceptoAbierto.monto) / conceptoAbierto.monto) * 100;
+                      const desvColor = desvPct > 20 ? "#b00020" : desvPct < -20 ? "#0a7d2c" : "#64748b";
+                      const seleccionada = bajaSeleccionadaId === b.id;
+                      return (
+                        <tr
+                          key={b.id}
+                          onClick={() => setBajaSeleccionadaId(b.id)}
+                          style={{
+                            cursor: "pointer",
+                            background: seleccionada ? "#eef5ff" : "transparent",
+                            outline: seleccionada ? "2px solid #3498db" : "none",
+                            outlineOffset: -2,
+                          }}
+                          onMouseEnter={(e) => { if (!seleccionada) e.currentTarget.style.background = "#f8fafc"; }}
+                          onMouseLeave={(e) => { if (!seleccionada) e.currentTarget.style.background = "transparent"; }}
+                        >
+                          <td style={S.td}>
+                            <div style={{ fontWeight: 700 }}>{b.nombre}</div>
+                            <div style={{ fontSize: 10, color: "#666" }}>{b.empNo}</div>
+                          </td>
+                          <td style={S.td}>
+                            <div>{b.area}</div>
+                            <div style={{ fontSize: 11, color: "#666" }}>{b.puesto}</div>
+                          </td>
+                          <td style={S.td}>{b.años} años</td>
+                          <td style={S.td}>{b.jefe}</td>
+                          <td style={S.td} title={b.motivoExtendido}>{b.motivo}</td>
+                          <td style={S.td}>{b.fecha}</td>
+                          <td style={S.td}>
+                            <span style={S.badge(b.tipo === "Voluntaria" ? "#eef5ff" : "#fdecea")}>{b.tipo}</span>
+                          </td>
+                          <td style={{ ...S.td, textAlign: "right" }}>
+                            <div style={{ fontWeight: 700 }}>${costo.toLocaleString("es-MX")}</div>
+                            <div style={{ fontSize: 10, color: desvColor, fontWeight: 600 }}>
+                              {desvPct >= 0 ? "+" : ""}{desvPct.toFixed(0)}% vs promedio
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  <tr style={{ background: "#fafafa" }}>
+                    <td style={{ ...S.td, fontWeight: 700 }} colSpan={7}>Total {bajasRecientes.length} bajas YTD</td>
+                    <td style={{ ...S.td, fontWeight: 700, textAlign: "right" }}>
+                      ${bajasRecientes.reduce((a, b) => a + b.costos[conceptoAbierto.campoCosto], 0).toLocaleString("es-MX")}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{
+              padding: "12px 14px",
+              borderRadius: 4,
+              background: conceptoAbierto.mitigacionColor,
+              border: "1px solid #e5e5e5",
+              fontSize: 13,
+              lineHeight: 1.5,
+            }}>
+              <div style={{ ...S.kpiLabel, marginBottom: 4 }}>Cómo mitigarlo</div>
+              {conceptoAbierto.mitigacion}
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+              <button style={S.btn} onClick={() => setConceptoAbierto(null)}>Cerrar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 // =============================================================
-// 6. CAPACITACIÓN Y ENTRENAMIENTO
+// 7. CAPACITACIÓN Y ENTRENAMIENTO
 // =============================================================
 function Capacitacion() {
-  const cursos = [
-    { id: "CAP-01", nombre: "Liderazgo nivel medio", solicita: "Operaciones", fechaIni: "01-may", fechaFin: "30-jun", costo: 85000, roi: "2.1x", est: "En curso" },
-    { id: "CAP-02", nombre: "Cierre de ventas premium", solicita: "Comercial", fechaIni: "15-abr", fechaFin: "15-may", costo: 120000, roi: "3.4x", est: "En curso" },
-    { id: "CAP-03", nombre: "NIIF actualización", solicita: "Administración", fechaIni: "10-jun", fechaFin: "20-jun", costo: 45000, roi: "1.2x", est: "Programado" },
-    { id: "CAP-04", nombre: "Servicio al cliente posventa", solicita: "Posventa", fechaIni: "05-may", fechaFin: "12-may", costo: 38000, roi: "1.8x", est: "Solicitud" },
+  const [cursoAbierto, setCursoAbierto] = useState(null);
+  const [nuevoOpen, setNuevoOpen] = useState(false);
+  const formInicial = {
+    nombre: "", categoria: "Desarrollo de liderazgo", descripcion: "",
+    empresaNombre: "", empresaContacto: "", empresaModalidad: "Presencial", certificacion: "",
+    solicitanteNombre: "", solicitantePuesto: "", solicitanteArea: "Comercial",
+    justificacion: "",
+    participantesTotal: "", participantesPerfiles: "",
+    fechaIni: "", fechaFin: "", horasTotales: "",
+    costoTotal: "",
+    roiEsperado: "", metricaPrincipal: "", baseline: "", target: "",
+    comoSeMide: "", fechaMedicion: "", beneficiosEsperados: "",
+  };
+  const [form, setForm] = useState(formInicial);
+  const setF = (k, v) => setForm((p) => ({ ...p, [k]: v }));
+
+  const meses = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+  const parseFecha = (s) => {
+    if (!s) return null;
+    if (s.includes("-") && s.length === 6) {
+      const [d, m] = s.split("-");
+      return new Date(2026, meses.indexOf(m), parseInt(d));
+    }
+    return new Date(s);
+  };
+  const formatFechaCorta = (d) => `${String(d.getDate()).padStart(2, "0")}-${meses[d.getMonth()]}`;
+
+  const cursosInicial = [
+    {
+      id: "CAP-01", nombre: "Liderazgo nivel medio", solicita: "Operaciones",
+      fechaIni: "01-may", fechaFin: "30-jun", costo: 85000, roi: "2.1x", est: "En curso", progreso: 35,
+      descripcion: "Programa intensivo para desarrollar habilidades de liderazgo en mandos medios de Operaciones, con énfasis en gestión de equipos de planta y comunicación con dirección.",
+      categoria: "Desarrollo de liderazgo",
+      empresaCapacitadora: { nombre: "IPADE Business School", contacto: "Dr. Ramiro Anzaldúa · ranzaldua@ipade.mx", modalidad: "Híbrida (8 sesiones presenciales + 8 virtuales)", certificacion: "Certificado IPADE en Liderazgo Operativo" },
+      solicitante: { nombre: "Carlos Mendoza", puesto: "Director de Operaciones", area: "Operaciones", justificacion: "Sucesión de mandos medios en planta. 3 supervisores no estaban listos para asumir gerencias en próximos 12-18 meses." },
+      aprobadoPor: { nombre: "Dirección General", fecha: "08-abr-2026", costoAprobado: 85000 },
+      pm: { nombre: "Paola Castaño", puesto: "Gerente de RH" },
+      participantes: { total: 12, perfiles: "12 supervisores de planta de Operaciones (Planta 1 y Planta 2)" },
+      objetivos: [
+        "Gestión de equipos de 10-25 personas con KPIs operativos diarios",
+        "Comunicación efectiva con dirección y otros departamentos",
+        "Manejo de conflictos en piso y mediación entre turnos",
+        "Planeación y delegación basada en datos",
+      ],
+      temario: ["Módulo 1: Fundamentos de liderazgo situacional", "Módulo 2: Comunicación con stakeholders", "Módulo 3: KPIs operativos y toma de decisiones", "Módulo 4: Resolución de conflictos", "Módulo 5: Coaching y feedback continuo", "Módulo 6: Proyecto integrador"],
+      modalidad: "Híbrida · 16 sesiones de 4 horas (4 hrs/sem)",
+      horasTotales: 64,
+      costoDesglose: [
+        { concepto: "Honorarios IPADE (instructor + materiales)", monto: 55000 },
+        { concepto: "Renta de sala y coffee break (8 sesiones)", monto: 12000 },
+        { concepto: "Plataforma virtual y grabaciones", monto: 8000 },
+        { concepto: "Examen final y certificación", monto: 10000 },
+      ],
+      roiDetalle: {
+        metricaPrincipal: "Reducción de % rotación voluntaria en equipos de los participantes",
+        baseline: "Rotación voluntaria 2025: 18% anual en equipos de los 12 supervisores",
+        target: "Reducir a ≤12% en los siguientes 12 meses post-programa",
+        comoSeMide: "Tracking mensual de bajas voluntarias por equipo + score 360° de los participantes 6 meses después. ROI financiero = costo evitado de bajas (a $43K c/u) vs inversión en programa.",
+        fechaMedicion: "1ª medición: Sep 2026 (90 días post) · 2ª: Dic 2026 (6 meses post)",
+        beneficiosEsperados: "$180K en costos de rotación evitados (≈4 bajas evitadas) + mejora 0.3-0.5 puntos en score 360°",
+      },
+      evaluaciones: ["Evaluación pre-programa (diagnóstico individual)", "2 evaluaciones intermedias por módulo", "Proyecto integrador (caso real de su equipo)", "Evaluación post-programa a 90 días"],
+    },
+    {
+      id: "CAP-02", nombre: "Cierre de ventas premium", solicita: "Comercial",
+      fechaIni: "15-abr", fechaFin: "15-may", costo: 120000, roi: "3.4x", est: "En curso", progreso: 75,
+      descripcion: "Programa de venta consultiva y negociación premium para ejecutivos Sr y gerentes comerciales. Enfoque en cuentas Tier-1 y ciclos de venta largos.",
+      categoria: "Habilidades comerciales",
+      empresaCapacitadora: { nombre: "Sandler Training México", contacto: "Lic. Adriana Garmendia · adriana.g@sandlermx.com", modalidad: "Presencial intensivo (10 sesiones)", certificacion: "Sandler Selling System — Nivel Avanzado" },
+      solicitante: { nombre: "Federico Domínguez", puesto: "Director Comercial Norte", area: "Comercial", justificacion: "Pérdida de cuotas Tier-1 con 2 OEM en Q4 2025. Necesidad de elevar capacidad de negociación premium ante salida de Javier Ortega (B-001)." },
+      aprobadoPor: { nombre: "Comité Ejecutivo", fecha: "28-mar-2026", costoAprobado: 120000 },
+      pm: { nombre: "Luis Martínez", puesto: "Gerente Comercial" },
+      participantes: { total: 10, perfiles: "8 Asesores Comerciales Sr. + 2 Gerentes Regionales" },
+      objetivos: [
+        "Técnicas avanzadas de cierre en ciclos de venta >90 días",
+        "Negociación de paquetes premium sin sacrificar margen",
+        "Manejo de objeciones de procurement y comités de compra",
+        "Construcción de relaciones long-term con compradores Tier-1",
+      ],
+      temario: ["Módulo 1: Pain Funnel y diagnóstico estratégico", "Módulo 2: Up-front Contract y reglas del juego", "Módulo 3: Bonding & Rapport con comités", "Módulo 4: Discovery a profundidad", "Módulo 5: Presupuesto y autoridad de decisión", "Módulo 6: Cierre y manejo de objeciones", "Módulo 7: Role play con cuentas reales", "Módulo 8: Plan de cuenta y account-based selling"],
+      modalidad: "Presencial · 10 sesiones de 6 horas (2 sesiones/sem)",
+      horasTotales: 60,
+      costoDesglose: [
+        { concepto: "Honorarios Sandler (instructor certificado)", monto: 78000 },
+        { concepto: "Licencias Sandler Online Reinforcement (12 meses)", monto: 18000 },
+        { concepto: "Hotel sede y catering (10 sesiones)", monto: 16000 },
+        { concepto: "Material impreso y kit del participante", monto: 8000 },
+      ],
+      roiDetalle: {
+        metricaPrincipal: "Incremento en ticket promedio y tasa de conversión Tier-1",
+        baseline: "Ticket promedio Q1 2026: $480K · Tasa conversión Tier-1: 22%",
+        target: "Ticket promedio +25% ($600K) · Tasa conversión Tier-1 ≥30% en H2 2026",
+        comoSeMide: "Dashboards de CRM con cohortes pre/post programa. Comparación cuenta a cuenta de pipeline trabajado por participantes. Medición independiente por Finanzas con criterio de atribución estricto (mínimo 1 ronda completa de venta).",
+        fechaMedicion: "Medición continua mensual desde Jun 2026 · revisión formal trimestral con comité de ROI",
+        beneficiosEsperados: "$408K incremental en revenue YTD H2 2026 (3.4x sobre $120K invertidos) — escenario base. Escenario optimista: $560K (4.7x).",
+      },
+      evaluaciones: ["Evaluación de venta consultiva pre-programa", "Role plays grabados cada 2 sesiones", "Plan de cuenta entregable final", "Coaching post-programa 1:1 (3 meses)"],
+    },
+    {
+      id: "CAP-03", nombre: "NIIF actualización", solicita: "Administración",
+      fechaIni: "10-jun", fechaFin: "20-jun", costo: 45000, roi: "1.2x", est: "Programado", progreso: 0,
+      descripcion: "Actualización técnica en Normas Internacionales de Información Financiera 2026, con foco en NIIF 15 (ingresos) y NIIF 16 (arrendamientos) — relevante por nuevos contratos de arrendamiento operativo firmados en 2025.",
+      categoria: "Actualización técnica regulatoria",
+      empresaCapacitadora: { nombre: "Deloitte Academy", contacto: "C.P. Mario Trujillo · mtrujillo@deloitte.com", modalidad: "Virtual sincrónico (5 sesiones)", certificacion: "Constancia Deloitte Academy · 20 hrs DPC" },
+      solicitante: { nombre: "Rodrigo Solís", puesto: "Gerente de Finanzas", area: "Administración", justificacion: "Reformas NIIF aplicables a partir de Ene-2026 + 3 hallazgos en auditoría externa 2025 relacionados con clasificación de arrendamientos." },
+      aprobadoPor: { nombre: "Director Administrativo (S. Ramírez)", fecha: "02-may-2026", costoAprobado: 45000 },
+      pm: { nombre: "Rodrigo Solís", puesto: "Gerente de Finanzas (auto-PM)" },
+      participantes: { total: 6, perfiles: "Gte. Finanzas + Contralor + 3 Contadores Sr. + 1 Auditor Interno" },
+      objetivos: [
+        "Aplicación correcta de NIIF 15 a contratos de venta a OEMs",
+        "Clasificación y registro de arrendamientos bajo NIIF 16",
+        "Cierre de los 3 hallazgos pendientes de auditoría externa 2025",
+        "Preparación para auditoría 2026 sin observaciones materiales",
+      ],
+      temario: ["Sesión 1: Resumen de cambios NIIF 2026", "Sesión 2: NIIF 15 — ingresos por contratos con clientes", "Sesión 3: NIIF 16 — arrendamientos (LESSEE & LESSOR)", "Sesión 4: Casos prácticos con contratos reales de la empresa", "Sesión 5: Cierre de hallazgos y plan de remediación"],
+      modalidad: "Virtual sincrónico · 5 sesiones de 4 horas",
+      horasTotales: 20,
+      costoDesglose: [
+        { concepto: "Honorarios Deloitte Academy (instructor)", monto: 32000 },
+        { concepto: "Plataforma de e-learning + grabaciones (6 meses)", monto: 8000 },
+        { concepto: "Material técnico digital + casos prácticos", monto: 5000 },
+      ],
+      roiDetalle: {
+        metricaPrincipal: "Reducción de hallazgos en auditoría externa anual",
+        baseline: "Auditoría 2025: 3 hallazgos materiales (NIIF 15 y 16) + 2 menores",
+        target: "Auditoría 2026: 0 hallazgos materiales · ≤1 menor",
+        comoSeMide: "Reporte del auditor externo (KPMG) al cierre del ejercicio 2026. ROI calculado vs costo evitado de provisiones por contingencias y honorarios extra por re-trabajo.",
+        fechaMedicion: "Mar 2027 (informe de auditoría externa)",
+        beneficiosEsperados: "$54K en honorarios de re-trabajo evitados + reducción de riesgo regulatorio (no cuantificado). ROI conservador 1.2x.",
+      },
+      evaluaciones: ["Diagnóstico pre-programa", "Examen final certificación Deloitte", "Aplicación en cierre Jun 2026 (validación real)"],
+    },
+    {
+      id: "CAP-04", nombre: "Servicio al cliente posventa", solicita: "Posventa",
+      fechaIni: "05-may", fechaFin: "12-may", costo: 38000, roi: "1.8x", est: "Solicitud", progreso: 0,
+      descripcion: "Programa intensivo de servicio al cliente para personal de primer contacto en taller. Diseñado en respuesta al diagnóstico de clima del Taller Sur y el patrón de bajas voluntarias.",
+      categoria: "Servicio y experiencia del cliente",
+      empresaCapacitadora: { nombre: "Customer Experience Group (CXG)", contacto: "Mtra. Sandra Olivera · solivera@cxgroup.mx", modalidad: "Presencial en sucursales (4 sesiones)", certificacion: "Constancia CXG · 24 hrs prácticas" },
+      solicitante: { nombre: "Teresa Aguilar", puesto: "Supervisora de Posventa Turno A", area: "Posventa", justificacion: "NPS Posventa bajó de 42 a 28 en últimos 6 meses. 2 quejas de clientes por demoras + diagnóstico de clima del Taller Sur exige acciones inmediatas." },
+      aprobadoPor: { nombre: "Pendiente · Gte. Posventa (L. Cano)", fecha: "—", costoAprobado: 0 },
+      pm: { nombre: "Pendiente de asignar (al aprobarse)", puesto: "—" },
+      participantes: { total: 14, perfiles: "8 Asesores de Servicio + 4 Recepcionistas + 2 Jefes de Tienda" },
+      objetivos: [
+        "Comunicación empática con cliente bajo presión (vehículo descompuesto)",
+        "Manejo de quejas y escalamiento estructurado",
+        "Upselling consultivo de servicios complementarios",
+        "Coordinación interna recepción ↔ taller para evitar tiempos muertos",
+      ],
+      temario: ["Sesión 1: Mapa del journey del cliente posventa", "Sesión 2: Comunicación empática y de-escalación", "Sesión 3: Manejo de quejas y casos críticos (role play)", "Sesión 4: Upselling consultivo + cierre de servicio"],
+      modalidad: "Presencial en sucursal · 4 sesiones de 6 horas (sábados)",
+      horasTotales: 24,
+      costoDesglose: [
+        { concepto: "Honorarios CXG (2 instructores)", monto: 26000 },
+        { concepto: "Material y kit del participante", monto: 5000 },
+        { concepto: "Coffee break y comida (4 sesiones)", monto: 4000 },
+        { concepto: "Cliente misterioso post-programa (mediciones)", monto: 3000 },
+      ],
+      roiDetalle: {
+        metricaPrincipal: "Incremento de NPS Posventa + tasa de retención de servicios",
+        baseline: "NPS Posventa abr-2026: 28 · Tasa retención cita siguiente: 41%",
+        target: "NPS ≥45 en Sep 2026 · Tasa retención ≥55%",
+        comoSeMide: "Encuesta NPS post-servicio (automática por SMS 24 hrs después) + tracking de citas recurrentes en DMS. Medición auditada por cliente misterioso (incluido en costo) 3 veces post-programa.",
+        fechaMedicion: "Medición mensual · revisión formal a 90 días post-programa",
+        beneficiosEsperados: "$68K en ingresos adicionales por mayor retención (1.8x sobre $38K) + base para frenar la fuga del Taller Sur (no cuantificado).",
+      },
+      evaluaciones: ["Diagnóstico pre con cliente misterioso", "Role plays evaluados por instructor", "Cliente misterioso post-programa (3 mediciones)"],
+    },
   ];
+  const [cursos, setCursos] = useState(cursosInicial);
+  const [incidenciaAbierta, setIncidenciaAbierta] = useState(null);
+  const [mensajeAbierto, setMensajeAbierto] = useState(null); // formato: "pasoIdx-agenteIdx"
+
+  // Incidencias de capacitación — accountability sobre programas cerrados sin seguimiento
+  const incidenciasCap = [
+    {
+      id: "INC-CAP-001",
+      cursoId: "CAP-2025-08", cursoNombre: "Excel avanzado para ventas",
+      fechaCierre: "30-nov-2025", costoCurso: 65000,
+      solicitanteNombre: "Federico Domínguez", solicitantePuesto: "Director Comercial Norte",
+      tipo: "ROI no medido",
+      severidad: "Alta", diasVencido: 173, estado: "Abierta",
+      descripcion: "Programa cerrado hace 173 días sin reporte de ROI. El compromiso era medir incremento en productividad de pipeline (cotizaciones por ejecutivo/mes) a los 90 días post-programa. Nunca se entregó al Comité de RH.",
+      evidencias: [
+        "Cierre del programa: 30-nov-2025 (Deloitte Academy)",
+        "Compromiso documentado en minuta del Comité: medición a 90 días (28-feb-2026)",
+        "Acta del Comité: 3 recordatorios enviados (15-mar, 12-abr, 03-may) sin respuesta",
+        "Costo no recuperado: $65,000 sin evidencia de retorno",
+      ],
+      accionComprometida: "Entregar reporte de ROI con datos del CRM (cotizaciones pre vs post) auditados por Finanzas.",
+      responsableAccion: "Federico Domínguez + Paola Castaño (PM)",
+      fechaCompromiso: "30-jun-2026",
+      proximosPasos: [
+        {
+          accion: "Escalar a Dirección General si no se entrega antes del 30-jun-2026",
+          agentes: [
+            {
+              tipo: "whatsapp", destinatario: "F. Domínguez", fecha: "15-may 09:30", estado: "leido",
+              detalle: "Recordatorio + link al expediente INC-CAP-001",
+              mensaje: { contenido: "Hola Fede 👋 Te recuerdo que el reporte de ROI del programa 'Excel avanzado para ventas' (CAP-2025-08) sigue pendiente desde nov-2025. La fecha límite para evitar escalación al Comité es el 30-jun-2026. ¿Puedes confirmarme fecha de entrega? Expediente completo: https://rh.empresa.mx/inc/INC-CAP-001 — Agente RH" },
+            },
+            {
+              tipo: "whatsapp", destinatario: "F. Domínguez", fecha: "18-may 14:15", estado: "leido_sin_respuesta",
+              detalle: "Segundo recordatorio · sin respuesta tras 72 hrs",
+              mensaje: { contenido: "Fede, segundo recordatorio. Ya pasaron 3 días desde mi último mensaje (15-may) y veo que lo leíste pero no respondiste. Por favor dame al menos una fecha tentativa de entrega del ROI. Si no recibo respuesta antes del 21-may, escalaré al Comité y a Dirección General. — Agente RH" },
+            },
+            {
+              tipo: "whatsapp", destinatario: "F. Domínguez", fecha: "21-may 08:00", estado: "entregado",
+              detalle: "Tercer recordatorio · activa escalación si no se lee en 24 hrs",
+              mensaje: { contenido: "Fede, tercer y ÚLTIMO recordatorio antes de escalar. La política interna es clara: 3 recordatorios sin respuesta → escalación automática a Dirección General. Tienes hasta mañana 22-may 08:00 para responder o el caso pasa al CEO con el expediente completo. — Agente RH" },
+            },
+            {
+              tipo: "email", destinatario: "Dir. General (CC: Comité ROI)", fecha: "25-may (programado)", estado: "programado",
+              detalle: "Escalación automática preparada — se dispara si no hay respuesta el 25-may",
+              mensaje: {
+                asunto: "[ESCALACIÓN] INC-CAP-001 · ROI vencido 175+ días · F. Domínguez (Comercial Norte)",
+                contenido: "Estimada Dirección General,\n\nLe informo que el incidente INC-CAP-001 sigue sin atender por F. Domínguez (Director Comercial Norte) tras 3 recordatorios formales por WhatsApp y 175 días desde el cierre del programa.\n\nContexto:\n• Programa: 'Excel avanzado para ventas' (CAP-2025-08, Deloitte Academy)\n• Inversión: $65,000\n• ROI comprometido: medir a 90 días (28-feb-2026)\n• Estado actual: sin reporte, sin fecha tentativa\n\nSolicito su intervención directa con F. Domínguez. Es la 2ª ocurrencia del mismo tipo en su área (la 1ª fue 'Negociación efectiva' en 2024).\n\nExpediente completo y bitácora de recordatorios: https://rh.empresa.mx/inc/INC-CAP-001\n\nAtentamente,\nAgente RH (motor de accountability v2.3)" },
+            },
+            {
+              tipo: "recordatorio", fecha: "Cada 72 hrs", estado: "activo",
+              detalle: "Auto-recordatorio hasta cierre o escalación",
+              mensaje: { contenido: "Trigger: status(INC-CAP-001) != 'Cerrado' && diasVencido > 60\nFrecuencia: Cada 72 horas\nPróxima ejecución: 24-may-2026 08:00\nAcciones encadenadas:\n  1. Enviar WhatsApp a F. Domínguez (responsable directo)\n  2. Incrementar contador de díasVencido (+3)\n  3. Si 3 recordatorios sin respuesta → activar escalación email a Dir. General\n  4. Notificar a P. Castaño (PM del programa) cada 5 ejecuciones\nÚltima ejecución exitosa: 21-may 08:00 (WhatsApp entregado)" },
+            },
+          ],
+        },
+        {
+          accion: "Bloquear nuevas solicitudes de capacitación del área hasta cerrar este caso",
+          agentes: [
+            {
+              tipo: "sistema", destinatario: "Módulo de Capacitación", fecha: "20-may 11:00", estado: "ejecutado",
+              detalle: "Flag de bloqueo activado para área Comercial Norte",
+              mensaje: { contenido: "Acción: WRITE\nTabla: feature_flags_areas\nRegistro:\n  area = 'Comercial Norte'\n  flag = 'bloqueo_solicitudes_capacitacion'\n  valor = true\n  razon_id = 'INC-CAP-001'\n  fecha_inicio = '2026-05-20 11:00:00'\n  fecha_fin_estimada = null (depende de cierre del incidente)\nUsuario: motor_de_reglas_v2 (sistema)\nResultado: OK · 1 fila actualizada\nEfecto: cualquier intento de crear CAP-XX nuevo por usuarios del área devolverá 403 con mensaje 'Bloqueado por INC-CAP-001'" },
+            },
+            {
+              tipo: "email", destinatario: "Equipo Comercial Norte (4 personas)", fecha: "20-may 11:05", estado: "abierto",
+              detalle: "Notificación abierta por 3 de 4 destinatarios",
+              mensaje: {
+                asunto: "[Aviso] Suspensión temporal de solicitudes de capacitación — Comercial Norte",
+                contenido: "Equipo Comercial Norte,\n\nLes informo que con motivo del expediente abierto INC-CAP-001 (ROI vencido del programa de Excel avanzado), el módulo de Capacitación queda restringido para nuevas solicitudes del área hasta su resolución.\n\nLa restricción se levantará automáticamente cuando F. Domínguez entregue el reporte de ROI pendiente.\n\nCualquier excepción urgente (capacitación regulatoria, certificación obligatoria) debe pasar por aprobación del Comité de Capacitación.\n\nDestinatarios:\n• Federico Domínguez (Dir. Comercial Norte) — abierto 20-may 14:22\n• Luis Martínez (Gte. Comercial) — abierto 20-may 11:45\n• 2 colaboradores adicionales — 1 abierto, 1 sin abrir\n\nDudas: P. Castaño (Gte. RH)\n\nAgente RH" },
+            },
+          ],
+        },
+        {
+          accion: "Definir en el comité del 15-jun política de 'no ROI, no nuevo curso'",
+          agentes: [
+            {
+              tipo: "email", destinatario: "Comité de Capacitación (6 miembros)", fecha: "12-may 16:20", estado: "abierto",
+              detalle: "Invitación enviada · 5 confirmados, 1 pendiente",
+              mensaje: {
+                asunto: "Comité de Capacitación · 15-jun · Política 'No ROI = No nuevo curso'",
+                contenido: "Estimados miembros del Comité,\n\nLos invito a la sesión del 15-jun-2026 (10:00-11:30) para definir y aprobar la política 'No ROI = No nuevo curso'.\n\nMotivación: 6 incidencias abiertas en accountability de capacitación (suma de ~$270K en inversión sin ROI demostrado).\n\nAgenda:\n  10:00 — Revisión de casos (INC-CAP-001 a 006)\n  10:30 — Propuesta de política (documento adjunto en Drive)\n  11:00 — Discusión y aprobación\n  11:20 — Próximos pasos\n\nSala de Juntas A + Teams\n\nConfirmados:\n  ✓ P. Castaño (Gte. RH)\n  ✓ S. Ramírez (Dir. Administrativo)\n  ✓ R. Solís (Gte. Finanzas)\n  ✓ C. Mendoza (Dir. Operaciones)\n  ✓ L. Martínez (Gte. Comercial)\n  ⏳ F. Domínguez (Dir. Comercial Norte) — pendiente\n\nPor favor confirmar antes del 30-may.\n\nAgente RH" },
+            },
+            {
+              tipo: "sistema", destinatario: "Drive corporativo", fecha: "14-may 10:00", estado: "ejecutado",
+              detalle: "Documento de propuesta de política compartido (link en agenda)",
+              mensaje: { contenido: "Acción: CREATE FILE\nUbicación: /RH/Politicas/Borradores/\nNombre: 'Propuesta_Politica_NoROI-NoCurso_v1.0.docx'\nTamaño: 24 KB · 8 páginas\nPermisos asignados: 6 miembros del Comité (lectura + comentarios)\nVigencia comentarios: hasta 14-jun-2026\nLink: https://drive.empresa.mx/RH/Politicas/Borradores/NoROI-NoCurso-v1.0\nÍndice:\n  1. Contexto y motivación (con datos de INC-CAP-001 a 006)\n  2. Definición de la política\n  3. Excepciones permitidas (regulatorio, certificación obligatoria)\n  4. Proceso de waiver vía Comité\n  5. Métricas de cumplimiento\n  6. Cronograma de implementación\nÚltima edición: 14-may 10:00 por motor_de_reglas_v2" },
+            },
+            {
+              tipo: "calendario", destinatario: "Comité de Capacitación", fecha: "15-jun 10:00", estado: "programado",
+              detalle: "Sesión agendada · 90 min",
+              mensaje: {
+                asunto: "Comité de Capacitación · Política No-ROI-No-Curso",
+                contenido: "Cuándo: Lunes 15-jun-2026 · 10:00 – 11:30 (90 min)\nDónde: Sala de Juntas A + link de Teams\n\nAgenda:\n  • Revisión de las 6 incidencias abiertas (INC-CAP-001 a 006)\n  • Aprobación de política 'No ROI = No nuevo curso'\n  • Definición de cronograma de implementación\n\nMaterial: documento de propuesta en Drive (ver email del 12-may)\n\nInvitados: P. Castaño, S. Ramírez, R. Solís, C. Mendoza, L. Martínez, F. Domínguez\n\nRecordatorio automático: 1 día antes y 1 hora antes vía Outlook + WhatsApp" },
+            },
+          ],
+        },
+      ],
+      patron: "Es la 2ª vez que Comercial Norte cierra un programa sin entregar ROI (la 1ª fue 'Negociación efectiva' en 2024).",
+    },
+    {
+      id: "INC-CAP-002",
+      cursoId: "CAP-2026-01", cursoNombre: "Onboarding Sales Hub (HubSpot)",
+      fechaCierre: "20-ene-2026", costoCurso: 42000,
+      solicitanteNombre: "Guillermo Pérez", solicitantePuesto: "Gerente Comercial Centro",
+      tipo: "Ausentismo alto no escalado",
+      severidad: "Alta", diasVencido: 122, estado: "En seguimiento",
+      descripcion: "El programa tuvo 38% de ausentismo (de 8 inscritos, 3 no completaron). El solicitante no escaló la situación a tiempo ni propuso plan de recuperación. Los 3 ausentes fueron los Jr del equipo — quienes más necesitaban la herramienta.",
+      evidencias: [
+        "Reporte HubSpot Academy: 5 de 8 completaron certificación",
+        "Asistencia de Roberto Núñez (B-007): 2 de 8 sesiones — renunció abr-2026",
+        "Asistencia de Lucía Aguilar (B-010): 3 de 8 sesiones — renunció abr-2026",
+        "Asistencia de Valeria Núñez (B-016): 4 de 8 sesiones — renunció abr-2026",
+        "Costo no aprovechado: $15,750 (3 × $5,250 prorrateado)",
+      ],
+      accionComprometida: "Re-asignar las licencias HubSpot Academy a los nuevos Jr e implementar plan de seguimiento semanal.",
+      responsableAccion: "Guillermo Pérez + RH (P. Castaño)",
+      fechaCompromiso: "15-jun-2026",
+      proximosPasos: [
+        {
+          accion: "Plan formal de retención del equipo Jr (cruzar con caso de negocio de banda salarial)",
+          agentes: [
+            {
+              tipo: "whatsapp", destinatario: "G. Pérez", fecha: "10-may 09:15", estado: "leido_sin_respuesta",
+              detalle: "Solicitud de plan de retención + fecha límite 30-may",
+              mensaje: { contenido: "Hola Guillermo, tras la 3ª baja Jr de tu equipo en Q1-Q2 (Núñez, Aguilar, V. Núñez), necesitamos plan formal de retención. Por favor envíame antes del 30-may un documento con: 1) diagnóstico de motivos, 2) acciones específicas, 3) métricas de seguimiento. — P. Castaño / Agente RH" },
+            },
+            {
+              tipo: "whatsapp", destinatario: "G. Pérez", fecha: "17-may 14:00", estado: "leido_sin_respuesta",
+              detalle: "Segundo recordatorio · sin respuesta 7 días",
+              mensaje: { contenido: "Guillermo, ya pasó una semana desde mi mensaje del 10-may. Veo que lo leíste pero no respondiste. Esto cruza con tu 360° (alta brecha auto vs equipo). Por favor responde antes del 24-may o tendré que escalarlo a F. Domínguez. — Agente RH" },
+            },
+            {
+              tipo: "email", destinatario: "Comité de Compensaciones", fecha: "11-may 09:30", estado: "respondido",
+              detalle: "Caso de negocio recibido · evaluación en curso por Comp&Ben",
+              mensaje: {
+                asunto: "[Caso de negocio] Subir banda salarial Jr Comercial · sustento de 4 bajas voluntarias",
+                contenido: "Comité de Compensaciones,\n\nAdjunto caso de negocio para subir banda salarial de Asesores Comerciales Jr en 8-12%.\n\nEvidencia:\n• 4 bajas voluntarias en 6 meses (todas Jr de Comercial Centro)\n• Motivo declarado en 4/4 exit interviews: sueldo bajo mercado\n• Mediana de mercado: $20-22K vs nuestra banda $17-18K\n• Costo de rotación YTD: $94K (4 × $23.5K promedio indirecto + hundido)\n\nRetorno estimado de la inversión:\n• Costo anual incremental: ~$120K (12 Jr × $1K/mes × 12)\n• Bajas evitadas estimadas: 3/año = $70K en costos de rotación evitados\n• ROI conservador: break-even en 18 meses + retención de talento\n\n--- Respuesta del Comité (15-may) ---\nRecibido · entra a evaluación trimestral · respuesta formal antes del 30-jun.\n\nAgente RH" },
+            },
+          ],
+        },
+        {
+          accion: "Incluir KPI de ausentismo en el reporte mensual del gerente",
+          agentes: [
+            {
+              tipo: "sistema", destinatario: "Template de reportes mensuales", fecha: "08-may 12:00", estado: "ejecutado",
+              detalle: "KPI agregado al template · vigente desde may-2026",
+              mensaje: { contenido: "Acción: UPDATE TEMPLATE\nTabla: report_templates\nRegistro: template_id = 'mensual_gerente_comercial'\nCambios:\n  + Sección 'Capacitación del equipo'\n    - KPI: pct_ausentismo_programas (% no completados / inscritos)\n    - Umbral verde: ≤10% · ámbar: 10-25% · rojo: >25%\n    - Periodicidad: mensual con comparativo trimestral\nVigencia: desde may-2026 (reporte de jun-2026 será el 1ro con este KPI)\nResultado: OK · 1 fila actualizada\nNotificado a 8 destinatarios (todos los Gerentes Comerciales)" },
+            },
+            {
+              tipo: "email", destinatario: "Todos los Gerentes Comerciales", fecha: "08-may 12:15", estado: "abierto",
+              detalle: "Notificación del cambio · 6 de 8 abierto",
+              mensaje: {
+                asunto: "Nuevo KPI en su reporte mensual · Ausentismo en programas de capacitación",
+                contenido: "Estimados Gerentes Comerciales,\n\nA partir del reporte mensual de junio incluiremos un nuevo KPI: % de ausentismo en programas de capacitación que su equipo tiene inscritos.\n\nMotivación: el caso INC-CAP-002 reveló que un programa con 38% de ausentismo no fue escalado, lo que terminó en pérdida de inversión ($15,750) cuando los participantes Jr renunciaron poco después.\n\nUmbrales:\n  ≤10% = verde\n  10-25% = ámbar (acción correctiva sugerida)\n  >25% = rojo (escalación automática al Director)\n\nApertura del email: 6 de 8 destinatarios.\n\nAgente RH" },
+            },
+          ],
+        },
+        {
+          accion: "Conectar este caso con el 360° de G. Pérez (alta brecha auto vs equipo)",
+          agentes: [
+            {
+              tipo: "calendario", destinatario: "G. Pérez + P. Castaño", fecha: "29-may 16:00", estado: "programado",
+              detalle: "Sesión de coaching 1:1 agendada",
+              mensaje: {
+                asunto: "Coaching 1:1 · G. Pérez con P. Castaño",
+                contenido: "Cuándo: 29-may-2026 · 16:00 – 17:00 (60 min)\nDónde: Oficina de RH · Sala 2\n\nObjetivo: revisar resultados del 360° de G. Pérez (brecha 0.8 entre auto y equipo) y conectar con el caso de accountability INC-CAP-002.\n\nAgenda:\n  • Revisión de hallazgos 360° (foco: Desarrollo de talento 3.8/4.2 brecha 1.2)\n  • Cruce con casos de retención del equipo Jr\n  • Plan de acción a 90 días\n\nMaterial: reporte 360° completo + dashboard de rotación de su equipo\n\nRecordatorio automático: 1 día antes vía WhatsApp" },
+            },
+            {
+              tipo: "whatsapp", destinatario: "G. Pérez", fecha: "19-may 11:00", estado: "respondido",
+              detalle: "Acepta participar · respondió 'Confirmado'",
+              mensaje: { contenido: "Hola Guillermo, recibiste la invitación para coaching 1:1 el 29-may. Por favor confírmame asistencia.\n\n--- 19-may 11:24 · Respuesta de G. Pérez ---\nConfirmado. Lo necesito de hecho. Avísame si necesitas algo de mi lado antes. — Memo" },
+            },
+          ],
+        },
+      ],
+      patron: "Patrón consistente con 360° de G. Pérez: top performer en cuota pero descuido sistemático del equipo Jr. 4 voluntarias en 6 meses.",
+    },
+    {
+      id: "INC-CAP-003",
+      cursoId: "CAP-2025-09", cursoNombre: "Seguridad e higiene básica NOM-019",
+      fechaCierre: "10-dic-2025", costoCurso: 28000,
+      solicitanteNombre: "Lorenzo Cano", solicitantePuesto: "Gerente de Posventa",
+      tipo: "Baja calificación al proveedor sin documentar",
+      severidad: "Media", diasVencido: 163, estado: "Abierta",
+      descripcion: "Encuesta post-programa arrojó score 5.2/10 al proveedor (Capacitec) — el peor del año. El solicitante no documentó los hallazgos ni gestionó descuento/restitución, y posteriormente recomendó al mismo proveedor para otro programa.",
+      evidencias: [
+        "Encuesta participantes: score promedio 5.2/10 (vs benchmark 7.5)",
+        "Comentarios: 'instructor llegó tarde 4 de 5 sesiones', 'material desactualizado'",
+        "Sin reporte formal al área de Compras",
+        "Nueva propuesta del mismo proveedor (Capacitec) recomendada por L. Cano en marzo-2026",
+      ],
+      accionComprometida: "Documentar formalmente la baja calificación, agregar a Capacitec al watch-list de proveedores y solicitar descuento del 20% en el siguiente engagement (o cambio de proveedor).",
+      responsableAccion: "Lorenzo Cano + Compras (I. Salazar)",
+      fechaCompromiso: "31-may-2026",
+      proximosPasos: [
+        {
+          accion: "Crear repositorio de calificaciones de proveedores de capacitación",
+          agentes: [
+            {
+              tipo: "sistema", destinatario: "SharePoint corporativo", fecha: "12-may 10:00", estado: "ejecutado",
+              detalle: "Repositorio creado · pendiente migrar evaluaciones históricas",
+              mensaje: { contenido: "Acción: CREATE LIST\nUbicación: /RH/Repositorio_Proveedores_Capacitacion/\nColumnas:\n  - proveedor (texto)\n  - programa_id (foreign key)\n  - score_participantes (1-10)\n  - score_solicitante (1-10)\n  - año\n  - hallazgos (texto largo)\n  - watch_list (booleano)\nPermisos: RH (admin) + Compras (lectura) + Comité (lectura+comentarios)\nMigración pendiente: 23 programas históricos (2024-2025)\nDeadline migración: 15-jun-2026" },
+            },
+            {
+              tipo: "email", destinatario: "I. Salazar (Gte. Compras)", fecha: "12-may 10:15", estado: "respondido",
+              detalle: "Confirma colaborar en migración · plazo 15-jun",
+              mensaje: {
+                asunto: "Colaboración · Repositorio de proveedores de capacitación",
+                contenido: "Hola Isabel,\n\nNecesito tu ayuda para poblar el nuevo repositorio de proveedores de capacitación que acabo de crear en SharePoint (incidente INC-CAP-003).\n\nLo que necesito de Compras:\n• Lista de proveedores activos 2024-2025 con tu evaluación interna\n• Notas de calidad de servicio si las tienes\n• Plazo: 15-jun para tener histórico completo\n\n--- 13-may 09:00 · Respuesta de I. Salazar ---\nClaro, te paso el listado este viernes. Acuérdate que Capacitec tiene 3 reportes míos previos que nadie tomó en cuenta. — Isa\n\nAgente RH" },
+            },
+          ],
+        },
+        {
+          accion: "Política: ningún proveedor con score <7 puede ser re-contratado sin aprobación de Comité",
+          agentes: [
+            {
+              tipo: "email", destinatario: "Comité de Capacitación", fecha: "14-may 09:00", estado: "abierto",
+              detalle: "Propuesta de política compartida · pendiente votación",
+              mensaje: {
+                asunto: "Propuesta · Política de proveedores con score bajo en capacitación",
+                contenido: "Comité,\n\nPropongo política para evitar re-contratar proveedores con bajo desempeño sin checkpoint formal.\n\nReglas:\n1. Cualquier proveedor con score <7/10 (sea de participantes o de solicitante) entra al 'watch-list'.\n2. Re-contratación requiere aprobación explícita del Comité con justificación.\n3. Score <5 = veto automático por 12 meses.\n\nCaso motivador: Capacitec (INC-CAP-003) — score 5.2 ignorado, hoy en propuesta para otro programa.\n\nVoten en el documento adjunto antes del 28-may.\n\nAgente RH" },
+            },
+            {
+              tipo: "whatsapp", destinatario: "L. Cano", fecha: "16-may 11:30", estado: "no_leido",
+              detalle: "Solicitud de comentarios sobre la política · 5 días sin leer",
+              mensaje: { contenido: "Hola Lorenzo, te comparto la propuesta de política de proveedores que voté en el Comité. Como tu caso (Capacitec) la motivó, me interesa tu input antes del 28-may. Link al documento: [...]. — Agente RH" },
+            },
+            {
+              tipo: "llamada", destinatario: "L. Cano", fecha: "20-may 10:00", estado: "perdida",
+              detalle: "Llamada no atendida · 2do intento programado para 23-may",
+              mensaje: { contenido: "Nota de intento de llamada:\n• Fecha: 20-may-2026 10:00\n• Duración: 0 seg (no atendida)\n• Buzón: sin mensaje grabado\n• Acción siguiente: programar 2do intento 23-may 09:00 con notificación previa por WhatsApp\n• Si no atiende, escalar a C. Mendoza (Dir. Operaciones)" },
+            },
+          ],
+        },
+      ],
+      patron: "L. Cano acumula 2 alertas en Capacitación + diagnóstico crítico de clima en taller Sur (ver pestañas Clima y Denuncia).",
+    },
+    {
+      id: "INC-CAP-004",
+      cursoId: "CAP-2025-06", cursoNombre: "Servicio al cliente — fundamentos",
+      fechaCierre: "30-oct-2025", costoCurso: 35000,
+      solicitanteNombre: "Lorenzo Cano", solicitantePuesto: "Gerente de Posventa",
+      tipo: "No hay evidencia de aplicación en el trabajo",
+      severidad: "Alta", diasVencido: 204, estado: "Abierta",
+      descripcion: "Programa diseñado para mejorar NPS Posventa. A 6 meses del cierre, NPS bajó de 42 a 28 (sentido contrario al esperado). Cliente misterioso post-programa: sin mejora observable en los 14 participantes evaluados.",
+      evidencias: [
+        "NPS Posventa oct-2025 (pre): 42",
+        "NPS Posventa abr-2026 (post 6 meses): 28",
+        "Cliente misterioso post-programa: 5.8/10 (vs baseline 6.2)",
+        "ROI declarado: 2.0x · ROI real: −1.2x (pérdida)",
+      ],
+      accionComprometida: "Análisis raíz: ¿faltó coaching de seguimiento? ¿se sumó al problema de clima del taller Sur? Diseñar intervención correctiva (relacionada con CAP-04 ya solicitado).",
+      responsableAccion: "Lorenzo Cano + Director de Operaciones (C. Mendoza)",
+      fechaCompromiso: "30-jun-2026",
+      proximosPasos: [
+        {
+          accion: "Validar si el problema es de capacitación o de liderazgo de piso",
+          agentes: [
+            {
+              tipo: "calendario", destinatario: "L. Cano + C. Mendoza", fecha: "27-may 09:00", estado: "programado",
+              detalle: "Sesión de análisis · 90 min",
+              mensaje: {
+                asunto: "Análisis raíz · Caída NPS Posventa (INC-CAP-004)",
+                contenido: "Cuándo: 27-may-2026 · 09:00 – 10:30 (90 min)\nDónde: Oficina C. Mendoza + Teams\n\nObjetivo: definir si la caída NPS Posventa (42→28) viene de la capacitación o del liderazgo del Taller Sur.\n\nAgenda:\n  • Revisión de datos NPS pre/post programa\n  • Cliente misterioso por sucursal (Norte vs Sur)\n  • Diagnóstico de clima del Taller Sur (cruce con B-005, B-006, B-012)\n  • Decisión: re-lanzar programa, intervenir liderazgo, o ambos\n\nInvitados: L. Cano, C. Mendoza, T. Aguilar (Sup. Posventa)\n\nMaterial: dashboards de NPS + reporte de clima Taller Sur" },
+            },
+            {
+              tipo: "whatsapp", destinatario: "L. Cano", fecha: "19-may 08:30", estado: "leido_sin_respuesta",
+              detalle: "Confirmación de sesión solicitada · sin respuesta",
+              mensaje: { contenido: "Hola Lorenzo, urge cerrar el análisis del NPS Posventa (caso INC-CAP-004 lleva 204 días). Necesito que confirmes la sesión del 27-may. Por favor responde antes de mañana. — Agente RH" },
+            },
+            {
+              tipo: "llamada", destinatario: "L. Cano", fecha: "22-may 15:00", estado: "perdida",
+              detalle: "Llamada no atendida · escalando a C. Mendoza",
+              mensaje: { contenido: "Nota de intento de llamada:\n• Fecha: 22-may-2026 15:00\n• Duración: 0 seg (no atendida)\n• Es la 3ª vez consecutiva que L. Cano no atiende (cruzar con INC-CAP-003 misma semana)\n• Acción siguiente: escalación inmediata a C. Mendoza (Dir. Operaciones)" },
+            },
+            {
+              tipo: "email", destinatario: "C. Mendoza (Dir. Operaciones)", fecha: "23-may 09:00", estado: "respondido",
+              detalle: "C. Mendoza confirma asistencia y solicitará seguimiento personalmente",
+              mensaje: {
+                asunto: "Escalación · L. Cano no responde sobre INC-CAP-004",
+                contenido: "Carlos,\n\nL. Cano no responde a 3 contactos sobre el caso INC-CAP-004 (caída NPS Posventa, $35K sin ROI, 204 días vencido). Es la 2ª incidencia abierta de él en capacitación + el caso de clima del Taller Sur que tú ya conoces.\n\n¿Puedes intervenir personalmente para la sesión del 27-may?\n\n--- 23-may 09:42 · Respuesta de C. Mendoza ---\nVoy. De hecho ya iba a hablar con él esta semana por el caso del clima. Aprovecho. Confírmame agenda y yo me encargo. — CM\n\nAgente RH" },
+            },
+          ],
+        },
+        {
+          accion: "Antes de aprobar CAP-04, exigir plan de aplicación medible",
+          agentes: [
+            {
+              tipo: "sistema", destinatario: "Módulo de Capacitación · CAP-04", fecha: "10-may 14:00", estado: "ejecutado",
+              detalle: "Flag agregado · requiere plan de aplicación antes de aprobar",
+              mensaje: { contenido: "Acción: UPDATE\nTabla: cursos\nRegistro: id = 'CAP-04'\nCambios:\n  + requiere_plan_aplicacion = true\n  + razon = 'INC-CAP-004 abierto · solicitante mismo (L. Cano)'\n  + bloqueo_aprobacion = true\nEfecto: cualquier intento de aprobar CAP-04 en el módulo arroja error 'Plan de aplicación medible requerido · ver INC-CAP-004 antes de aprobar'.\nLevantamiento del bloqueo: manual por P. Castaño o automático al cerrar INC-CAP-004." },
+            },
+          ],
+        },
+        {
+          accion: "Considerar repetir el programa con otro proveedor + sponsor distinto",
+          agentes: [
+            {
+              tipo: "email", destinatario: "C. Mendoza", fecha: "19-may 16:00", estado: "respondido",
+              detalle: "Acepta ser sponsor del re-lanzamiento si se aprueba",
+              mensaje: {
+                asunto: "Sponsor para re-lanzamiento del programa de Servicio al Cliente Posventa",
+                contenido: "Carlos,\n\nDado el resultado de CAP-2025-06 (NPS bajó 42→28), evaluamos re-lanzar el programa con otro proveedor y sponsor distinto. ¿Estarías dispuesto a ser sponsor del re-lanzamiento? Lo veo más alineado contigo dada tu visibilidad de los 3 talleres.\n\n--- 19-may 17:14 · Respuesta de C. Mendoza ---\nSí, lo tomo. Pero condicionado a: 1) cambio de proveedor (no Capacitec ni el actual), 2) plan de aplicación con role plays semanales y cliente misterioso bimestral, 3) decisión final tras la sesión del 27-may. — CM\n\nAgente RH" },
+            },
+          ],
+        },
+      ],
+      patron: "2ª incidencia abierta de L. Cano. Cruza con diagnóstico de clima del taller Sur (B-005, B-006, B-012).",
+    },
+    {
+      id: "INC-CAP-005",
+      cursoId: "CAP-2025-12", cursoNombre: "Power BI para análisis financiero",
+      fechaCierre: "28-feb-2026", costoCurso: 52000,
+      solicitanteNombre: "Rodrigo Solís", solicitantePuesto: "Gerente de Finanzas",
+      tipo: "Solicitante no asignó tiempo para aplicación",
+      severidad: "Media", diasVencido: 83, estado: "En seguimiento",
+      descripcion: "Los 4 participantes (incluyendo Beatriz Cordero) terminaron el programa pero no se les asignó proyecto de aplicación. Beatriz renunció 2 semanas después; los otros 3 no han usado las dashboards aprendidas en el ERP.",
+      evidencias: [
+        "Acuerdo previo: 'Cada participante construirá 1 dashboard Power BI productivo en los 60 días post'",
+        "Dashboards productivos a la fecha: 0 de 4",
+        "Beatriz Cordero (1 de los 4) renunció el 12-mar-2026 (B-014)",
+        "Costo de Beatriz no recuperable: $13,000 (1 de 4 cuotas)",
+      ],
+      accionComprometida: "R. Solís debe asignar 1 dashboard real a cada uno de los 3 participantes restantes con fecha de entrega y review semanal.",
+      responsableAccion: "Rodrigo Solís",
+      fechaCompromiso: "15-jul-2026",
+      proximosPasos: [
+        {
+          accion: "Política: capacitaciones técnicas requieren proyecto de aplicación aprobado por el solicitante ANTES de inscribirse",
+          agentes: [
+            {
+              tipo: "email", destinatario: "Comité de Capacitación", fecha: "16-may 11:00", estado: "abierto",
+              detalle: "Propuesta de política · 4 de 6 abierto",
+              mensaje: {
+                asunto: "Propuesta · Plan de aplicación obligatorio para capacitaciones técnicas",
+                contenido: "Comité,\n\nDado el caso INC-CAP-005 (Power BI, 4 participantes, 0 dashboards productivos al cierre), propongo nueva política:\n\nRegla: Antes de inscribir colaboradores en capacitaciones técnicas (>$30K o >20 hrs), el solicitante debe entregar un 'Plan de aplicación' aprobado por su director que incluya:\n  1. Proyecto específico que el participante construirá\n  2. Fecha límite de entrega (≤90 días post-programa)\n  3. Métricas de éxito (productividad, ahorro, calidad)\n  4. Sponsor (no puede ser el mismo solicitante)\n\nExcepciones: capacitación regulatoria obligatoria.\n\nVoto en documento adjunto antes del 30-may.\n\nAgente RH" },
+            },
+          ],
+        },
+        {
+          accion: "Reasignar la licencia perdida de Beatriz a otro analista",
+          agentes: [
+            {
+              tipo: "whatsapp", destinatario: "R. Solís", fecha: "13-may 10:45", estado: "respondido",
+              detalle: "Solicita 2 semanas para identificar candidato · plazo 27-may",
+              mensaje: { contenido: "Hola Rodrigo, recuerda que la licencia Power BI de Beatriz (B-014) quedó sin asignar tras su salida. Costo no recuperado: $13,000. ¿Puedes identificar al analista que asumirá el proyecto?\n\n--- 13-may 11:20 · Respuesta de R. Solís ---\nDame 2 semanas. Andrés (B-013) también salió así que estoy con sucesión doble en el área. Plazo: 27-may con nombre concreto. — RS" },
+            },
+            {
+              tipo: "recordatorio", fecha: "Cada 7 días", estado: "activo",
+              detalle: "Recordatorio activo hasta confirmar reasignación",
+              mensaje: { contenido: "Trigger: status(reasignacion_licencia_powerbi_beatriz) != 'Asignado'\nFrecuencia: Cada 7 días\nPróxima ejecución: 27-may-2026 (plazo comprometido por R. Solís)\nAcción al expirar: WhatsApp automático + escalación a S. Ramírez si no hay respuesta dentro de 24 hrs después del plazo." },
+            },
+          ],
+        },
+      ],
+      patron: "Caso de inversión hundida (ver Rotación): la capacitación de Beatriz pasó a costo hundido por renuncia 2 semanas después.",
+    },
+    {
+      id: "INC-CAP-006",
+      cursoId: "CAP-2025-10", cursoNombre: "Liderazgo de piso — Operaciones Planta 2",
+      fechaCierre: "15-ene-2026", costoCurso: 48000,
+      solicitanteNombre: "Carlos Mendoza", solicitantePuesto: "Director de Operaciones",
+      tipo: "ROI parcialmente medido, pendiente cierre formal",
+      severidad: "Baja", diasVencido: 35, estado: "En seguimiento",
+      descripcion: "El solicitante (C. Mendoza) sí inició la medición de ROI a 90 días pero el reporte está incompleto: faltan datos de scope-down de bajas en 1 de los 3 turnos. Tiene plan claro de cierre.",
+      evidencias: [
+        "Reporte preliminar entregado el 15-abr-2026 (a tiempo)",
+        "Pendiente: cierre de medición del turno 2 (datos de M. Vargas)",
+        "ROI parcial calculado: 1.4x (target 1.5x)",
+      ],
+      accionComprometida: "Entregar reporte final con datos del turno 2 antes del 15-jun-2026.",
+      responsableAccion: "Carlos Mendoza + Manuel Vargas (Sup. Turno 2)",
+      fechaCompromiso: "15-jun-2026",
+      proximosPasos: [
+        {
+          accion: "Caso modelo de buen seguimiento — usar como template para los demás solicitantes",
+          agentes: [
+            {
+              tipo: "email", destinatario: "Todos los Directores", fecha: "18-may 09:00", estado: "abierto",
+              detalle: "Template de seguimiento de ROI compartido · 7 de 9 abierto",
+              mensaje: {
+                asunto: "Template recomendado · Seguimiento de ROI de capacitación (basado en INC-CAP-006)",
+                contenido: "Estimados Directores,\n\nComparto el template de seguimiento de ROI que C. Mendoza usó en el programa 'Liderazgo de piso · Planta 2' (INC-CAP-006).\n\nA diferencia de las otras 5 incidencias abiertas, este caso entregó:\n  ✓ Reporte preliminar a 90 días post (a tiempo)\n  ✓ Datos cuantitativos de productividad por turno\n  ✓ ROI parcial calculado (1.4x vs target 1.5x)\n  ✓ Plan documentado para cerrar el 15% faltante\n\nDocumento adjunto en Drive: 'Template_Seguimiento_ROI_v1.0.docx'\n\nAgenda: C. Mendoza presentará el caso al Comité Ejecutivo el 10-jun.\n\nApertura: 7 de 9 directores.\n\nAgente RH" },
+            },
+            {
+              tipo: "calendario", destinatario: "Comité Ejecutivo", fecha: "10-jun 15:00", estado: "programado",
+              detalle: "Sesión de C. Mendoza compartiendo el caso · 30 min",
+              mensaje: {
+                asunto: "Comité Ejecutivo · Caso modelo de ROI · C. Mendoza",
+                contenido: "Cuándo: 10-jun-2026 · 15:00 – 15:30 (30 min)\nDónde: Sala Directorio + Teams\n\nPresentador: C. Mendoza (Director de Operaciones)\nTema: 'Cómo medimos el ROI del programa de Liderazgo de Piso · Planta 2'\n\nObjetivo: instalar buenas prácticas a partir del único caso de capacitación en la empresa con seguimiento formal entregado a tiempo.\n\nMaterial: template + datos del caso." },
+            },
+            {
+              tipo: "whatsapp", destinatario: "C. Mendoza", fecha: "20-may 11:00", estado: "respondido",
+              detalle: "Confirma participar como presentador · respondió 'Listo'",
+              mensaje: { contenido: "Hola Carlos, ¿confirmas tu participación el 10-jun al Comité Ejecutivo para presentar el caso de tu programa de Liderazgo de Piso como ejemplo de buen seguimiento de ROI?\n\n--- 20-may 11:08 · Respuesta de C. Mendoza ---\nListo. Mando agenda y datos a tu equipo antes del 05-jun. — CM" },
+            },
+          ],
+        },
+      ],
+      patron: "C. Mendoza es referente de accountability en el comité (ver 360°). Este es el único caso 'sano' en la lista.",
+    },
+  ];
+
+  const agregarCurso = () => {
+    const inicio = form.fechaIni ? new Date(form.fechaIni) : null;
+    const fin = form.fechaFin ? new Date(form.fechaFin) : null;
+    if (!form.nombre || !inicio || !fin || !form.costoTotal || !form.roiEsperado) {
+      alert("Completa al menos: nombre, fechas, costo y ROI esperado.");
+      return;
+    }
+    const nextId = `CAP-${String(cursos.length + 1).padStart(2, "0")}`;
+    const costoNum = parseInt(form.costoTotal.replace(/[^0-9]/g, "")) || 0;
+    const horasNum = parseInt(form.horasTotales) || 0;
+    const partTotal = parseInt(form.participantesTotal) || 0;
+    const nuevo = {
+      id: nextId, nombre: form.nombre,
+      solicita: form.solicitanteArea,
+      fechaIni: formatFechaCorta(inicio), fechaFin: formatFechaCorta(fin),
+      costo: costoNum, roi: form.roiEsperado, est: "Solicitud", progreso: 0,
+      descripcion: form.descripcion || "Sin descripción.",
+      categoria: form.categoria,
+      empresaCapacitadora: {
+        nombre: form.empresaNombre || "Por definir",
+        contacto: form.empresaContacto || "—",
+        modalidad: form.empresaModalidad,
+        certificacion: form.certificacion || "—",
+      },
+      solicitante: {
+        nombre: form.solicitanteNombre || "Por definir",
+        puesto: form.solicitantePuesto || "—",
+        area: form.solicitanteArea,
+        justificacion: form.justificacion || "Sin justificación documentada.",
+      },
+      aprobadoPor: { nombre: "Pendiente de aprobación", fecha: "—", costoAprobado: 0 },
+      pm: { nombre: "Pendiente de asignar", puesto: "—" },
+      participantes: { total: partTotal, perfiles: form.participantesPerfiles || "—" },
+      objetivos: form.justificacion ? [form.justificacion] : ["Por definir al aprobar"],
+      temario: ["Por definir con la empresa capacitadora"],
+      modalidad: form.empresaModalidad, horasTotales: horasNum,
+      costoDesglose: [{ concepto: "Costo total estimado", monto: costoNum }],
+      roiDetalle: {
+        metricaPrincipal: form.metricaPrincipal || "Por definir",
+        baseline: form.baseline || "Por levantar",
+        target: form.target || "Por definir",
+        comoSeMide: form.comoSeMide || "Metodología por definir",
+        fechaMedicion: form.fechaMedicion || "Por programar",
+        beneficiosEsperados: form.beneficiosEsperados || "Por cuantificar",
+      },
+      evaluaciones: ["Por definir con la empresa capacitadora"],
+    };
+    setCursos([...cursos, nuevo]);
+    setForm(formInicial);
+    setNuevoOpen(false);
+  };
+
+  // Calcular ventana del Gantt: del 1 del mes mínimo al último día del mes máximo + 1
+  const fechasParseadas = cursos.map((c) => ({ ini: parseFecha(c.fechaIni), fin: parseFecha(c.fechaFin) }));
+  const minDate = new Date(Math.min(...fechasParseadas.map((f) => f.ini.getTime())));
+  const maxDate = new Date(Math.max(...fechasParseadas.map((f) => f.fin.getTime())));
+  const ganttIni = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+  const ganttFin = new Date(maxDate.getFullYear(), maxDate.getMonth() + 2, 0); // último día del mes siguiente
+  const totalDias = Math.ceil((ganttFin - ganttIni) / 86400000) + 1;
+
+  // Generar columnas de meses
+  const mesesGantt = [];
+  let cursor = new Date(ganttIni);
+  while (cursor <= ganttFin) {
+    const mesIni = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+    const mesFin = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0);
+    const diasMes = mesFin.getDate();
+    const pctIni = ((mesIni - ganttIni) / 86400000 / totalDias) * 100;
+    const pctAncho = (diasMes / totalDias) * 100;
+    mesesGantt.push({ label: `${meses[mesIni.getMonth()].toUpperCase()} ${mesIni.getFullYear()}`, pctIni, pctAncho, diasMes });
+    cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+  }
+
+  // Hoy (asumido 22-may-2026 por contexto del sistema)
+  const hoy = new Date(2026, 4, 22);
+  const hoyPct = Math.max(0, Math.min(100, ((hoy - ganttIni) / 86400000 / totalDias) * 100));
+
+  const colorPorEstado = (est) => est === "En curso" ? "#0a7d2c" : est === "Programado" ? "#3498db" : "#d97706";
+  const colorPorEstadoBg = (est) => est === "En curso" ? "#86efac" : est === "Programado" ? "#bfdbfe" : "#fde68a";
 
   return (
     <div>
-      <h2 style={S.h2}>6. Capacitación y Entrenamiento</h2>
+      <h2 style={S.h2}>7. Capacitación y Entrenamiento</h2>
       <p style={S.hint}>Solicitudes, calendario, project manager, costos y ROI esperado de cada programa.</p>
 
       <div style={S.grid4}>
-        <div style={S.kpi}><div style={S.kpiLabel}>Cursos activos</div><div style={S.kpiValue}>2</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Programados</div><div style={S.kpiValue}>1</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Inversión YTD</div><div style={S.kpiValue}>$288K</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>ROI promedio</div><div style={S.kpiValue}>1.8x</div></div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Cursos activos</div>
+            <div style={S.kpiValue}>2</div>
+            <div style={S.kpiBenchmark("green")}>Benchmark · Capacidad simultánea: 2-3</div>
+          </div>
+          <TrafficLight light="green" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Programados</div>
+            <div style={S.kpiValue}>1</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · Pipeline saludable: ≥3</div>
+          </div>
+          <TrafficLight light="yellow" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Inversión YTD</div>
+            <div style={S.kpiValue}>$288K</div>
+            <div style={S.kpiBenchmark("green")}>Benchmark · Presupuesto anual: $360K</div>
+          </div>
+          <TrafficLight light="green" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>ROI promedio</div>
+            <div style={S.kpiValue}>1.8x</div>
+            <div style={S.kpiBenchmark("green")}>Benchmark · Meta: ≥1.5x</div>
+          </div>
+          <TrafficLight light="green" />
+        </div>
       </div>
 
       <h3 style={S.h3}>Pipeline de capacitación</h3>
+      <p style={{ ...S.hint, marginTop: -4 }}>Haz click en cualquier curso para ver el desglose completo.</p>
       <table style={S.table}>
         <thead>
           <tr>
@@ -3801,11 +6426,18 @@ function Capacitacion() {
             <th style={S.th}>Costo</th>
             <th style={S.th}>ROI esperado</th>
             <th style={S.th}>Estado</th>
+            <th style={S.th}></th>
           </tr>
         </thead>
         <tbody>
           {cursos.map((c) => (
-            <tr key={c.id}>
+            <tr
+              key={c.id}
+              onClick={() => setCursoAbierto(c)}
+              style={{ cursor: "pointer" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            >
               <td style={S.td}><strong>{c.id}</strong></td>
               <td style={S.td}>{c.nombre}</td>
               <td style={S.td}>{c.solicita}</td>
@@ -3819,32 +6451,732 @@ function Capacitacion() {
                   c.est === "Programado" ? "#eef5ff" : "#fff7e0"
                 )}>{c.est}</span>
               </td>
+              <td style={{ ...S.td, textAlign: "right", color: "#64748b", fontSize: 12 }}>Ver detalle →</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <h3 style={S.h3}>Vista calendario (mock)</h3>
+      {cursoAbierto && (
+        <div
+          onClick={() => setCursoAbierto(null)}
+          style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
+            display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff", borderRadius: 8, padding: 24,
+              width: 1000, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto",
+              border: "1px solid #ccc",
+            }}
+          >
+            {/* Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, paddingBottom: 12, borderBottom: "1px solid #e2e8f0" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                  <span style={{ ...S.kpiLabel, color: "#64748b" }}>{cursoAbierto.id}</span>
+                  <span style={S.badge(cursoAbierto.est === "En curso" ? "#e8f5e9" : cursoAbierto.est === "Programado" ? "#eef5ff" : "#fff7e0")}>{cursoAbierto.est}</span>
+                  <span style={S.badge("#f1f5f9")}>{cursoAbierto.categoria}</span>
+                </div>
+                <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>{cursoAbierto.nombre}</h3>
+                <p style={{ fontSize: 13, color: "#475569", margin: "6px 0 0 0", lineHeight: 1.5, maxWidth: 720 }}>{cursoAbierto.descripcion}</p>
+              </div>
+              <button
+                onClick={() => setCursoAbierto(null)}
+                style={{ border: "none", background: "transparent", fontSize: 22, cursor: "pointer", color: "#666", lineHeight: 1 }}
+                aria-label="Cerrar"
+              >×</button>
+            </div>
+
+            {/* KPIs principales */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 10, marginBottom: 16 }}>
+              <div style={{ ...S.kpi, padding: 12 }}>
+                <div style={S.kpiLabel}>Costo total</div>
+                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4 }}>${cursoAbierto.costo.toLocaleString("es-MX")}</div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{cursoAbierto.aprobadoPor.costoAprobado ? `Aprobado ${cursoAbierto.aprobadoPor.fecha}` : "Pendiente de aprobación"}</div>
+              </div>
+              <div style={{ ...S.kpi, padding: 12 }}>
+                <div style={S.kpiLabel}>ROI esperado</div>
+                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4, color: "#0a7d2c" }}>{cursoAbierto.roi}</div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{cursoAbierto.roiDetalle.metricaPrincipal}</div>
+              </div>
+              <div style={{ ...S.kpi, padding: 12 }}>
+                <div style={S.kpiLabel}>Participantes</div>
+                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4 }}>{cursoAbierto.participantes.total}</div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{cursoAbierto.horasTotales} hrs · {cursoAbierto.modalidad.split(" · ")[0]}</div>
+              </div>
+              <div style={{ ...S.kpi, padding: 12 }}>
+                <div style={S.kpiLabel}>Progreso</div>
+                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4 }}>{cursoAbierto.progreso}%</div>
+                <div style={{ width: "100%", height: 6, background: "#f1f5f9", borderRadius: 3, marginTop: 4 }}>
+                  <div style={{ width: `${cursoAbierto.progreso}%`, height: "100%", background: "#0a7d2c", borderRadius: 3 }} />
+                </div>
+              </div>
+            </div>
+
+            {/* 2 columnas: solicitante + empresa */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+              <div style={{ ...S.card, marginBottom: 0 }}>
+                <div style={{ ...S.kpiLabel, marginBottom: 8 }}>Solicitante y patrocinio</div>
+                <div style={{ fontSize: 14, fontWeight: 700 }}>{cursoAbierto.solicitante.nombre}</div>
+                <div style={{ fontSize: 12, color: "#475569", marginBottom: 8 }}>{cursoAbierto.solicitante.puesto} · {cursoAbierto.solicitante.area}</div>
+                <div style={{ fontSize: 12, color: "#0f172a", lineHeight: 1.5, padding: "8px 10px", background: "#f8fafc", borderLeft: "3px solid #cbd5e1", borderRadius: 2, marginBottom: 10 }}>
+                  <strong>Justificación:</strong> {cursoAbierto.solicitante.justificacion}
+                </div>
+                <div style={{ fontSize: 12, color: "#475569" }}>
+                  <strong>Aprobado por:</strong> {cursoAbierto.aprobadoPor.nombre}{cursoAbierto.aprobadoPor.fecha !== "—" ? ` (${cursoAbierto.aprobadoPor.fecha})` : ""}<br />
+                  <strong>Project Manager:</strong> {cursoAbierto.pm.nombre} · {cursoAbierto.pm.puesto}
+                </div>
+              </div>
+              <div style={{ ...S.card, marginBottom: 0 }}>
+                <div style={{ ...S.kpiLabel, marginBottom: 8 }}>Empresa capacitadora</div>
+                <div style={{ fontSize: 14, fontWeight: 700 }}>{cursoAbierto.empresaCapacitadora.nombre}</div>
+                <div style={{ fontSize: 12, color: "#475569", marginBottom: 8 }}>Contacto: {cursoAbierto.empresaCapacitadora.contacto}</div>
+                <div style={{ fontSize: 12, color: "#0f172a", marginBottom: 4 }}><strong>Modalidad:</strong> {cursoAbierto.modalidad}</div>
+                <div style={{ fontSize: 12, color: "#0f172a", marginBottom: 4 }}><strong>Duración:</strong> {cursoAbierto.horasTotales} horas totales · {cursoAbierto.fechaIni} → {cursoAbierto.fechaFin}</div>
+                <div style={{ fontSize: 12, color: "#0f172a" }}><strong>Certificación:</strong> {cursoAbierto.empresaCapacitadora.certificacion}</div>
+              </div>
+            </div>
+
+            {/* Participantes */}
+            <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Participantes</div>
+            <div style={{ fontSize: 13, padding: "10px 12px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 6, marginBottom: 16 }}>
+              <strong>{cursoAbierto.participantes.total} colaboradores</strong> — {cursoAbierto.participantes.perfiles}
+            </div>
+
+            {/* Objetivos */}
+            <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Objetivos del programa</div>
+            <ul style={{ margin: "0 0 16px 0", paddingLeft: 20, fontSize: 13, lineHeight: 1.7 }}>
+              {cursoAbierto.objetivos.map((o, i) => <li key={i}>{o}</li>)}
+            </ul>
+
+            {/* Temario y costo desglose en 2 columnas */}
+            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 12, marginBottom: 16 }}>
+              <div>
+                <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Temario</div>
+                <table style={{ ...S.table, fontSize: 12 }}>
+                  <tbody>
+                    {cursoAbierto.temario.map((t, i) => (
+                      <tr key={i}><td style={S.td}>{t}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Desglose de costo</div>
+                <table style={{ ...S.table, fontSize: 12 }}>
+                  <tbody>
+                    {cursoAbierto.costoDesglose.map((d, i) => (
+                      <tr key={i}>
+                        <td style={S.td}>{d.concepto}</td>
+                        <td style={{ ...S.td, textAlign: "right", fontWeight: 600 }}>${d.monto.toLocaleString("es-MX")}</td>
+                      </tr>
+                    ))}
+                    <tr style={{ background: "#fafafa" }}>
+                      <td style={{ ...S.td, fontWeight: 700 }}>Total</td>
+                      <td style={{ ...S.td, textAlign: "right", fontWeight: 700 }}>${cursoAbierto.costo.toLocaleString("es-MX")}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* ROI: cómo se mide */}
+            <div style={{ ...S.card, marginBottom: 16, background: "#f6fbf6", borderColor: "#86efac" }}>
+              <div style={{ ...S.kpiLabel, color: "#0a7d2c", marginBottom: 8 }}>Cómo se mide el ROI ({cursoAbierto.roi} esperado)</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+                <div>
+                  <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Métrica principal</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>{cursoAbierto.roiDetalle.metricaPrincipal}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Fecha de medición</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>{cursoAbierto.roiDetalle.fechaMedicion}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Baseline (estado actual)</div>
+                  <div style={{ fontSize: 13, marginTop: 2 }}>{cursoAbierto.roiDetalle.baseline}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Target (post-programa)</div>
+                  <div style={{ fontSize: 13, marginTop: 2 }}>{cursoAbierto.roiDetalle.target}</div>
+                </div>
+              </div>
+              <div style={{ fontSize: 12, color: "#0f172a", lineHeight: 1.5, marginBottom: 8 }}>
+                <strong>Metodología:</strong> {cursoAbierto.roiDetalle.comoSeMide}
+              </div>
+              <div style={{ fontSize: 12, color: "#0f172a", lineHeight: 1.5, padding: "8px 10px", background: "#fff", border: "1px solid #cbd5e1", borderRadius: 4 }}>
+                <strong>Beneficios esperados:</strong> {cursoAbierto.roiDetalle.beneficiosEsperados}
+              </div>
+            </div>
+
+            {/* Evaluaciones */}
+            <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Esquema de evaluación</div>
+            <ul style={{ margin: "0 0 16px 0", paddingLeft: 20, fontSize: 13, lineHeight: 1.7 }}>
+              {cursoAbierto.evaluaciones.map((e, i) => <li key={i}>{e}</li>)}
+            </ul>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingTop: 12, borderTop: "1px solid #eee" }}>
+              <button style={S.btn} onClick={() => setCursoAbierto(null)}>Cerrar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20, marginBottom: 8 }}>
+        <h3 style={{ ...S.h3, margin: 0 }}>Vista calendario</h3>
+        <button style={S.btn} onClick={() => setNuevoOpen(true)}>+ Nueva entrada</button>
+      </div>
+      <p style={S.hint}>Gantt mensual con los programas activos, traslapes y responsables. Click en cualquier barra para ver el detalle.</p>
       <div style={S.card}>
-        <p style={S.hint}>Aquí va el Gantt mensual con los programas activos, traslapes y responsables.</p>
-        <div style={{ height: 120, border: "1px dashed #ccc", borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center", color: "#999" }}>
-          [Gantt calendario]
+        {/* Header con meses */}
+        <div style={{ display: "flex", marginBottom: 6, fontSize: 11, fontWeight: 700, color: "#666", textTransform: "uppercase", letterSpacing: 0.5 }}>
+          <div style={{ width: 220, flexShrink: 0 }}>Programa</div>
+          <div style={{ flex: 1, position: "relative", height: 18 }}>
+            {mesesGantt.map((m, i) => (
+              <div key={i} style={{ position: "absolute", left: `${m.pctIni}%`, width: `${m.pctAncho}%`, top: 0, borderLeft: "1px solid #e5e5e5", paddingLeft: 6, boxSizing: "border-box" }}>
+                {m.label}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Filas del Gantt — labels a la izquierda, timeline a la derecha con overlay HOY */}
+        <div style={{ display: "flex" }}>
+          {/* Columna de labels (220px) */}
+          <div style={{ width: 220, flexShrink: 0 }}>
+            {cursos.map((c) => (
+              <div key={c.id} style={{ height: 38, borderTop: "1px solid #f1f5f9", paddingRight: 12, fontSize: 12, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div style={{ fontWeight: 700, color: "#0f172a" }}>{c.id}</div>
+                <div style={{ color: "#475569", fontSize: 11, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.nombre}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Columna timeline (flex 1) — contiene HOY como overlay */}
+          <div style={{ flex: 1, position: "relative" }}>
+            {/* Línea HOY que abarca todas las filas */}
+            <div style={{ position: "absolute", left: `${hoyPct}%`, top: 0, bottom: 0, width: 2, background: "#b00020", zIndex: 3, pointerEvents: "none" }} title="Hoy">
+              <div style={{ position: "absolute", top: -14, left: -14, fontSize: 9, color: "#fff", fontWeight: 700, background: "#b00020", padding: "1px 5px", borderRadius: 2, whiteSpace: "nowrap" }}>HOY</div>
+            </div>
+
+            {cursos.map((c) => {
+              const ini = parseFecha(c.fechaIni);
+              const fin = parseFecha(c.fechaFin);
+              const pctIni = ((ini - ganttIni) / 86400000 / totalDias) * 100;
+              const pctAncho = Math.max(2, ((fin - ini) / 86400000 / totalDias) * 100);
+              return (
+                <div key={c.id} style={{ height: 38, borderTop: "1px solid #f1f5f9", display: "flex", alignItems: "center" }}>
+                  <div style={{ width: "100%", position: "relative", height: 24, background: "#fafafa", borderRadius: 3 }}>
+                    {/* Líneas verticales por mes */}
+                    {mesesGantt.map((m, i) => (
+                      <div key={i} style={{ position: "absolute", left: `${m.pctIni}%`, top: 0, bottom: 0, width: 1, background: "#e5e5e5" }} />
+                    ))}
+                    {/* Barra del curso */}
+                    <div
+                      onClick={() => setCursoAbierto(c)}
+                      title={`${c.nombre} · ${c.fechaIni} → ${c.fechaFin} · $${c.costo.toLocaleString("es-MX")} · ROI ${c.roi}`}
+                      style={{
+                        position: "absolute",
+                        left: `${pctIni}%`,
+                        width: `${pctAncho}%`,
+                        top: 2,
+                        bottom: 2,
+                        background: colorPorEstadoBg(c.est),
+                        border: `1.5px solid ${colorPorEstado(c.est)}`,
+                        borderRadius: 4,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0 8px",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        color: "#0f172a",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      transition: "transform 0.1s ease",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scaleY(1.15)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scaleY(1)")}
+                  >
+                    {c.id} · ${(c.costo / 1000).toFixed(0)}K · {c.roi}
+                  </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Leyenda */}
+        <div style={{ display: "flex", gap: 16, marginTop: 12, paddingTop: 12, borderTop: "1px solid #e5e5e5", fontSize: 11, color: "#475569" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 12, height: 12, background: "#86efac", border: "1.5px solid #0a7d2c", borderRadius: 3 }} />
+            En curso
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 12, height: 12, background: "#bfdbfe", border: "1.5px solid #3498db", borderRadius: 3 }} />
+            Programado
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 12, height: 12, background: "#fde68a", border: "1.5px solid #d97706", borderRadius: 3 }} />
+            Solicitud / Pendiente
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 2, height: 12, background: "#b00020" }} />
+            Hoy
+          </span>
         </div>
       </div>
+
+      {/* Incidencias de capacitación — accountability */}
+      <h3 style={S.h3}>Incidencias de capacitación · Accountability</h3>
+      <p style={{ ...S.hint, marginTop: -4 }}>
+        Casos donde el solicitante no dio seguimiento al programa (ROI no medido, ausentismo no escalado, proveedor mal calificado, etc.). Click en cualquier fila para ver el caso.
+      </p>
+      <table style={S.table}>
+        <thead>
+          <tr>
+            <th style={S.th}>Folio</th>
+            <th style={S.th}>Curso · Cierre</th>
+            <th style={S.th}>Solicitante</th>
+            <th style={S.th}>Tipo de incidencia</th>
+            <th style={S.th}>Severidad</th>
+            <th style={S.th}>Días vencido</th>
+            <th style={S.th}>Estado</th>
+            <th style={S.th}></th>
+          </tr>
+        </thead>
+        <tbody>
+          {incidenciasCap.map((inc) => {
+            const sevColor = inc.severidad === "Alta" ? "#fdecea" : inc.severidad === "Media" ? "#fff7e0" : "#eef5ff";
+            const sevText = inc.severidad === "Alta" ? "#b00020" : inc.severidad === "Media" ? "#b58900" : "#1d4ed8";
+            const estColor = inc.estado === "Abierta" ? "#fdecea" : inc.estado === "En seguimiento" ? "#fff7e0" : "#e8f5e9";
+            return (
+              <tr
+                key={inc.id}
+                onClick={() => setIncidenciaAbierta(inc)}
+                style={{ cursor: "pointer" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              >
+                <td style={S.td}><strong>{inc.id}</strong></td>
+                <td style={S.td}>
+                  <div style={{ fontWeight: 600 }}>{inc.cursoNombre}</div>
+                  <div style={{ fontSize: 11, color: "#666" }}>{inc.cursoId} · Cerró {inc.fechaCierre}</div>
+                </td>
+                <td style={S.td}>
+                  <div style={{ fontWeight: 600 }}>{inc.solicitanteNombre}</div>
+                  <div style={{ fontSize: 11, color: "#666" }}>{inc.solicitantePuesto}</div>
+                </td>
+                <td style={S.td}>{inc.tipo}</td>
+                <td style={S.td}><span style={{ ...S.badge(sevColor), color: sevText, fontWeight: 700 }}>{inc.severidad}</span></td>
+                <td style={S.td}>
+                  <span style={{ fontWeight: 700, color: inc.diasVencido > 120 ? "#b00020" : inc.diasVencido > 60 ? "#d97706" : "#475569" }}>
+                    {inc.diasVencido} días
+                  </span>
+                </td>
+                <td style={S.td}><span style={S.badge(estColor)}>{inc.estado}</span></td>
+                <td style={{ ...S.td, textAlign: "right", color: "#64748b", fontSize: 12 }}>Ver caso →</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+
+      {/* Modal de incidencia */}
+      {incidenciaAbierta && (
+        <div
+          onClick={() => setIncidenciaAbierta(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: "#fff", borderRadius: 8, padding: 24, width: 880, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto", border: "1px solid #ccc" }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, paddingBottom: 12, borderBottom: "1px solid #e2e8f0" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
+                  <span style={{ ...S.kpiLabel, color: "#64748b" }}>{incidenciaAbierta.id}</span>
+                  <span style={{ ...S.badge(incidenciaAbierta.severidad === "Alta" ? "#fdecea" : incidenciaAbierta.severidad === "Media" ? "#fff7e0" : "#eef5ff"), fontWeight: 700 }}>{incidenciaAbierta.severidad}</span>
+                  <span style={S.badge(incidenciaAbierta.estado === "Abierta" ? "#fdecea" : incidenciaAbierta.estado === "En seguimiento" ? "#fff7e0" : "#e8f5e9")}>{incidenciaAbierta.estado}</span>
+                </div>
+                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>{incidenciaAbierta.tipo}</h3>
+                <div style={{ fontSize: 13, color: "#475569", marginTop: 4 }}>
+                  {incidenciaAbierta.cursoNombre} ({incidenciaAbierta.cursoId}) · Cerrado el {incidenciaAbierta.fechaCierre}
+                </div>
+              </div>
+              <button onClick={() => setIncidenciaAbierta(null)} style={{ border: "none", background: "transparent", fontSize: 22, cursor: "pointer", color: "#666", lineHeight: 1 }}>×</button>
+            </div>
+
+            {/* KPIs */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 16 }}>
+              <div style={{ ...S.kpi, padding: 12 }}>
+                <div style={S.kpiLabel}>Solicitante responsable</div>
+                <div style={{ fontSize: 14, fontWeight: 700, marginTop: 4 }}>{incidenciaAbierta.solicitanteNombre}</div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{incidenciaAbierta.solicitantePuesto}</div>
+              </div>
+              <div style={{ ...S.kpi, padding: 12 }}>
+                <div style={S.kpiLabel}>Días vencido</div>
+                <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4, color: incidenciaAbierta.diasVencido > 120 ? "#b00020" : incidenciaAbierta.diasVencido > 60 ? "#d97706" : "#475569" }}>
+                  {incidenciaAbierta.diasVencido}
+                </div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>desde fecha de cierre del programa</div>
+              </div>
+              <div style={{ ...S.kpi, padding: 12 }}>
+                <div style={S.kpiLabel}>Inversión en riesgo</div>
+                <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4, color: "#b00020" }}>${incidenciaAbierta.costoCurso.toLocaleString("es-MX")}</div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>sin ROI demostrado</div>
+              </div>
+            </div>
+
+            {/* Descripción */}
+            <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Descripción del caso</div>
+            <div style={{ fontSize: 13, color: "#0f172a", lineHeight: 1.5, marginBottom: 16, padding: "10px 12px", background: "#fdecea", borderLeft: "3px solid #b00020", borderRadius: 4 }}>
+              {incidenciaAbierta.descripcion}
+            </div>
+
+            {/* Evidencias */}
+            <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Evidencias ({incidenciaAbierta.evidencias.length})</div>
+            <ul style={{ margin: "0 0 16px 0", paddingLeft: 20, fontSize: 13, lineHeight: 1.7 }}>
+              {incidenciaAbierta.evidencias.map((e, i) => <li key={i}>{e}</li>)}
+            </ul>
+
+            {/* Acción comprometida */}
+            <div style={{ ...S.card, marginBottom: 12, background: "#fff7e0", borderColor: "#f0d999" }}>
+              <div style={{ ...S.kpiLabel, color: "#b58900", marginBottom: 6 }}>Acción comprometida</div>
+              <div style={{ fontSize: 13, color: "#0f172a", lineHeight: 1.5, marginBottom: 8 }}>
+                {incidenciaAbierta.accionComprometida}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, fontSize: 12 }}>
+                <div><strong>Responsable:</strong> {incidenciaAbierta.responsableAccion}</div>
+                <div><strong>Fecha compromiso:</strong> {incidenciaAbierta.fechaCompromiso}</div>
+              </div>
+            </div>
+
+            {/* Próximos pasos con actividad del agente IA */}
+            {(() => {
+              const tipoLabel = {
+                whatsapp: "WhatsApp",
+                email: "Email",
+                llamada: "Llamada",
+                sistema: "Sistema",
+                calendario: "Calendario",
+                recordatorio: "Auto-recordatorio",
+              };
+              const tipoIcon = {
+                whatsapp: { char: "W", bg: "#25D366" },
+                email: { char: "@", bg: "#0a7d2c" },
+                llamada: { char: "☎", bg: "#3498db" },
+                sistema: { char: "⚙", bg: "#475569" },
+                calendario: { char: "▦", bg: "#7c3aed" },
+                recordatorio: { char: "↻", bg: "#d97706" },
+              };
+              const estadoConfig = {
+                leido: { label: "Leído", color: "#0a7d2c", bg: "#dcfce7", indicador: "✓✓", indicadorColor: "#2563eb" },
+                leido_sin_respuesta: { label: "Leído sin respuesta", color: "#b45309", bg: "#fff7e0", indicador: "✓✓", indicadorColor: "#2563eb" },
+                no_leido: { label: "No leído", color: "#64748b", bg: "#f1f5f9", indicador: "✓✓", indicadorColor: "#94a3b8" },
+                entregado: { label: "Entregado", color: "#64748b", bg: "#f1f5f9", indicador: "✓", indicadorColor: "#94a3b8" },
+                respondido: { label: "Respondido", color: "#0a7d2c", bg: "#dcfce7", indicador: "↩", indicadorColor: "#0a7d2c" },
+                ejecutado: { label: "Ejecutado", color: "#1d4ed8", bg: "#dbeafe", indicador: "●", indicadorColor: "#1d4ed8" },
+                programado: { label: "Programado", color: "#1d4ed8", bg: "#dbeafe", indicador: "⏳", indicadorColor: "#1d4ed8" },
+                abierto: { label: "Abierto", color: "#0a7d2c", bg: "#dcfce7", indicador: "👁", indicadorColor: "#0a7d2c" },
+                activo: { label: "Activo", color: "#0a7d2c", bg: "#dcfce7", indicador: "●", indicadorColor: "#0a7d2c" },
+                perdida: { label: "Llamada perdida", color: "#b00020", bg: "#fdecea", indicador: "✗", indicadorColor: "#b00020" },
+              };
+              // Resumen de actividad para el header del bloque
+              const totalAgentes = incidenciaAbierta.proximosPasos.reduce((sum, p) => sum + (typeof p === "object" ? (p.agentes?.length || 0) : 0), 0);
+              const sinRespuesta = incidenciaAbierta.proximosPasos.reduce((sum, p) => sum + (typeof p === "object" ? (p.agentes?.filter(a => a.estado === "leido_sin_respuesta" || a.estado === "no_leido" || a.estado === "perdida").length || 0) : 0), 0);
+              return (
+                <>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div style={S.kpiLabel}>Próximos pasos · Actividad del agente IA</div>
+                    {totalAgentes > 0 && (
+                      <div style={{ fontSize: 11, color: "#64748b" }}>
+                        {totalAgentes} acciones automáticas · {sinRespuesta > 0 ? <span style={{ color: "#b00020", fontWeight: 700 }}>{sinRespuesta} sin respuesta</span> : <span style={{ color: "#0a7d2c", fontWeight: 700 }}>todas atendidas</span>}
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
+                    {incidenciaAbierta.proximosPasos.map((p, i) => {
+                      const accion = typeof p === "string" ? p : p.accion;
+                      const agentes = typeof p === "string" ? [] : (p.agentes || []);
+                      return (
+                        <div key={i} style={{ border: "1px solid #e2e8f0", borderRadius: 6, padding: "10px 12px", background: "#fff" }}>
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: agentes.length > 0 ? 10 : 0 }}>
+                            <div style={{ width: 22, height: 22, borderRadius: "50%", background: "#0f172a", color: "#fff", fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                              {i + 1}
+                            </div>
+                            <div style={{ flex: 1, fontSize: 13, fontWeight: 600, color: "#0f172a", lineHeight: 1.5 }}>{accion}</div>
+                          </div>
+                          {agentes.length > 0 && (
+                            <div style={{ paddingLeft: 32, display: "flex", flexDirection: "column", gap: 6 }}>
+                              {agentes.map((a, j) => {
+                                const icon = tipoIcon[a.tipo] || { char: "?", bg: "#94a3b8" };
+                                const est = estadoConfig[a.estado] || { label: a.estado, color: "#475569", bg: "#f1f5f9", indicador: "·", indicadorColor: "#94a3b8" };
+                                const key = `${i}-${j}`;
+                                const expandido = mensajeAbierto === key;
+                                const tieneMensaje = !!a.mensaje;
+                                const labelBoton = a.tipo === "whatsapp" ? "Ver mensaje" : a.tipo === "email" ? "Ver correo" : a.tipo === "llamada" ? "Ver nota de llamada" : a.tipo === "calendario" ? "Ver invitación" : a.tipo === "sistema" ? "Ver log" : "Ver trigger";
+                                return (
+                                  <div key={j} style={{ background: "#fafafa", borderRadius: 4, border: "1px solid #f1f5f9", overflow: "hidden" }}>
+                                    <div style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "6px 8px" }}>
+                                      <div style={{ width: 22, height: 22, borderRadius: 4, background: icon.bg, color: "#fff", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: a.tipo === "email" ? "serif" : "inherit" }}>
+                                        {icon.char}
+                                      </div>
+                                      <div style={{ flex: 1, minWidth: 0 }}>
+                                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 2 }}>
+                                          <span style={{ fontSize: 12, fontWeight: 700, color: "#0f172a" }}>{tipoLabel[a.tipo] || a.tipo}</span>
+                                          {a.destinatario && <span style={{ fontSize: 11, color: "#475569" }}>· {a.destinatario}</span>}
+                                          <span style={{ fontSize: 11, color: "#94a3b8" }}>· {a.fecha}</span>
+                                          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "1px 7px", borderRadius: 10, background: est.bg, color: est.color, fontSize: 10, fontWeight: 700, marginLeft: "auto" }}>
+                                            <span style={{ color: est.indicadorColor, fontFamily: "monospace", fontSize: 10 }}>{est.indicador}</span>
+                                            {est.label}
+                                          </span>
+                                        </div>
+                                        <div style={{ fontSize: 11, color: "#64748b", lineHeight: 1.4 }}>{a.detalle}</div>
+                                        {tieneMensaje && (
+                                          <button
+                                            onClick={() => setMensajeAbierto(expandido ? null : key)}
+                                            style={{
+                                              marginTop: 4, fontSize: 10, fontWeight: 700, letterSpacing: 0.3,
+                                              padding: "2px 8px", border: "1px solid #cbd5e1", background: expandido ? "#0f172a" : "#fff",
+                                              color: expandido ? "#fff" : "#0f172a", borderRadius: 3, cursor: "pointer",
+                                              fontFamily: "inherit", textTransform: "uppercase",
+                                            }}
+                                          >
+                                            {expandido ? "▾ Ocultar" : `▸ ${labelBoton}`}
+                                          </button>
+                                        )}
+                                      </div>
+                                    </div>
+                                    {expandido && tieneMensaje && (
+                                      <div style={{ borderTop: "1px solid #e5e5e5", padding: "10px 12px", background: a.tipo === "whatsapp" ? "#ecfdf5" : a.tipo === "email" ? "#fafaff" : "#fff" }}>
+                                        {a.mensaje.asunto && (
+                                          <div style={{ fontSize: 11, color: "#475569", marginBottom: 6, paddingBottom: 6, borderBottom: "1px dashed #e5e5e5" }}>
+                                            <span style={{ fontWeight: 700, color: "#0f172a" }}>{a.tipo === "email" ? "Asunto: " : a.tipo === "calendario" ? "Evento: " : ""}</span>
+                                            {a.mensaje.asunto}
+                                          </div>
+                                        )}
+                                        <div style={{ fontSize: 12, color: "#0f172a", lineHeight: 1.55, whiteSpace: "pre-wrap", fontFamily: a.tipo === "sistema" ? "ui-monospace, monospace" : "inherit" }}>
+                                          {a.mensaje.contenido}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              );
+            })()}
+
+            {/* Patrón */}
+            <div style={{ padding: "10px 12px", background: "#f8fafc", border: "1px dashed #cbd5e1", borderRadius: 4, fontSize: 12, color: "#475569", marginBottom: 16 }}>
+              <strong style={{ color: "#0f172a" }}>Patrón detectado:</strong> {incidenciaAbierta.patron}
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingTop: 12, borderTop: "1px solid #eee" }}>
+              <button style={S.btn} onClick={() => setIncidenciaAbierta(null)}>Cerrar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de nueva entrada */}
+      {nuevoOpen && (() => {
+        const labelStyle = { fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "#666", marginBottom: 4, display: "block" };
+        const inputStyle = { width: "100%", padding: "8px 10px", border: "1px solid #ccc", borderRadius: 4, fontSize: 13, fontFamily: "inherit", boxSizing: "border-box" };
+        const sectionTitle = { fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: "#0f172a", marginBottom: 10, paddingBottom: 6, borderBottom: "1px solid #e2e8f0" };
+        return (
+          <div
+            onClick={() => setNuevoOpen(false)}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{ background: "#fff", borderRadius: 8, padding: 24, width: 920, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto", border: "1px solid #ccc" }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, paddingBottom: 12, borderBottom: "1px solid #e2e8f0" }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Nueva solicitud de capacitación</h3>
+                  <p style={{ ...S.hint, margin: "4px 0 0 0" }}>Folio se asignará automáticamente. Todos los campos son aproximados — se ajustan al aprobar con la empresa capacitadora.</p>
+                </div>
+                <button onClick={() => setNuevoOpen(false)} style={{ border: "none", background: "transparent", fontSize: 22, cursor: "pointer", color: "#666", lineHeight: 1 }}>×</button>
+              </div>
+
+              {/* Sección: Programa */}
+              <div style={sectionTitle}>1 · Programa</div>
+              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 10, marginBottom: 14 }}>
+                <div>
+                  <label style={labelStyle}>Nombre del programa *</label>
+                  <input style={inputStyle} value={form.nombre} onChange={(e) => setF("nombre", e.target.value)} placeholder="Ej. Liderazgo nivel medio" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Categoría</label>
+                  <select style={inputStyle} value={form.categoria} onChange={(e) => setF("categoria", e.target.value)}>
+                    <option>Desarrollo de liderazgo</option>
+                    <option>Habilidades comerciales</option>
+                    <option>Actualización técnica regulatoria</option>
+                    <option>Servicio y experiencia del cliente</option>
+                    <option>Operación y procesos</option>
+                    <option>Tecnología y herramientas</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{ marginBottom: 14 }}>
+                <label style={labelStyle}>Descripción breve</label>
+                <textarea style={{ ...inputStyle, minHeight: 50, resize: "vertical" }} value={form.descripcion} onChange={(e) => setF("descripcion", e.target.value)} placeholder="Qué busca lograr el programa, contexto..." />
+              </div>
+
+              {/* Sección: Solicitante */}
+              <div style={sectionTitle}>2 · Solicitante y justificación</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 10 }}>
+                <div>
+                  <label style={labelStyle}>Nombre solicitante</label>
+                  <input style={inputStyle} value={form.solicitanteNombre} onChange={(e) => setF("solicitanteNombre", e.target.value)} placeholder="Ej. Carlos Mendoza" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Puesto</label>
+                  <input style={inputStyle} value={form.solicitantePuesto} onChange={(e) => setF("solicitantePuesto", e.target.value)} placeholder="Ej. Director de Operaciones" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Área *</label>
+                  <select style={inputStyle} value={form.solicitanteArea} onChange={(e) => setF("solicitanteArea", e.target.value)}>
+                    {["Comercial", "Posventa", "Operaciones", "Administración", "Dirección"].map((a) => <option key={a}>{a}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div style={{ marginBottom: 14 }}>
+                <label style={labelStyle}>Justificación (por qué se necesita)</label>
+                <textarea style={{ ...inputStyle, minHeight: 60, resize: "vertical" }} value={form.justificacion} onChange={(e) => setF("justificacion", e.target.value)} placeholder="Problema o oportunidad que el programa resuelve..." />
+              </div>
+
+              {/* Sección: Empresa capacitadora */}
+              <div style={sectionTitle}>3 · Empresa capacitadora</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+                <div>
+                  <label style={labelStyle}>Nombre de la empresa</label>
+                  <input style={inputStyle} value={form.empresaNombre} onChange={(e) => setF("empresaNombre", e.target.value)} placeholder="Ej. IPADE Business School" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Contacto (nombre + email)</label>
+                  <input style={inputStyle} value={form.empresaContacto} onChange={(e) => setF("empresaContacto", e.target.value)} placeholder="Ej. Dr. Anzaldúa · anzaldua@ipade.mx" />
+                </div>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 10, marginBottom: 14 }}>
+                <div>
+                  <label style={labelStyle}>Modalidad</label>
+                  <select style={inputStyle} value={form.empresaModalidad} onChange={(e) => setF("empresaModalidad", e.target.value)}>
+                    <option>Presencial</option>
+                    <option>Virtual sincrónico</option>
+                    <option>Híbrida</option>
+                    <option>Autoestudio (e-learning)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Certificación a obtener</label>
+                  <input style={inputStyle} value={form.certificacion} onChange={(e) => setF("certificacion", e.target.value)} placeholder="Ej. Certificado IPADE en Liderazgo" />
+                </div>
+              </div>
+
+              {/* Sección: Participantes y fechas */}
+              <div style={sectionTitle}>4 · Participantes y agenda</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1fr", gap: 10, marginBottom: 10 }}>
+                <div>
+                  <label style={labelStyle}>Participantes (#)</label>
+                  <input type="number" min="1" style={inputStyle} value={form.participantesTotal} onChange={(e) => setF("participantesTotal", e.target.value)} placeholder="Ej. 12" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Perfiles</label>
+                  <input style={inputStyle} value={form.participantesPerfiles} onChange={(e) => setF("participantesPerfiles", e.target.value)} placeholder="Ej. 12 supervisores de planta" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Horas totales</label>
+                  <input type="number" min="1" style={inputStyle} value={form.horasTotales} onChange={(e) => setF("horasTotales", e.target.value)} placeholder="Ej. 64" />
+                </div>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+                <div>
+                  <label style={labelStyle}>Fecha de inicio *</label>
+                  <input type="date" style={inputStyle} value={form.fechaIni} onChange={(e) => setF("fechaIni", e.target.value)} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Fecha de fin *</label>
+                  <input type="date" style={inputStyle} value={form.fechaFin} onChange={(e) => setF("fechaFin", e.target.value)} />
+                </div>
+              </div>
+
+              {/* Sección: Inversión */}
+              <div style={sectionTitle}>5 · Inversión ($)</div>
+              <div style={{ marginBottom: 14 }}>
+                <label style={labelStyle}>Costo total estimado * (MXN)</label>
+                <input style={inputStyle} value={form.costoTotal} onChange={(e) => setF("costoTotal", e.target.value)} placeholder="Ej. 85000" />
+                <div style={{ fontSize: 11, color: "#666", marginTop: 4 }}>Incluye honorarios del instructor, materiales, hospedaje, certificación y medición post-programa.</div>
+              </div>
+
+              {/* Sección: ROI */}
+              <div style={sectionTitle}>6 · ROI esperado y cómo se medirá</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 10, marginBottom: 10 }}>
+                <div>
+                  <label style={labelStyle}>ROI esperado * (ej. 2.1x)</label>
+                  <input style={inputStyle} value={form.roiEsperado} onChange={(e) => setF("roiEsperado", e.target.value)} placeholder="Ej. 2.1x" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Métrica principal *</label>
+                  <input style={inputStyle} value={form.metricaPrincipal} onChange={(e) => setF("metricaPrincipal", e.target.value)} placeholder="Ej. Reducción de rotación voluntaria en equipos de los participantes" />
+                </div>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+                <div>
+                  <label style={labelStyle}>Baseline (estado actual)</label>
+                  <textarea style={{ ...inputStyle, minHeight: 50, resize: "vertical" }} value={form.baseline} onChange={(e) => setF("baseline", e.target.value)} placeholder="Ej. Rotación voluntaria 2025: 18% anual" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Target (post-programa)</label>
+                  <textarea style={{ ...inputStyle, minHeight: 50, resize: "vertical" }} value={form.target} onChange={(e) => setF("target", e.target.value)} placeholder="Ej. Reducir a ≤12% en 12 meses post-programa" />
+                </div>
+              </div>
+              <div style={{ marginBottom: 10 }}>
+                <label style={labelStyle}>Cómo se medirá (metodología)</label>
+                <textarea style={{ ...inputStyle, minHeight: 60, resize: "vertical" }} value={form.comoSeMide} onChange={(e) => setF("comoSeMide", e.target.value)} placeholder="Quién, qué fuente de datos, qué cadencia, cómo se calcula el ROI financiero..." />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 10, marginBottom: 14 }}>
+                <div>
+                  <label style={labelStyle}>Fecha(s) de medición</label>
+                  <input style={inputStyle} value={form.fechaMedicion} onChange={(e) => setF("fechaMedicion", e.target.value)} placeholder="Ej. 90 días post + 6 meses post" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Beneficios esperados cuantificados</label>
+                  <input style={inputStyle} value={form.beneficiosEsperados} onChange={(e) => setF("beneficiosEsperados", e.target.value)} placeholder="Ej. $180K en costos de rotación evitados + mejora 0.3 pts en score 360°" />
+                </div>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingTop: 14, borderTop: "1px solid #e2e8f0" }}>
+                <button style={S.btnGhost} onClick={() => { setForm(formInicial); setNuevoOpen(false); }}>Cancelar</button>
+                <button style={S.btn} onClick={agregarCurso}>Crear solicitud</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
 
 // =============================================================
-// 7. PROCESO DE SELECCIÓN
+// 5. PROCESO DE SELECCIÓN
 // =============================================================
 function Seleccion() {
-  const candidatos = [
-    { nombre: "A. Ramírez", puesto: "Asesor Comercial Sr.", etapa: "Entrevista final", score: 8.5 },
-    { nombre: "J. Torres", puesto: "Asesor Comercial Sr.", etapa: "Entrevista 1", score: 7.2 },
-    { nombre: "M. Gómez", puesto: "Mecánico A", etapa: "Pruebas técnicas", score: 7.8 },
-    { nombre: "S. Vega", puesto: "Contador General", etapa: "Oferta", score: 9.1 },
-  ];
+  const [candidatoAbierto, setCandidatoAbierto] = useState(null);
 
   const etapas = [
     "Solicitud (vacante autorizada)",
@@ -3860,50 +7192,424 @@ function Seleccion() {
     "Onboarding 30-60-90+",
   ];
 
+  // Helper: construye un checklist de 11 etapas, marcando como completas hasta `hastaIdx` (exclusivo)
+  const mkChecklist = (hastaIdx, datos = {}) => etapas.map((e, i) => ({
+    idx: i, label: e,
+    completado: i < hastaIdx,
+    enCurso: i === hastaIdx,
+    fecha: datos[i]?.fecha || (i < hastaIdx ? "—" : ""),
+    responsable: datos[i]?.responsable || "",
+    notas: datos[i]?.notas || "",
+  }));
+
+  const candidatos = [
+    {
+      id: "CAND-1042", nombre: "Ana Ramírez", email: "ana.ramirez@correo.mx",
+      puesto: "Asesor Comercial Sr.", area: "Comercial", requisicion: "REQ-101",
+      solicitanteNombre: "Guillermo Pérez", solicitantePuesto: "Gerente Comercial Centro",
+      jefeDirecto: "Guillermo Pérez", fechaSolicitudVacante: "08-abr-2026",
+      fechaIngresoEsperada: "01-jun-2026", diasEnProceso: 44, score: 8.5,
+      canalReclutamiento: "Referido interno (Alejandro Méndez ex-B-003)",
+      sueldoOfertado: 28000, sueldoPresupuesto: 30000, bonoFirma: 5000, bonoTrimestral: 6000,
+      prestaciones: "Ley + GMM + Vales $2,000/mes",
+      etapaActualIdx: 6, // En "Entrevista final / Dirección"
+      notasGenerales: "Top de su pipeline previo. Buena referencia de Alejandro Méndez. Solicita arranque rápido por noviazgo con OEM regional.",
+      historial: {
+        0: { fecha: "08-abr", responsable: "G. Pérez · Comité Plantilla", notas: "REQ-101 autorizada en sesión del 08-abr (cubre salida de Alejandro Méndez B-003)." },
+        1: { fecha: "10-abr", responsable: "Reclutamiento", notas: "Job posting en LinkedIn, Indeed + referidos. 87 aplicaciones recibidas." },
+        2: { fecha: "16-abr", responsable: "Reclutamiento", notas: "12 CVs preseleccionados de los 87 aplicantes." },
+        3: { fecha: "20-abr", responsable: "P. Castaño (Gte. RH)", notas: "Pasa filtro RH con score 8.7/10." },
+        4: { fecha: "24-abr", responsable: "Proveedor externo", notas: "Psicométrica DISC + prueba de venta consultiva: aprobada." },
+        5: { fecha: "06-may", responsable: "G. Pérez", notas: "Entrevista comercial: G. Pérez confirma fit, sugiere arrancar pronto." },
+        6: { fecha: "28-may (programado)", responsable: "F. Domínguez (Dir. Comercial Norte)", notas: "Entrevista final agendada — sesión de 60 min." },
+      },
+    },
+    {
+      id: "CAND-1058", nombre: "Javier Torres", email: "j.torres@correo.mx",
+      puesto: "Asesor Comercial Sr.", area: "Comercial", requisicion: "REQ-101",
+      solicitanteNombre: "Guillermo Pérez", solicitantePuesto: "Gerente Comercial Centro",
+      jefeDirecto: "Guillermo Pérez", fechaSolicitudVacante: "08-abr-2026",
+      fechaIngresoEsperada: "01-jun-2026", diasEnProceso: 38, score: 7.2,
+      canalReclutamiento: "LinkedIn (ad pagado)",
+      sueldoOfertado: 0, sueldoPresupuesto: 30000, bonoFirma: 0, bonoTrimestral: 0,
+      prestaciones: "Por definir si avanza",
+      etapaActualIdx: 4,
+      notasGenerales: "Backup de A. Ramírez para la misma vacante. Sólido pero menor fit con el rol senior.",
+      historial: {
+        0: { fecha: "08-abr", responsable: "G. Pérez · Comité Plantilla", notas: "REQ-101 autorizada (compartida con Ramírez)." },
+        1: { fecha: "10-abr", responsable: "Reclutamiento", notas: "Contactado vía LinkedIn ads." },
+        2: { fecha: "18-abr", responsable: "Reclutamiento", notas: "CV pasa filtro con calificación de 7.5." },
+        3: { fecha: "25-abr", responsable: "P. Castaño", notas: "Entrevista RH: score 7.2/10, fortaleza en negociación." },
+        4: { fecha: "29-may (programado)", responsable: "Proveedor externo", notas: "Psicométrica + prueba comercial agendada." },
+      },
+    },
+    {
+      id: "CAND-1063", nombre: "Mauricio Gómez", email: "m.gomez@correo.mx",
+      puesto: "Mecánico A", area: "Posventa", requisicion: "REQ-102",
+      solicitanteNombre: "Lorenzo Cano", solicitantePuesto: "Gerente de Posventa",
+      jefeDirecto: "Teresa Aguilar (Sup. Posventa Turno A)", fechaSolicitudVacante: "02-abr-2026",
+      fechaIngresoEsperada: "10-jun-2026", diasEnProceso: 50, score: 7.8,
+      canalReclutamiento: "Bolsa de trabajo CONALEP",
+      sueldoOfertado: 0, sueldoPresupuesto: 18000, bonoFirma: 0, bonoTrimestral: 0,
+      prestaciones: "Por definir si avanza",
+      etapaActualIdx: 4,
+      notasGenerales: "Cubre vacante crítica del taller Norte. Buen perfil técnico, certificación CONALEP nivel 4.",
+      historial: {
+        0: { fecha: "02-abr", responsable: "L. Cano · Comité Plantilla", notas: "REQ-102 autorizada por salida de D. Vázquez (B-011)." },
+        1: { fecha: "05-abr", responsable: "Reclutamiento", notas: "Convocatoria abierta en bolsa CONALEP + referidos del taller." },
+        2: { fecha: "14-abr", responsable: "Reclutamiento", notas: "8 CVs pre-filtrados con experiencia en motor diésel." },
+        3: { fecha: "22-abr", responsable: "P. Castaño", notas: "Entrevista RH: pasa con 7.8. Honesto sobre periodo de prueba previo." },
+        4: { fecha: "23-may (programado)", responsable: "Taller Norte", notas: "Prueba técnica práctica de 4 hrs en taller con T. Aguilar." },
+      },
+    },
+    {
+      id: "CAND-1071", nombre: "Sofía Vega", email: "s.vega@correo.mx",
+      puesto: "Contador General", area: "Administración", requisicion: "REQ-103",
+      solicitanteNombre: "Rodrigo Solís", solicitantePuesto: "Gerente de Finanzas",
+      jefeDirecto: "Rodrigo Solís", fechaSolicitudVacante: "25-mar-2026",
+      fechaIngresoEsperada: "15-jun-2026", diasEnProceso: 58, score: 9.1,
+      canalReclutamiento: "Headhunter especializado (Finanzas)",
+      sueldoOfertado: 42000, sueldoPresupuesto: 38000, bonoFirma: 0, bonoTrimestral: 12000,
+      prestaciones: "Ley + GMM + Vales $2,500 + Auto utilitario",
+      etapaActualIdx: 7, // En "Oferta económica"
+      notasGenerales: "Candidata excepcional, viene de Big-Four. Pide $42K vs presupuesto $38K — requiere aprobación de S. Ramírez (Dir. Administrativo).",
+      historial: {
+        0: { fecha: "25-mar", responsable: "R. Solís · Comité Plantilla", notas: "REQ-103 autorizada (vacante por reubicación familiar de P. Lozano B-004)." },
+        1: { fecha: "28-mar", responsable: "Reclutamiento + Headhunter", notas: "Contrato con headhunter especializado · fee 15% sueldo anual." },
+        2: { fecha: "06-abr", responsable: "Reclutamiento", notas: "5 finalistas del headhunter, todos con CPC y experiencia Big-Four." },
+        3: { fecha: "13-abr", responsable: "P. Castaño", notas: "Entrevista RH: score 9.1 (mejor del año en su rol). Excelente comunicación." },
+        4: { fecha: "20-abr", responsable: "Proveedor externo", notas: "Pruebas técnicas NIIF + Excel avanzado: aprobada con score 95%." },
+        5: { fecha: "30-abr", responsable: "R. Solís", notas: "Entrevista técnica con R. Solís: 'la quiero contratar ya'." },
+        6: { fecha: "12-may", responsable: "S. Ramírez (Dir. Administrativo)", notas: "Entrevista final: aprobado el perfil. Pide validar tope salarial." },
+        7: { fecha: "22-may (en curso)", responsable: "Comp&Ben + R. Solís", notas: "Oferta enviada $42K — pendiente aprobación por estar +10.5% del presupuesto." },
+      },
+    },
+    {
+      id: "CAND-0987", nombre: "Pedro Núñez", email: "p.nunez@correo.mx",
+      puesto: "Gerente de Operaciones (Planta 1)", area: "Operaciones", requisicion: "REQ-104",
+      solicitanteNombre: "Carlos Mendoza", solicitantePuesto: "Director de Operaciones",
+      jefeDirecto: "Carlos Mendoza", fechaSolicitudVacante: "10-feb-2026",
+      fechaIngresoEsperada: "01-abr-2026", diasEnProceso: 102, score: 8.9,
+      canalReclutamiento: "Headhunter ejecutivo",
+      sueldoOfertado: 55000, sueldoPresupuesto: 58000, bonoFirma: 30000, bonoTrimestral: 18000,
+      prestaciones: "Ley + GMM Plus + Auto + Vales $3,000 + Bono anual 2 meses",
+      etapaActualIdx: 10, // En Onboarding (todas previas completadas)
+      notasGenerales: "Contratación cerrada. Día 60 del onboarding. Buena adaptación, ya tomó 2 decisiones operativas en línea con la estrategia.",
+      historial: {
+        0: { fecha: "10-feb", responsable: "C. Mendoza", notas: "REQ-104 autorizada por jubilación del anterior gerente." },
+        1: { fecha: "12-feb", responsable: "Headhunter ejecutivo", notas: "Búsqueda confidencial en empresas del sector." },
+        2: { fecha: "25-feb", responsable: "Reclutamiento", notas: "3 finalistas con experiencia en industria automotriz." },
+        3: { fecha: "04-mar", responsable: "P. Castaño", notas: "Entrevista RH: 8.9. Excelente trayectoria, busca estabilidad de largo plazo." },
+        4: { fecha: "10-mar", responsable: "Proveedor externo", notas: "Assessment Center de 1 día completo: 'recomendado fuertemente'." },
+        5: { fecha: "16-mar", responsable: "C. Mendoza", notas: "Entrevista técnica/operativa: excelente." },
+        6: { fecha: "20-mar", responsable: "Dirección General", notas: "Entrevista final: aprobado por unanimidad." },
+        7: { fecha: "23-mar", responsable: "Comp&Ben", notas: "Oferta $55K (5% bajo presupuesto) + bono firma $30K aceptada." },
+        8: { fecha: "26-mar", responsable: "Reclutamiento", notas: "3 referencias verificadas: todas positivas." },
+        9: { fecha: "01-abr", responsable: "RH", notas: "Contratación formalizada. Firma de contrato y NDA." },
+        10: { fecha: "01-abr → en curso", responsable: "C. Mendoza (sponsor)", notas: "Onboarding 30-60-90+ activo. Check-in Día 60 completado el 31-may con score 4.5/5." },
+      },
+    },
+    {
+      id: "CAND-1085", nombre: "Karen Robles", email: "k.robles@correo.mx",
+      puesto: "Asistente de RH Sr.", area: "Administración", requisicion: "REQ-105",
+      solicitanteNombre: "Paola Castaño", solicitantePuesto: "Gerente de Recursos Humanos",
+      jefeDirecto: "Paola Castaño", fechaSolicitudVacante: "14-mar-2026",
+      fechaIngresoEsperada: "15-jun-2026", diasEnProceso: 69, score: 0,
+      canalReclutamiento: "Referido interno + LinkedIn",
+      sueldoOfertado: 0, sueldoPresupuesto: 22000, bonoFirma: 0, bonoTrimestral: 0,
+      prestaciones: "Por definir si avanza",
+      etapaActualIdx: 2,
+      notasGenerales: "Reemplazo de Beatriz Cordero (B-014). Vacante crítica — procesos de RH operando con redundancia temporal de B. Lozano (ingreso reciente).",
+      historial: {
+        0: { fecha: "14-mar", responsable: "P. Castaño + S. Ramírez", notas: "REQ-105 autorizada el mismo día que se confirmó la baja de B. Cordero." },
+        1: { fecha: "17-mar", responsable: "Reclutamiento", notas: "Búsqueda activa · 4 referidos internos + LinkedIn ads." },
+        2: { fecha: "22-may (en curso)", responsable: "Reclutamiento", notas: "9 CVs en revisión · primer filtro previsto 28-may." },
+      },
+    },
+    {
+      id: "CAND-1090", nombre: "Ramón Cabral", email: "r.cabral@correo.mx",
+      puesto: "Supervisor Posventa Turno B", area: "Posventa", requisicion: "REQ-106",
+      solicitanteNombre: "Lorenzo Cano", solicitantePuesto: "Gerente de Posventa",
+      jefeDirecto: "Lorenzo Cano", fechaSolicitudVacante: "20-abr-2026",
+      fechaIngresoEsperada: "01-jul-2026", diasEnProceso: 32, score: 7.4,
+      canalReclutamiento: "Bolsa de trabajo + referidos",
+      sueldoOfertado: 0, sueldoPresupuesto: 28000, bonoFirma: 0, bonoTrimestral: 0,
+      prestaciones: "Por definir si avanza",
+      etapaActualIdx: 3,
+      notasGenerales: "Vacante crítica por la rotación documentada del taller. Solicitud incluye condición especial: que NO sea reportar a L. Cano directamente (escalación pendiente).",
+      historial: {
+        0: { fecha: "20-abr", responsable: "L. Cano + C. Mendoza", notas: "REQ-106 autorizada con observación: requiere aprobación Dir. Operaciones tras intervención de clima." },
+        1: { fecha: "25-abr", responsable: "Reclutamiento", notas: "Convocatoria abierta · 22 aplicaciones." },
+        2: { fecha: "08-may", responsable: "Reclutamiento", notas: "6 CVs preseleccionados." },
+        3: { fecha: "26-may (en curso)", responsable: "P. Castaño", notas: "Entrevista RH agendada para próxima semana." },
+      },
+    },
+  ];
+
+  // Construye el checklist para cada candidato
+  const candidatosConChecklist = candidatos.map((c) => ({
+    ...c,
+    checklist: mkChecklist(c.etapaActualIdx + 1, c.historial),
+    pctAvance: Math.round(((c.etapaActualIdx + 1) / etapas.length) * 100),
+  }));
+
+  // Colores del branding (de las gráficas de Cobertura/Variaciones)
+  const colorNaranja = "linear-gradient(90deg, #ea580c 0%, #c2410c 100%)";
+  const colorGris = "linear-gradient(90deg, #64748b 0%, #475569 100%)";
+  const colorVerde = "linear-gradient(90deg, #71b248 0%, #5a9438 100%)";
+  const gradPorAvance = (pct) => pct >= 100 ? colorVerde : pct >= 60 ? colorNaranja : colorGris;
+
   return (
     <div>
-      <h2 style={S.h2}>7. Proceso de Selección</h2>
+      <h2 style={S.h2}>5. Proceso de Selección</h2>
       <p style={S.hint}>Pipeline completo: desde la solicitud autorizada hasta el onboarding 30-60-90+.</p>
 
       <div style={S.grid4}>
-        <div style={S.kpi}><div style={S.kpiLabel}>Candidatos activos</div><div style={S.kpiValue}>28</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Tiempo medio de cobertura</div><div style={S.kpiValue}>38 días</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Tasa de oferta aceptada</div><div style={S.kpiValue}>78%</div></div>
-        <div style={S.kpi}><div style={S.kpiLabel}>Onboardings activos</div><div style={S.kpiValue}>4</div></div>
-      </div>
-
-      <h3 style={S.h3}>Etapas del proceso</h3>
-      <div style={S.card}>
-        <ol style={{ paddingLeft: 18, margin: 0, lineHeight: 1.8 }}>
-          {etapas.map((e, i) => (
-            <li key={i} style={{ fontSize: 13 }}>{e}</li>
-          ))}
-        </ol>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Candidatos activos</div>
+            <div style={S.kpiValue}>28</div>
+            <div style={S.kpiBenchmark("green")}>Benchmark · Pool saludable: ≥20</div>
+          </div>
+          <TrafficLight light="green" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Tiempo medio de cobertura</div>
+            <div style={S.kpiValue}>38 días</div>
+            <div style={S.kpiBenchmark("yellow")}>Benchmark · SLA: ≤30 días</div>
+          </div>
+          <TrafficLight light="yellow" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Tasa de oferta aceptada</div>
+            <div style={S.kpiValue}>78%</div>
+            <div style={S.kpiBenchmark("green")}>Benchmark · Meta: ≥70% · Excelente: ≥85%</div>
+          </div>
+          <TrafficLight light="green" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Onboardings activos</div>
+            <div style={S.kpiValue}>4</div>
+            <div style={S.kpiBenchmark("green")}>Benchmark · Capacidad mensual: 6</div>
+          </div>
+          <TrafficLight light="green" />
+        </div>
       </div>
 
       <h3 style={S.h3}>Candidatos en pipeline</h3>
+      <p style={{ ...S.hint, marginTop: -4 }}>Cada candidato lleva su propio checklist de las 11 etapas. Click para ver el expediente completo de contratación.</p>
       <table style={S.table}>
         <thead>
           <tr>
             <th style={S.th}>Candidato</th>
-            <th style={S.th}>Puesto</th>
-            <th style={S.th}>Etapa</th>
+            <th style={S.th}>Puesto / REQ</th>
+            <th style={S.th}>Solicitante</th>
+            <th style={S.th}>Etapa actual</th>
+            <th style={S.th} colSpan={2}>% Avance (11 etapas)</th>
             <th style={S.th}>Score</th>
-            <th style={S.th}>Acción</th>
+            <th style={S.th}>Días</th>
+            <th style={S.th}></th>
           </tr>
         </thead>
         <tbody>
-          {candidatos.map((c) => (
-            <tr key={c.nombre}>
-              <td style={S.td}><strong>{c.nombre}</strong></td>
-              <td style={S.td}>{c.puesto}</td>
-              <td style={S.td}>{c.etapa}</td>
-              <td style={S.td}>{c.score}</td>
-              <td style={S.td}><button style={S.btnGhost}>Ver expediente</button></td>
+          {candidatosConChecklist.map((c) => (
+            <tr
+              key={c.id}
+              onClick={() => setCandidatoAbierto(c)}
+              style={{ cursor: "pointer" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            >
+              <td style={S.td}>
+                <div style={{ fontWeight: 700 }}>{c.nombre}</div>
+                <div style={{ fontSize: 10, color: "#666", fontFamily: "monospace" }}>{c.id}</div>
+              </td>
+              <td style={S.td}>
+                <div>{c.puesto}</div>
+                <div style={{ fontSize: 11, color: "#666" }}>{c.requisicion} · {c.area}</div>
+              </td>
+              <td style={S.td}>
+                <div style={{ fontWeight: 600 }}>{c.solicitanteNombre}</div>
+                <div style={{ fontSize: 11, color: "#666" }}>{c.solicitantePuesto}</div>
+              </td>
+              <td style={S.td}>
+                <div style={{ fontWeight: 600 }}>{c.etapaActualIdx + 1}. {etapas[c.etapaActualIdx].split(" (")[0]}</div>
+                <div style={{ fontSize: 11, color: "#666" }}>{c.historial[c.etapaActualIdx]?.fecha || ""}</div>
+              </td>
+              <td style={{ ...S.td, width: 220, paddingRight: 4 }}>
+                <div style={{ position: "relative", height: 10, background: "#f1f5f9", borderRadius: 5, overflow: "hidden" }}>
+                  <div style={{ position: "absolute", inset: 0, width: `${c.pctAvance}%`, background: gradPorAvance(c.pctAvance), borderRadius: 5 }} />
+                </div>
+              </td>
+              <td style={{ ...S.td, width: 50, fontWeight: 700, paddingLeft: 4 }}>{c.pctAvance}%</td>
+              <td style={S.td}>{c.score > 0 ? c.score.toFixed(1) : "—"}</td>
+              <td style={S.td}>{c.diasEnProceso}</td>
+              <td style={{ ...S.td, textAlign: "right", color: "#64748b", fontSize: 12 }}>Ver expediente →</td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Modal de candidato — checklist + detalle de contratación */}
+      {candidatoAbierto && (() => {
+        const c = candidatoAbierto;
+        const sueldoVsPresupuesto = c.sueldoOfertado > 0
+          ? ((c.sueldoOfertado - c.sueldoPresupuesto) / c.sueldoPresupuesto) * 100
+          : null;
+        const sueldoColor = sueldoVsPresupuesto === null ? "#64748b" : sueldoVsPresupuesto > 5 ? "#b00020" : sueldoVsPresupuesto < -5 ? "#0a7d2c" : "#d97706";
+        const sueldoLight = sueldoVsPresupuesto === null ? "yellow" : sueldoVsPresupuesto > 5 ? "red" : sueldoVsPresupuesto < -5 ? "green" : "yellow";
+        return (
+          <div
+            onClick={() => setCandidatoAbierto(null)}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{ background: "#fff", borderRadius: 8, padding: 24, width: 1080, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto", border: "1px solid #ccc" }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, paddingBottom: 12, borderBottom: "1px solid #e2e8f0" }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                    <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>{c.nombre}</h3>
+                    <span style={{ fontSize: 11, color: "#666", fontFamily: "monospace" }}>{c.id}</span>
+                    {c.pctAvance >= 100
+                      ? <span style={S.badge("#dcfce7")}>Onboarding</span>
+                      : c.pctAvance >= 60
+                      ? <span style={S.badge("#ffedd5")}>Etapa final</span>
+                      : <span style={S.badge("#f1f5f9")}>En proceso</span>}
+                  </div>
+                  <div style={{ fontSize: 13, color: "#475569" }}>
+                    {c.puesto} · {c.area} · {c.requisicion} · Email: {c.email}
+                  </div>
+                </div>
+                <button onClick={() => setCandidatoAbierto(null)} style={{ border: "none", background: "transparent", fontSize: 22, cursor: "pointer", color: "#666", lineHeight: 1 }}>×</button>
+              </div>
+
+              {/* KPIs principales */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 10, marginBottom: 16 }}>
+                <div style={{ ...S.kpi, padding: 12 }}>
+                  <div style={S.kpiLabel}>% Avance</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{c.pctAvance}%</div>
+                  <div style={{ position: "relative", height: 6, background: "#f1f5f9", borderRadius: 3, marginTop: 6, overflow: "hidden" }}>
+                    <div style={{ position: "absolute", inset: 0, width: `${c.pctAvance}%`, background: gradPorAvance(c.pctAvance), borderRadius: 3 }} />
+                  </div>
+                </div>
+                <div style={{ ...S.kpi, padding: 12 }}>
+                  <div style={S.kpiLabel}>Etapa actual</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, marginTop: 4 }}>{c.etapaActualIdx + 1}. {etapas[c.etapaActualIdx].split(" (")[0]}</div>
+                  <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{c.historial[c.etapaActualIdx]?.fecha || "—"}</div>
+                </div>
+                <div style={{ ...S.kpi, padding: 12 }}>
+                  <div style={S.kpiLabel}>Días en proceso</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4, color: c.diasEnProceso > 60 ? "#b00020" : c.diasEnProceso > 30 ? "#d97706" : "#0a7d2c" }}>{c.diasEnProceso}</div>
+                  <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>SLA interno: ≤30 días</div>
+                </div>
+                <div style={{ ...S.kpi, padding: 12 }}>
+                  <div style={S.kpiLabel}>Score RH</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{c.score > 0 ? `${c.score.toFixed(1)} / 10` : "—"}</div>
+                  <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{c.score === 0 ? "Aún sin evaluación RH" : c.score >= 8 ? "Excelente" : c.score >= 7 ? "Aceptable" : "Bajo umbral"}</div>
+                </div>
+              </div>
+
+              {/* Datos del puesto y económicos en 2 columnas */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+                <div style={{ ...S.card, marginBottom: 0 }}>
+                  <div style={{ ...S.kpiLabel, marginBottom: 8 }}>Datos de la requisición</div>
+                  <div style={{ fontSize: 13, lineHeight: 1.6 }}>
+                    <div><strong>Requisición:</strong> {c.requisicion}</div>
+                    <div><strong>Puesto:</strong> {c.puesto}</div>
+                    <div><strong>Área:</strong> {c.area}</div>
+                    <div><strong>Solicitante:</strong> {c.solicitanteNombre} · {c.solicitantePuesto}</div>
+                    <div><strong>Jefe directo (futuro):</strong> {c.jefeDirecto}</div>
+                    <div><strong>Fecha solicitud:</strong> {c.fechaSolicitudVacante}</div>
+                    <div><strong>Fecha ingreso esperada:</strong> {c.fechaIngresoEsperada}</div>
+                    <div><strong>Canal de reclutamiento:</strong> {c.canalReclutamiento}</div>
+                  </div>
+                </div>
+                <div style={{ ...S.card, marginBottom: 0 }}>
+                  <div style={{ ...S.kpiLabel, marginBottom: 8 }}>Económico</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Presupuesto</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, marginTop: 2 }}>${c.sueldoPresupuesto.toLocaleString("es-MX")}</div>
+                      <div style={{ fontSize: 11, color: "#666" }}>autorizado en REQ</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 0.4, fontWeight: 700 }}>Ofrecido</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, marginTop: 2, color: sueldoColor }}>
+                        {c.sueldoOfertado > 0 ? `$${c.sueldoOfertado.toLocaleString("es-MX")}` : "Pendiente"}
+                      </div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: sueldoColor }}>
+                        {sueldoVsPresupuesto !== null
+                          ? `${sueldoVsPresupuesto >= 0 ? "+" : ""}${sueldoVsPresupuesto.toFixed(1)}% vs presupuesto`
+                          : "Sin oferta aún"}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={S.kpiBenchmark(sueldoLight)}>
+                    {sueldoVsPresupuesto === null ? "Esperando oferta" : sueldoVsPresupuesto > 5 ? "Requiere aprobación por arriba de presupuesto" : sueldoVsPresupuesto < -5 ? "Bajo presupuesto · OK" : "Dentro de banda autorizada"}
+                  </div>
+                  <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.6 }}>
+                    <div><strong>Bono de firma:</strong> {c.bonoFirma > 0 ? `$${c.bonoFirma.toLocaleString("es-MX")}` : "—"}</div>
+                    <div><strong>Bono trimestral target:</strong> {c.bonoTrimestral > 0 ? `$${c.bonoTrimestral.toLocaleString("es-MX")}` : "—"}</div>
+                    <div><strong>Prestaciones:</strong> {c.prestaciones}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Notas generales */}
+              <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Notas del expediente</div>
+              <div style={{ fontSize: 13, padding: "10px 12px", background: "#fff7e0", borderLeft: "3px solid #d97706", borderRadius: 4, marginBottom: 16, lineHeight: 1.5 }}>
+                {c.notasGenerales}
+              </div>
+
+              {/* Checklist de las 11 etapas */}
+              <div style={{ ...S.kpiLabel, marginBottom: 8 }}>Checklist · Etapas del proceso (11)</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {c.checklist.map((step) => {
+                  const isDone = step.completado;
+                  const isCurrent = step.enCurso;
+                  return (
+                    <div key={step.idx} style={{
+                      display: "flex", alignItems: "flex-start", gap: 10,
+                      padding: "10px 12px",
+                      background: isDone ? "#f6fbf6" : isCurrent ? "#fff7ed" : "#fafafa",
+                      border: `1px solid ${isDone ? "#86efac" : isCurrent ? "#fed7aa" : "#e5e5e5"}`,
+                      borderRadius: 4,
+                    }}>
+                      <div style={{
+                        width: 22, height: 22, borderRadius: "50%",
+                        background: isDone ? "#0a7d2c" : isCurrent ? "#c2410c" : "#cbd5e1",
+                        color: "#fff",
+                        fontSize: 12, fontWeight: 700,
+                        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                      }}>
+                        {isDone ? "✓" : step.idx + 1}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                          <span style={{ fontSize: 13, fontWeight: 700, color: "#0f172a" }}>{step.label}</span>
+                          {isCurrent && <span style={{ fontSize: 10, color: "#c2410c", fontWeight: 700, padding: "1px 6px", background: "#ffedd5", borderRadius: 10 }}>EN CURSO</span>}
+                          {step.fecha && <span style={{ fontSize: 11, color: "#666" }}>· {step.fecha}</span>}
+                          {step.responsable && <span style={{ fontSize: 11, color: "#666" }}>· {step.responsable}</span>}
+                        </div>
+                        {step.notas && <div style={{ fontSize: 12, color: "#475569", marginTop: 2, lineHeight: 1.4 }}>{step.notas}</div>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingTop: 16, marginTop: 16, borderTop: "1px solid #eee" }}>
+                <button style={S.btn} onClick={() => setCandidatoAbierto(null)}>Cerrar</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       <h3 style={S.h3}>Herramientas integradas</h3>
       <div style={S.grid3}>
@@ -3967,9 +7673,21 @@ export default function SaaSRRHH() {
     <div style={S.page}>
       {/* Topbar */}
       <div style={S.topbar}>
-        <div>
-          <div style={S.title}>TABLERO DE CONTROL PARA RRHH</div>
-          <div style={S.subtitle}>Suite integral para Dirección y Gerencia de Recursos Humanos</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div style={{
+            width: 38, height: 38, borderRadius: 9,
+            background: "linear-gradient(135deg, #ea580c 0%, #c2410c 100%)",
+            color: "#fff", fontWeight: 800, fontSize: 16,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            letterSpacing: "-0.04em",
+            boxShadow: "0 2px 8px rgba(194, 65, 12, 0.25)",
+          }}>
+            RH
+          </div>
+          <div>
+            <div style={{ ...S.title, textTransform: "none" }}>Tablero de control para RRHH</div>
+            <div style={S.subtitle}>Suite integral para Dirección y Gerencia de Recursos Humanos</div>
+          </div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button style={S.btnGhost}>Empresa: Demo S.A.</button>
@@ -4018,23 +7736,6 @@ export default function SaaSRRHH() {
                 Sin resultados
               </div>
             )}
-          </div>
-
-          {/* Sección de configuración / accesos rápidos */}
-          <div style={S.sidebarSection}>
-            <div style={S.sidebarTitle}>Accesos Rápidos</div>
-          </div>
-          <div style={S.sidebarItem(false)}>
-            <span style={{ fontSize: 13 }}>+ Nueva incidencia</span>
-          </div>
-          <div style={S.sidebarItem(false)}>
-            <span style={{ fontSize: 13 }}>+ Nueva vacante</span>
-          </div>
-          <div style={S.sidebarItem(false)}>
-            <span style={{ fontSize: 13 }}>+ Solicitud de capacitación</span>
-          </div>
-          <div style={S.sidebarItem(false)}>
-            <span style={{ fontSize: 13 }}>+ Lanzar pulso de clima</span>
           </div>
 
           <div style={S.sidebarSection}>
