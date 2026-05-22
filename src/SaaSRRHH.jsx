@@ -337,8 +337,8 @@ const monthlyBonos = {
 
 const monthlyDashboardKpis = {
   "Ene 2026": [
-    { label: "Costo total nómina (mes)", value: "$7.85M",  delta: "+1.5% vs mes anterior",   up: false, light: "yellow", benchmark: "Aceptable: ≤+2% mensual" },
-    { label: "% variable / nómina",      value: "18.5%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
+    { label: "Costo total nómina (mes)", value: "$7.45M",  delta: "+1.5% vs mes anterior",   up: false, light: "yellow", benchmark: "Aceptable: ≤+2% mensual" },
+    { label: "% variable / nómina",      value: "24.5%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
     { label: "Rotación anual",           value: "19.4%",   delta: "4 bajas YTD · $0.17M",    up: false, light: "yellow", benchmark: "Industria 15-18% · Meta: ≤18%" },
     { label: "Clima (último pulso)",     value: "7.0 / 10",delta: "0.0 vs trimestre",        up: true,  light: "green",  benchmark: "Meta: ≥7.0 · Excelente: ≥7.5" },
     { label: "Cobertura plantilla",      value: "91%",     delta: "14 vacantes abiertas",    up: false, light: "yellow", benchmark: "Meta: ≥95%" },
@@ -347,8 +347,8 @@ const monthlyDashboardKpis = {
     { label: "Tiempo medio de cobertura", value: "36 días",delta: "Meta: 30",                up: false, light: "yellow", benchmark: "SLA: ≤30 días" },
   ],
   "Feb 2026": [
-    { label: "Costo total nómina (mes)", value: "$7.95M",  delta: "+1.3% vs mes anterior",   up: false, light: "yellow", benchmark: "Aceptable: ≤+2% mensual" },
-    { label: "% variable / nómina",      value: "19.2%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
+    { label: "Costo total nómina (mes)", value: "$7.35M",  delta: "−1.3% vs mes anterior",   up: true,  light: "green",  benchmark: "Aceptable: ≤+2% mensual" },
+    { label: "% variable / nómina",      value: "23.2%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
     { label: "Rotación anual",           value: "19.4%",   delta: "8 bajas YTD · $0.34M",    up: false, light: "yellow", benchmark: "Industria 15-18% · Meta: ≤18%" },
     { label: "Clima (último pulso)",     value: "7.1 / 10",delta: "+0.1 vs trimestre",       up: true,  light: "green",  benchmark: "Meta: ≥7.0 · Excelente: ≥7.5" },
     { label: "Cobertura plantilla",      value: "92%",     delta: "12 vacantes abiertas",    up: false, light: "yellow", benchmark: "Meta: ≥95%" },
@@ -357,8 +357,8 @@ const monthlyDashboardKpis = {
     { label: "Tiempo medio de cobertura", value: "37 días",delta: "Meta: 30",                up: false, light: "yellow", benchmark: "SLA: ≤30 días" },
   ],
   "Mar 2026": [
-    { label: "Costo total nómina (mes)", value: "$8.65M",  delta: "+8.8% vs mes anterior",   up: false, light: "red",    benchmark: "Aceptable: ≤+2% mensual" },
-    { label: "% variable / nómina",      value: "24.5%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
+    { label: "Costo total nómina (mes)", value: "$8.08M",  delta: "+10.0% vs mes anterior",  up: false, light: "red",    benchmark: "Aceptable: ≤+2% mensual" },
+    { label: "% variable / nómina",      value: "29.4%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
     { label: "Rotación anual",           value: "21.0%",   delta: "13 bajas YTD · $0.56M",   up: false, light: "red",    benchmark: "Industria 15-18% · Meta: ≤18%" },
     { label: "Clima (último pulso)",     value: "7.2 / 10",delta: "+0.1 vs trimestre",       up: true,  light: "green",  benchmark: "Meta: ≥7.0 · Excelente: ≥7.5" },
     { label: "Cobertura plantilla",      value: "93%",     delta: "11 vacantes abiertas",    up: false, light: "yellow", benchmark: "Meta: ≥95%" },
@@ -367,8 +367,8 @@ const monthlyDashboardKpis = {
     { label: "Tiempo medio de cobertura", value: "39 días",delta: "Meta: 30",                up: false, light: "yellow", benchmark: "SLA: ≤30 días" },
   ],
   "Abr 2026": [
-    { label: "Costo total nómina (mes)", value: "$8.42M",  delta: "+4.2% vs mes anterior",   up: false, light: "yellow", benchmark: "Aceptable: ≤+2% mensual" },
-    { label: "% variable / nómina",      value: "23.1%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
+    { label: "Costo total nómina (mes)", value: "$7.73M",  delta: "−4.4% vs mes anterior",   up: true,  light: "green",  benchmark: "Aceptable: ≤+2% mensual" },
+    { label: "% variable / nómina",      value: "26.0%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
     { label: "Rotación anual",           value: "20.6%",   delta: "17 bajas YTD · $0.73M",   up: false, light: "red",    benchmark: "Industria 15-18% · Meta: ≤18%" },
     { label: "Clima (último pulso)",     value: "7.2 / 10",delta: "+0.3 vs trimestre",       up: true,  light: "green",  benchmark: "Meta: ≥7.0 · Excelente: ≥7.5" },
     { label: "Cobertura plantilla",      value: "92%",     delta: "12 vacantes abiertas",    up: false, light: "yellow", benchmark: "Meta: ≥95%" },
@@ -377,8 +377,8 @@ const monthlyDashboardKpis = {
     { label: "Tiempo medio de cobertura", value: "38 días",delta: "Meta: 30",                up: false, light: "yellow", benchmark: "SLA: ≤30 días" },
   ],
   "May 2026": [
-    { label: "Costo total nómina (mes)", value: "$8.10M",  delta: "−3.8% vs mes anterior",   up: true,  light: "green",  benchmark: "Aceptable: ≤+2% mensual" },
-    { label: "% variable / nómina",      value: "19.8%",   delta: "Límite: 18%",             up: false, light: "yellow", benchmark: "Política interna: 18%" },
+    { label: "Costo total nómina (mes)", value: "$7.70M",  delta: "−0.4% vs mes anterior",   up: true,  light: "green",  benchmark: "Aceptable: ≤+2% mensual" },
+    { label: "% variable / nómina",      value: "25.3%",   delta: "Límite: 18%",             up: false, light: "red",    benchmark: "Política interna: 18%" },
     { label: "Rotación anual",           value: "17.4%",   delta: "18 bajas YTD · $0.77M",   up: true,  light: "yellow", benchmark: "Industria 15-18% · Meta: ≤18%" },
     { label: "Clima (último pulso)",     value: "7.4 / 10",delta: "+0.2 vs trimestre",       up: true,  light: "green",  benchmark: "Meta: ≥7.0 · Excelente: ≥7.5" },
     { label: "Cobertura plantilla",      value: "94%",     delta: "8 vacantes abiertas",     up: true,  light: "green",  benchmark: "Meta: ≥95%" },
@@ -390,29 +390,29 @@ const monthlyDashboardKpis = {
 
 const monthlyAlerts = {
   "Ene 2026": [
-    { kind: "warn",   text: "Rotación de enero al 19.8% — área de Operaciones perdió 3 colaboradores en lo que va del mes" },
-    { kind: "info",   text: "Plan de talento 2026 firmado por dirección, lanzamiento programado para Feb" },
+    { kind: "warn",   tab: "rotacion", text: "Rotación de enero al 19.8% — área de Operaciones perdió 3 colaboradores en lo que va del mes" },
+    { kind: "info",   tab: "capacitacion", text: "Plan de talento 2026 firmado por dirección, lanzamiento programado para Feb" },
   ],
   "Feb 2026": [
-    { kind: "warn",   text: "% variable / nómina por encima del límite (19.2% vs 18%) — Comercial y Posventa concentran el exceso" },
-    { kind: "warn",   text: "1 denuncia sin Hoja de Ruta asignada hace 9 días" },
-    { kind: "info",   text: "Encuesta de pulso S07 en campo, cierre el 28-Feb" },
+    { kind: "warn",   tab: "nomina", text: "% variable / nómina por encima del límite (19.2% vs 18%) — Comercial y Posventa concentran el exceso" },
+    { kind: "warn",   tab: "denuncia", text: "1 denuncia sin Hoja de Ruta asignada hace 9 días" },
+    { kind: "info",   tab: "clima", text: "Encuesta de pulso S07 en campo, cierre el 28-Feb" },
   ],
   "Mar 2026": [
-    { kind: "danger", text: "Cierre Q1 disparó costo de nómina +8.8% MoM — revisar bonos discrecionales pendientes" },
-    { kind: "danger", text: "5 vacantes con +60 días — Operaciones (2), Comercial (2), Adm (1)" },
-    { kind: "warn",   text: "2 denuncias sin Hoja de Ruta hace +14 días" },
+    { kind: "danger", tab: "nomina", text: "Cierre Q1 disparó costo de nómina +8.8% MoM — revisar bonos discrecionales pendientes" },
+    { kind: "danger", tab: "cobertura", text: "5 vacantes con +60 días — Operaciones (2), Comercial (2), Adm (1)" },
+    { kind: "warn",   tab: "denuncia", text: "2 denuncias sin Hoja de Ruta hace +14 días" },
   ],
   "Abr 2026": [
-    { kind: "danger", text: "3 vacantes con +60 días abiertas — Operaciones, Ventas LATAM, Contabilidad" },
-    { kind: "warn",   text: "Bonos discrecionales superaron el límite mensual en 2 áreas (Comercial y Posventa)" },
-    { kind: "warn",   text: "2 denuncias sin Hoja de Ruta asignada hace +14 días" },
-    { kind: "info",   text: "Encuesta de clima Q2 lista para lanzarse a 248 colaboradores" },
+    { kind: "danger", tab: "cobertura", text: "3 vacantes con +60 días abiertas — Operaciones, Ventas LATAM, Contabilidad" },
+    { kind: "warn",   tab: "nomina", text: "Bonos discrecionales superaron el límite mensual en 2 áreas (Comercial y Posventa)" },
+    { kind: "warn",   tab: "denuncia", text: "2 denuncias sin Hoja de Ruta asignada hace +14 días" },
+    { kind: "info",   tab: "clima", text: "Encuesta de clima Q2 lista para lanzarse a 248 colaboradores" },
   ],
   "May 2026": [
-    { kind: "info",   text: "Inicia Q2: planeación de capacitación H2 lista para revisión" },
-    { kind: "info",   text: "Clima sube a 7.4 — pulso S19 con participación 78%" },
-    { kind: "warn",   text: "1 denuncia sin Hoja de Ruta asignada hace 11 días" },
+    { kind: "info",   tab: "capacitacion", text: "Inicia Q2: planeación de capacitación H2 lista para revisión" },
+    { kind: "info",   tab: "clima", text: "Clima sube a 7.4 — pulso S19 con participación 78%" },
+    { kind: "warn",   tab: "denuncia", text: "1 denuncia sin Hoja de Ruta asignada hace 11 días" },
   ],
 };
 
@@ -461,31 +461,75 @@ function Dashboard({ go, periodo = "Abr 2026" }) {
   const kpis = monthlyDashboardKpis[periodo] || monthlyDashboardKpis["Abr 2026"];
   const alerts = monthlyAlerts[periodo] || monthlyAlerts["Abr 2026"];
 
+  const tabPorLabel = {
+    "Costo total nómina (mes)": "nomina",
+    "% variable / nómina": "nomina",
+    "Rotación anual": "rotacion",
+    "Clima (último pulso)": "clima",
+    "Cobertura plantilla": "cobertura",
+    "Denuncias activas": "denuncia",
+    "Capacitación: ROI promedio": "capacitacion",
+    "Tiempo medio de cobertura": "seleccion",
+  };
+
   return (
     <div>
       <h2 style={S.h2}>Dashboard General</h2>
-      <p style={S.hint}>Vista ejecutiva. Cada KPI lleva al módulo correspondiente.</p>
 
       <div style={S.grid4}>
-        {kpis.map((k) => (
-          <div
-            key={k.label}
-            style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}
-          >
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={S.kpiLabel}>{k.label}</div>
-              <div style={S.kpiValue}>{k.value}</div>
-              <div style={S.kpiDelta(k.light === "green" || k.up)}>{k.delta}</div>
-              {k.benchmark && <div style={S.kpiBenchmark(k.light)}>Benchmark · {k.benchmark}</div>}
+        {kpis.map((k) => {
+          const targetTab = tabPorLabel[k.label];
+          return (
+            <div
+              key={k.label}
+              onClick={() => targetTab && go(targetTab)}
+              style={{
+                ...S.kpi,
+                display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10,
+                cursor: targetTab ? "pointer" : "default",
+                transition: "transform 0.12s ease, box-shadow 0.15s ease, border-color 0.15s ease",
+              }}
+              onMouseEnter={(e) => {
+                if (!targetTab) return;
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 6px 16px rgba(15, 23, 42, 0.08)";
+                e.currentTarget.style.borderColor = "#c2410c";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.03)";
+                e.currentTarget.style.borderColor = "#e2e8f0";
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={S.kpiLabel}>{k.label}</div>
+                <div style={S.kpiValue}>{k.value}</div>
+                <div style={S.kpiDelta(k.light === "green" || k.up)}>{k.delta}</div>
+                {k.benchmark && <div style={S.kpiBenchmark(k.light)}>Benchmark · {k.benchmark}</div>}
+              </div>
+              <TrafficLight light={k.light} />
             </div>
-            <TrafficLight light={k.light} />
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <h3 style={S.h3}>Alertas y Pendientes</h3>
       {alerts.map((a, i) => (
-        <div key={i} style={S.alert(a.kind)}>{a.text}</div>
+        <div
+          key={i}
+          onClick={() => a.tab && go(a.tab)}
+          style={{
+            ...S.alert(a.kind),
+            cursor: a.tab ? "pointer" : "default",
+            display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
+            transition: "transform 0.1s ease, box-shadow 0.15s ease",
+          }}
+          onMouseEnter={(e) => { if (!a.tab) return; e.currentTarget.style.transform = "translateX(2px)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(15, 23, 42, 0.06)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.transform = "translateX(0)"; e.currentTarget.style.boxShadow = "none"; }}
+        >
+          <span>{a.text}</span>
+          {a.tab && <span style={{ fontSize: 11, fontWeight: 700, color: "inherit", opacity: 0.7, whiteSpace: "nowrap", letterSpacing: 0.3 }}>Abrir →</span>}
+        </div>
       ))}
     </div>
   );
@@ -7637,6 +7681,265 @@ function Seleccion() {
 }
 
 // =============================================================
+// =============================================================
+// CATÁLOGOS MAESTROS — benchmarks que alimentan todos los KPIs
+// Cada regla se descompone en partes: texto fijo + números editables
+// =============================================================
+const t = (valor) => ({ tipo: "texto", valor });
+const n = (valor) => ({ tipo: "numero", valor });
+
+const BENCHMARKS_INICIALES = [
+  // Dashboard general
+  { id: "dash-1", modulo: "Dashboard General", kpi: "Costo total nómina (mes)", partes: [t("Aceptable: ≤+"), n(2), t("% mensual")], tipo: "% Variación", aplicaA: ["dashboard"] },
+  { id: "dash-2", modulo: "Dashboard General", kpi: "% variable / nómina", partes: [t("Política interna: "), n(18), t("%")], tipo: "% Límite", aplicaA: ["dashboard", "nomina"] },
+  { id: "dash-3", modulo: "Dashboard General", kpi: "Rotación anual", partes: [t("Industria "), n(15), t("-"), n(18), t("% · Meta: ≤"), n(18), t("%")], tipo: "Rango", aplicaA: ["dashboard", "rotacion"] },
+  { id: "dash-4", modulo: "Dashboard General", kpi: "Clima (último pulso)", partes: [t("Meta: ≥"), n(7.0), t(" · Excelente: ≥"), n(7.5)], tipo: "Score 1-10", aplicaA: ["dashboard", "clima"] },
+  { id: "dash-5", modulo: "Dashboard General", kpi: "Cobertura plantilla", partes: [t("Meta: ≥"), n(95), t("%")], tipo: "%", aplicaA: ["dashboard", "cobertura"] },
+  { id: "dash-6", modulo: "Dashboard General", kpi: "Denuncias activas", partes: [t("Meta: "), n(0), t(" sin Hoja de Ruta")], tipo: "Conteo", aplicaA: ["dashboard", "denuncia"] },
+  { id: "dash-7", modulo: "Dashboard General", kpi: "Capacitación: ROI promedio", partes: [t("Meta: ≥"), n(1.5), t("x")], tipo: "Múltiplo ROI", aplicaA: ["dashboard", "capacitacion"] },
+  { id: "dash-8", modulo: "Dashboard General", kpi: "Tiempo medio de cobertura", partes: [t("SLA: ≤"), n(30), t(" días")], tipo: "Días", aplicaA: ["dashboard", "seleccion"] },
+  // 1. Variaciones de Nómina
+  { id: "nom-1", modulo: "1. Variaciones de Nómina", kpi: "Nómina base total", partes: [t("Estable vs media móvil (±"), n(2), t("%)")], tipo: "% Variación", aplicaA: ["nomina"] },
+  { id: "nom-2", modulo: "1. Variaciones de Nómina", kpi: "Compensación variable", partes: [t("Variación esperada ≤±"), n(3), t("% vs MA")], tipo: "% Variación", aplicaA: ["nomina"] },
+  { id: "nom-3", modulo: "1. Variaciones de Nómina", kpi: "Total nómina", partes: [t("Aceptable: ≤+"), n(2), t("% vs MA")], tipo: "% Variación", aplicaA: ["nomina"] },
+  // 2. Clima Laboral
+  { id: "cli-1", modulo: "2. Clima Laboral", kpi: "Pulso semanal", partes: [t("Meta: ≥"), n(7.0), t(" · Excelente: ≥"), n(7.5)], tipo: "Score 1-10", aplicaA: ["clima"] },
+  { id: "cli-2", modulo: "2. Clima Laboral", kpi: "eNPS", partes: [t("Saludable: ≥+"), n(20), t(" · Líder: ≥+"), n(30)], tipo: "Score eNPS", aplicaA: ["clima"] },
+  { id: "cli-3", modulo: "2. Clima Laboral", kpi: "Tasa de respuesta", partes: [t("Meta: ≥"), n(75), t("% · Mínimo válido: ≥"), n(60), t("%")], tipo: "%", aplicaA: ["clima"] },
+  // 3. Línea de Denuncia
+  { id: "den-1", modulo: "3. Línea de Denuncia", kpi: "Activas", partes: [t("Histórico mensual: "), n(3), t("-"), n(6)], tipo: "Rango", aplicaA: ["denuncia"] },
+  { id: "den-2", modulo: "3. Línea de Denuncia", kpi: "Sin Hoja de Ruta", partes: [t("Meta: "), n(0), t(" (toda activa con plan)")], tipo: "Conteo", aplicaA: ["denuncia"] },
+  { id: "den-3", modulo: "3. Línea de Denuncia", kpi: "Resueltas (mes)", partes: [t("Meta: ≥"), n(3), t(" / mes")], tipo: "Conteo", aplicaA: ["denuncia"] },
+  { id: "den-4", modulo: "3. Línea de Denuncia", kpi: "Tiempo medio resolución", partes: [t("SLA interno: ≤"), n(15), t(" días")], tipo: "Días", aplicaA: ["denuncia"] },
+  // 4. Cobertura
+  { id: "cob-1", modulo: "4. Cobertura de Plantilla", kpi: "Plantilla autorizada", partes: [t("Plan anual 2026: "), n(248)], tipo: "Conteo", aplicaA: ["cobertura"] },
+  { id: "cob-2", modulo: "4. Cobertura de Plantilla", kpi: "Cubierta", partes: [t("Objetivo: "), n(248), t(" (autorizado)")], tipo: "Conteo", aplicaA: ["cobertura"] },
+  { id: "cob-3", modulo: "4. Cobertura de Plantilla", kpi: "% cobertura", partes: [t("Meta: ≥"), n(95), t("% · Crítico: <"), n(90), t("%")], tipo: "%", aplicaA: ["cobertura"] },
+  { id: "cob-4", modulo: "4. Cobertura de Plantilla", kpi: "Vacantes >60 días", partes: [t("Meta: "), n(0), t(" · Alerta: ≥"), n(1)], tipo: "Conteo", aplicaA: ["cobertura"] },
+  // 5. Selección
+  { id: "sel-1", modulo: "5. Proceso de Selección", kpi: "Candidatos activos", partes: [t("Pool saludable: ≥"), n(20)], tipo: "Conteo", aplicaA: ["seleccion"] },
+  { id: "sel-2", modulo: "5. Proceso de Selección", kpi: "Tiempo medio cobertura", partes: [t("SLA: ≤"), n(30), t(" días")], tipo: "Días", aplicaA: ["seleccion"] },
+  { id: "sel-3", modulo: "5. Proceso de Selección", kpi: "Tasa de oferta aceptada", partes: [t("Meta: ≥"), n(70), t("% · Excelente: ≥"), n(85), t("%")], tipo: "%", aplicaA: ["seleccion"] },
+  { id: "sel-4", modulo: "5. Proceso de Selección", kpi: "Onboardings activos", partes: [t("Capacidad mensual: "), n(6)], tipo: "Conteo", aplicaA: ["seleccion"] },
+  // 6. Rotación
+  { id: "rot-1", modulo: "6. Rotación", kpi: "Bajas YTD", partes: [t("Meta anual: ≤"), n(30), t(" bajas")], tipo: "Conteo", aplicaA: ["rotacion"] },
+  { id: "rot-2", modulo: "6. Rotación", kpi: "% rotación anualizada", partes: [t("Industria "), n(15), t("-"), n(18), t("% · Meta: ≤"), n(18), t("%")], tipo: "%", aplicaA: ["rotacion"] },
+  { id: "rot-3", modulo: "6. Rotación", kpi: "Costo unitario promedio", partes: [t("Histórico promedio: $"), n(38000)], tipo: "$", aplicaA: ["rotacion"] },
+  { id: "rot-4", modulo: "6. Rotación", kpi: "Costo total estimado", partes: [t("Presupuesto anual: $"), n(1.0), t("M")], tipo: "$", aplicaA: ["rotacion"] },
+  // 7. Capacitación
+  { id: "cap-1", modulo: "7. Capacitación", kpi: "Cursos activos", partes: [t("Capacidad simultánea: "), n(2), t("-"), n(3)], tipo: "Conteo", aplicaA: ["capacitacion"] },
+  { id: "cap-2", modulo: "7. Capacitación", kpi: "Programados", partes: [t("Pipeline saludable: ≥"), n(3)], tipo: "Conteo", aplicaA: ["capacitacion"] },
+  { id: "cap-3", modulo: "7. Capacitación", kpi: "Inversión YTD", partes: [t("Presupuesto anual: $"), n(360), t("K")], tipo: "$", aplicaA: ["capacitacion"] },
+  { id: "cap-4", modulo: "7. Capacitación", kpi: "ROI promedio", partes: [t("Meta: ≥"), n(1.5), t("x")], tipo: "Múltiplo ROI", aplicaA: ["capacitacion"] },
+];
+
+// Helper: convierte partes a string para mostrar/exportar
+const partesAString = (partes) => partes.map((p) => p.tipo === "numero" ? (Number.isInteger(p.valor) ? p.valor.toLocaleString("es-MX") : p.valor) : p.valor).join("");
+
+// Helper: icono candado SVG (no emoji)
+const IconLock = ({ size = 11, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline-block", verticalAlign: "middle" }}>
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+);
+
+function Catalogos() {
+  const [benchmarks, setBenchmarks] = useState(BENCHMARKS_INICIALES);
+  const [editIdx, setEditIdx] = useState(null);
+  const [draftPartes, setDraftPartes] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  const empezarEdicion = (idx, partes) => {
+    setEditIdx(idx);
+    setDraftPartes(JSON.parse(JSON.stringify(partes)));
+  };
+  const actualizarNumero = (parteIdx, nuevoValor) => {
+    setDraftPartes(draftPartes.map((p, i) => i === parteIdx ? { ...p, valor: nuevoValor } : p));
+  };
+  const guardarEdicion = (idx) => {
+    setBenchmarks(benchmarks.map((b, i) => i === idx ? { ...b, partes: draftPartes, ultimaModificacion: "María González · " + new Date().toLocaleString("es-MX", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) } : b));
+    setEditIdx(null);
+    setDraftPartes(null);
+    setToast("Benchmark actualizado · cambio publicado a todos los KPIs afectados");
+    setTimeout(() => setToast(null), 2500);
+  };
+  const cancelarEdicion = () => {
+    setEditIdx(null);
+    setDraftPartes(null);
+  };
+  const resetearTodos = () => {
+    if (window.confirm("¿Restablecer TODOS los benchmarks a sus valores iniciales? Esta acción no se puede deshacer.")) {
+      setBenchmarks(BENCHMARKS_INICIALES);
+      setToast("Benchmarks restablecidos a valores iniciales");
+      setTimeout(() => setToast(null), 2500);
+    }
+  };
+
+  // Agrupar por módulo
+  const porModulo = {};
+  benchmarks.forEach((b, idx) => {
+    if (!porModulo[b.modulo]) porModulo[b.modulo] = [];
+    porModulo[b.modulo].push({ ...b, idx });
+  });
+
+  const moduloColor = {
+    "Dashboard General": "#0f172a",
+    "1. Variaciones de Nómina": "#c2410c",
+    "2. Clima Laboral": "#0a7d2c",
+    "3. Línea de Denuncia": "#b00020",
+    "4. Cobertura de Plantilla": "#1d4ed8",
+    "5. Proceso de Selección": "#7c3aed",
+    "6. Rotación": "#b58900",
+    "7. Capacitación": "#0891b2",
+  };
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
+        <div>
+          <h2 style={S.h2}>Catálogos maestros · Benchmarks del sistema</h2>
+          <p style={S.hint}>
+            Los benchmarks definen los umbrales (verde / amarillo / rojo) de cada KPI. Cambios aquí impactan automáticamente todos los módulos donde el KPI se muestra.
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button style={S.btnGhost} onClick={resetearTodos}>Restablecer todos</button>
+          <button style={S.btn}>Exportar catálogo</button>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div style={S.grid4}>
+        <div style={{ ...S.kpi, padding: 12 }}>
+          <div style={S.kpiLabel}>Benchmarks activos</div>
+          <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{benchmarks.length}</div>
+          <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>en {Object.keys(porModulo).length} módulos</div>
+        </div>
+        <div style={{ ...S.kpi, padding: 12 }}>
+          <div style={S.kpiLabel}>Modificados (sesión)</div>
+          <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{benchmarks.filter((b) => b.ultimaModificacion).length}</div>
+          <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>cambios aplicados</div>
+        </div>
+        <div style={{ ...S.kpi, padding: 12 }}>
+          <div style={S.kpiLabel}>Compartidos entre módulos</div>
+          <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{benchmarks.filter((b) => b.aplicaA.length > 1).length}</div>
+          <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>se replican automáticamente</div>
+        </div>
+        <div style={{ ...S.kpi, padding: 12 }}>
+          <div style={S.kpiLabel}>Bitácora</div>
+          <div style={{ fontSize: 14, fontWeight: 700, marginTop: 4 }}>Cada cambio queda registrado</div>
+          <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>quién, qué, cuándo</div>
+        </div>
+      </div>
+
+      {/* Listado por módulo */}
+      {Object.entries(porModulo).map(([modulo, items]) => (
+        <div key={modulo} style={{ marginTop: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+            <div style={{ width: 4, height: 18, background: moduloColor[modulo] || "#64748b", borderRadius: 2 }} />
+            <h3 style={{ ...S.h3, margin: 0, paddingLeft: 0, borderLeft: "none" }}>{modulo}</h3>
+            <span style={{ fontSize: 11, color: "#666" }}>· {items.length} benchmark{items.length !== 1 ? "s" : ""}</span>
+          </div>
+          <table style={S.table}>
+            <thead>
+              <tr>
+                <th style={S.th}>KPI</th>
+                <th style={S.th}>Tipo</th>
+                <th style={{ ...S.th, width: "40%" }}>Regla del benchmark</th>
+                <th style={S.th}>Se aplica en</th>
+                <th style={S.th}>Última modificación</th>
+                <th style={S.th}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((b) => {
+                const enEdicion = editIdx === b.idx;
+                const partesActuales = enEdicion ? draftPartes : b.partes;
+                return (
+                  <tr key={b.id}>
+                    <td style={S.td}><strong>{b.kpi}</strong></td>
+                    <td style={S.td}>
+                      <span style={S.badge("#f1f5f9")}>{b.tipo}</span>
+                    </td>
+                    <td style={S.td}>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 2, flexWrap: "wrap", padding: "4px 8px", background: enEdicion ? "#fff7ed" : "#f8fafc", border: enEdicion ? "1px solid #fed7aa" : "1px solid transparent", borderRadius: 4, fontFamily: "ui-monospace, monospace", fontSize: 12, color: "#0f172a", lineHeight: 1.8 }}>
+                        {partesActuales.map((p, i) => p.tipo === "texto" ? (
+                          <span key={i} style={{ whiteSpace: "pre" }}>{p.valor}</span>
+                        ) : enEdicion ? (
+                          <input
+                            key={i}
+                            type="number"
+                            step="any"
+                            value={p.valor}
+                            onChange={(e) => actualizarNumero(i, e.target.value === "" ? "" : Number(e.target.value))}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") guardarEdicion(b.idx);
+                              if (e.key === "Escape") cancelarEdicion();
+                            }}
+                            autoFocus={i === partesActuales.findIndex((pp) => pp.tipo === "numero")}
+                            style={{
+                              width: `${Math.max(String(p.valor).length + 1, 3)}ch`,
+                              padding: "1px 4px", border: "1.5px solid #c2410c",
+                              borderRadius: 3, fontSize: 12, fontFamily: "ui-monospace, monospace",
+                              fontWeight: 700, color: "#c2410c", background: "#fff",
+                              outline: "none", textAlign: "center",
+                            }}
+                          />
+                        ) : (
+                          <span key={i} style={{ fontWeight: 700, color: "#c2410c" }}>{Number.isInteger(p.valor) ? p.valor.toLocaleString("es-MX") : p.valor}</span>
+                        ))}
+                      </div>
+                      {enEdicion && (
+                        <div style={{ fontSize: 10, color: "#666", marginTop: 4, fontStyle: "italic" }}>
+                          Solo los números en naranja son editables. El texto y las unidades son fijos.
+                        </div>
+                      )}
+                    </td>
+                    <td style={S.td}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                        {b.aplicaA.map((tab) => (
+                          <span key={tab} style={{ fontSize: 10, padding: "1px 6px", background: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: 3, color: "#475569", fontFamily: "ui-monospace, monospace" }}>{tab}</span>
+                        ))}
+                      </div>
+                    </td>
+                    <td style={{ ...S.td, fontSize: 11, color: "#475569" }}>{b.ultimaModificacion || "—"}</td>
+                    <td style={{ ...S.td, textAlign: "right" }}>
+                      {enEdicion ? (
+                        <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
+                          <button style={{ ...S.btnGhost, padding: "5px 10px", fontSize: 11 }} onClick={cancelarEdicion}>Cancelar</button>
+                          <button style={{ ...S.btn, padding: "5px 10px", fontSize: 11 }} onClick={() => guardarEdicion(b.idx)}>Guardar</button>
+                        </div>
+                      ) : (
+                        <button style={{ ...S.btnGhost, padding: "5px 10px", fontSize: 11 }} onClick={() => empezarEdicion(b.idx, b.partes)}>Editar valores</button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      ))}
+
+      {/* Toast */}
+      {toast && (
+        <div style={{
+          position: "fixed", bottom: 24, right: 24, zIndex: 200,
+          background: "#0f172a", color: "#fff",
+          padding: "12px 18px", borderRadius: 6,
+          fontSize: 13, fontWeight: 600,
+          boxShadow: "0 6px 16px rgba(15, 23, 42, 0.25)",
+          display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <span style={{ color: "#facc15" }}>✓</span> {toast}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// =============================================================
 // SHELL — Layout con sidebar a la DERECHA
 // =============================================================
 export default function SaaSRRHH() {
@@ -7644,12 +7947,65 @@ export default function SaaSRRHH() {
   const [filter, setFilter] = useState("");
   const [periodo, setPeriodo] = useState("Abr 2026");
   const [vistaGuia, setVistaGuia] = useState(false);
+  const [catalogosPwdOpen, setCatalogosPwdOpen] = useState(false);
+  const [catalogosPwdInput, setCatalogosPwdInput] = useState("");
+  const [catalogosPwdError, setCatalogosPwdError] = useState(false);
+  const [catalogosUnlocked, setCatalogosUnlocked] = useState(false);
 
   const PERIODOS = ["Ene 2026", "Feb 2026", "Mar 2026", "Abr 2026", "May 2026"];
 
-  const filtered = TABS.filter((t) =>
-    t.label.toLowerCase().includes(filter.toLowerCase())
-  );
+  // Índice de búsqueda: conceptos/palabras clave que apuntan a cada pestaña
+  const SEARCH_INDEX = [
+    { tab: "dashboard", concepts: ["vista ejecutiva", "kpis generales", "resumen", "alertas", "pendientes"] },
+    { tab: "nomina", concepts: ["nómina", "sueldo", "salario", "compensación", "compensación variable", "bono", "bonos", "comisión", "comisiones", "destajo", "% variable", "límite mensual", "monto autorizado", "concepto de compensación"] },
+    { tab: "clima", concepts: ["clima", "pulso semanal", "encuesta", "encuestas", "enps", "evaluación 360", "360", "entrevista de salida", "encuesta de bienvenida", "satisfacción", "exit interview", "instrumentos"] },
+    { tab: "denuncia", concepts: ["denuncia", "denuncias", "incidencia ética", "compliance", "ética", "hoja de ruta", "acoso", "discriminación", "fraude", "conflicto interpersonal", "violación de política", "ricardo cardona", "alfredo mendoza", "francisco suárez", "jorge briones"] },
+    { tab: "cobertura", concepts: ["vacante", "vacantes abiertas", "requisición", "REQ-101", "REQ-102", "REQ-103", "REQ-104", "REQ-105", "REQ-106", "REQ-107", "cobertura", "plantilla", "headcount", "puestos abiertos", "sourcing", "guía de entrevista"] },
+    { tab: "seleccion", concepts: ["candidato", "candidatos", "selección", "pipeline candidatos", "entrevista RH", "pruebas psicométricas", "oferta económica", "contratación", "onboarding 30-60-90", "ana ramírez", "javier torres", "mauricio gómez", "sofía vega", "pedro núñez", "karen robles", "ramón cabral"] },
+    { tab: "rotacion", concepts: ["rotación", "baja", "bajas", "renuncia", "renuncias", "finiquito", "liquidación", "anatomía del costo", "costo de baja", "involuntaria", "voluntaria", "ortega", "carlos reyes", "alejandro méndez", "patricia lozano", "mariana ortiz", "diana castro", "roberto núñez", "sofía beltrán"] },
+    { tab: "capacitacion", concepts: ["capacitación", "curso", "cursos", "programa", "training", "ROI capacitación", "incidencias capacitación", "accountability", "deloitte", "sandler", "ipade", "cxg", "gantt"] },
+    { tab: "catalogos", concepts: ["catálogo", "benchmark", "benchmarks", "configuración benchmark", "umbrales", "metas", "reglas semáforo"], locked: true },
+  ];
+
+  // Resultados: para cada query, lista de { tab, label, matchedConcepts[] }
+  const normalizar = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const q = normalizar(filter.trim());
+  const resultadosBusqueda = !q
+    ? null
+    : TABS.concat([{ id: "catalogos", label: "Catálogos maestros", num: "•" }]).map((t) => {
+        const indice = SEARCH_INDEX.find((s) => s.tab === t.id);
+        const labelMatch = normalizar(t.label).includes(q);
+        const matchedConcepts = indice ? indice.concepts.filter((c) => normalizar(c).includes(q)) : [];
+        const matches = labelMatch || matchedConcepts.length > 0;
+        return matches ? { ...t, matchedConcepts, isLabelMatch: labelMatch, locked: indice?.locked } : null;
+      }).filter(Boolean);
+  const filtered = TABS;
+
+  const intentarAbrirCatalogos = () => {
+    if (catalogosUnlocked) {
+      setTab("catalogos");
+    } else {
+      setCatalogosPwdOpen(true);
+      setCatalogosPwdInput("");
+      setCatalogosPwdError(false);
+    }
+  };
+  const validarPwdCatalogos = () => {
+    if (catalogosPwdInput === "12345") {
+      setCatalogosUnlocked(true);
+      setCatalogosPwdOpen(false);
+      setCatalogosPwdInput("");
+      setCatalogosPwdError(false);
+      setTab("catalogos");
+    } else {
+      setCatalogosPwdError(true);
+    }
+  };
+  const cancelarPwdCatalogos = () => {
+    setCatalogosPwdOpen(false);
+    setCatalogosPwdInput("");
+    setCatalogosPwdError(false);
+  };
 
   const render = () => {
     switch (tab) {
@@ -7661,6 +8017,7 @@ export default function SaaSRRHH() {
       case "rotacion": return <Rotacion />;
       case "capacitacion": return <Capacitacion />;
       case "seleccion": return <Seleccion />;
+      case "catalogos": return <Catalogos />;
       default: return null;
     }
   };
@@ -7685,7 +8042,7 @@ export default function SaaSRRHH() {
             RH
           </div>
           <div>
-            <div style={{ ...S.title, textTransform: "none" }}>Tablero de control para RRHH</div>
+            <div style={{ ...S.title, textTransform: "none" }}>Bienvenida María</div>
             <div style={S.subtitle}>Suite integral para Dirección y Gerencia de Recursos Humanos</div>
           </div>
         </div>
@@ -7708,33 +8065,115 @@ export default function SaaSRRHH() {
       <div style={S.layout}>
         {/* Sidebar de catálogo a la IZQUIERDA */}
         <aside style={S.sidebar}>
-          <div style={S.sidebarTitle}>Catálogo de Módulos</div>
-
-          <div style={{ padding: "12px 20px 8px" }}>
+          <div style={{ padding: "0 20px 12px" }}>
             <input
               type="text"
-              placeholder="Buscar módulo..."
+              placeholder="Buscar por palabra o concepto…"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               style={S.sidebarFilter}
             />
+            {resultadosBusqueda && (
+              <div style={{ fontSize: 10, color: "#64748b", marginTop: 4, fontWeight: 600, letterSpacing: 0.3 }}>
+                {resultadosBusqueda.length} resultado{resultadosBusqueda.length !== 1 ? "s" : ""} para "<span style={{ color: "#c2410c" }}>{filter}</span>"
+              </div>
+            )}
           </div>
 
           <div>
-            {filtered.map((t) => (
-              <div
-                key={t.id}
-                style={S.sidebarItem(tab === t.id)}
-                onClick={() => setTab(t.id)}
-              >
-                <div style={S.sidebarNum(tab === t.id)}>{t.num}</div>
-                <span>{t.label}</span>
-              </div>
-            ))}
-            {filtered.length === 0 && (
-              <div style={{ padding: "20px", fontSize: 12, color: "#999", textAlign: "center" }}>
-                Sin resultados
-              </div>
+            {/* Modo búsqueda: muestra coincidencias con concepto resaltado */}
+            {resultadosBusqueda ? (
+              resultadosBusqueda.length === 0 ? (
+                <div style={{ padding: "20px", fontSize: 12, color: "#999", textAlign: "center" }}>
+                  Sin resultados para "{filter}"
+                </div>
+              ) : (
+                resultadosBusqueda.map((t) => (
+                  <div
+                    key={t.id}
+                    style={S.sidebarItem(tab === t.id)}
+                    onClick={() => {
+                      if (t.id === "catalogos") {
+                        intentarAbrirCatalogos();
+                      } else {
+                        setTab(t.id);
+                      }
+                      setFilter("");
+                    }}
+                  >
+                    <div style={S.sidebarNum(tab === t.id)}>{t.num}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span>{t.label}</span>
+                        {t.locked && <span style={{ color: "#64748b", display: "inline-flex" }}><IconLock size={10} /></span>}
+                      </div>
+                      {t.matchedConcepts.length > 0 && (
+                        <div style={{ marginTop: 3, display: "flex", flexWrap: "wrap", gap: 3 }}>
+                          {t.matchedConcepts.slice(0, 3).map((c, i) => (
+                            <span key={i} style={{ fontSize: 9, padding: "1px 5px", background: "#fff7ed", color: "#c2410c", borderRadius: 3, fontWeight: 700, letterSpacing: 0.2 }}>{c}</span>
+                          ))}
+                          {t.matchedConcepts.length > 3 && (
+                            <span style={{ fontSize: 9, color: "#94a3b8" }}>+{t.matchedConcepts.length - 3}</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )
+            ) : (
+              /* Modo normal: Dashboard como item destacado + resto de módulos */
+              <>
+                {(() => {
+                  const dash = filtered.find((t) => t.id === "dashboard");
+                  if (!dash) return null;
+                  const isActive = tab === "dashboard";
+                  return (
+                    <div
+                      style={{
+                        ...S.sidebarItem(isActive),
+                        background: isActive ? "#0f172a" : "transparent",
+                        color: isActive ? "#fff" : "#0f172a",
+                        borderLeft: isActive ? "3px solid #facc15" : "3px solid transparent",
+                        marginBottom: 4,
+                      }}
+                      onClick={() => setTab("dashboard")}
+                    >
+                      <div style={{
+                        width: 22, height: 22, borderRadius: 6,
+                        background: isActive ? "#facc15" : "#1e293b",
+                        color: isActive ? "#0f172a" : "#facc15",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        flexShrink: 0,
+                      }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="3" width="7" height="9" rx="1" />
+                          <rect x="14" y="3" width="7" height="5" rx="1" />
+                          <rect x="14" y="12" width="7" height="9" rx="1" />
+                          <rect x="3" y="16" width="7" height="5" rx="1" />
+                        </svg>
+                      </div>
+                      <span style={{ fontWeight: 700 }}>{dash.label}</span>
+                    </div>
+                  );
+                })()}
+                {/* Separador visual entre Dashboard y módulos numerados */}
+                <div style={{ padding: "8px 20px 6px" }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1 }}>
+                    Módulos
+                  </div>
+                </div>
+                {filtered.filter((t) => t.id !== "dashboard").map((t) => (
+                  <div
+                    key={t.id}
+                    style={S.sidebarItem(tab === t.id)}
+                    onClick={() => setTab(t.id)}
+                  >
+                    <div style={S.sidebarNum(tab === t.id)}>{t.num}</div>
+                    <span>{t.label}</span>
+                  </div>
+                ))}
+              </>
             )}
           </div>
 
@@ -7744,8 +8183,13 @@ export default function SaaSRRHH() {
           <div style={S.sidebarItem(false)}>
             <span style={{ fontSize: 13 }}>Usuarios y permisos</span>
           </div>
-          <div style={S.sidebarItem(false)}>
-            <span style={{ fontSize: 13 }}>Catálogos maestros</span>
+          <div style={S.sidebarItem(tab === "catalogos")} onClick={intentarAbrirCatalogos}>
+            <span style={{ fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+              Catálogos maestros
+              {catalogosUnlocked
+                ? <span style={{ fontSize: 9, color: "#0a7d2c", fontWeight: 700 }}>● desbloqueado</span>
+                : <span style={{ color: "#64748b", display: "inline-flex" }}><IconLock size={12} /></span>}
+            </span>
           </div>
           <div style={S.sidebarItem(false)}>
             <span style={{ fontSize: 13 }}>Integraciones</span>
@@ -7755,6 +8199,86 @@ export default function SaaSRRHH() {
         {/* Contenido principal */}
         <div style={S.main}>{render()}</div>
       </div>
+
+      {/* Password modal · Catálogos maestros */}
+      {catalogosPwdOpen && (
+        <div
+          onClick={cancelarPwdCatalogos}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.65)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: "#fff", borderRadius: 8, padding: 24, width: 440, maxWidth: "92vw", border: "1px solid #ccc" }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: "50%",
+                background: "linear-gradient(135deg, #ea580c 0%, #c2410c 100%)",
+                color: "#fff", display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <IconLock size={16} color="#fff" />
+              </div>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>Catálogos maestros</div>
+                <div style={{ fontSize: 12, color: "#475569", marginTop: 2 }}>Acceso restringido · Password requerido</div>
+              </div>
+            </div>
+
+            <div style={{ ...S.kpiLabel, marginBottom: 6, marginTop: 14 }}>Password</div>
+            <input
+              type="password"
+              autoFocus
+              value={catalogosPwdInput}
+              onChange={(e) => { setCatalogosPwdInput(e.target.value); if (catalogosPwdError) setCatalogosPwdError(false); }}
+              onKeyDown={(e) => { if (e.key === "Enter") validarPwdCatalogos(); if (e.key === "Escape") cancelarPwdCatalogos(); }}
+              placeholder="Ingresa el password de administrador"
+              style={{
+                width: "100%", padding: "10px 12px",
+                border: `1px solid ${catalogosPwdError ? "#b00020" : "#ccc"}`,
+                borderRadius: 6, fontSize: 14, fontFamily: "inherit",
+                boxSizing: "border-box", outline: "none",
+              }}
+            />
+            {catalogosPwdError && (
+              <div style={{ fontSize: 12, color: "#b00020", marginTop: 6, fontWeight: 600 }}>
+                Password incorrecto. Intenta de nuevo.
+              </div>
+            )}
+
+            <div style={{ fontSize: 11, color: "#64748b", marginTop: 14, padding: "8px 10px", background: "#f8fafc", borderLeft: "3px solid #cbd5e1", borderRadius: 2 }}>
+              Los Catálogos maestros controlan los benchmarks de TODOS los KPIs del sistema. Cualquier cambio impacta inmediatamente todos los módulos. Acceso reservado a administradores de RH.
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+              <button style={S.btnGhost} onClick={cancelarPwdCatalogos}>Cancelar</button>
+              <button style={S.btn} onClick={validarPwdCatalogos}>Desbloquear catálogo</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer style={{
+        borderTop: "1px solid #e2e8f0",
+        padding: "14px 28px",
+        background: "#fafafa",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        fontSize: 11, color: "#64748b",
+      }}>
+        <div>© 2026 · Tablero de control para RRHH</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 600, letterSpacing: 0.2 }}>
+          Powered by
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: 4,
+            padding: "3px 9px", borderRadius: 4,
+            background: "#000",
+            color: "#facc15", fontWeight: 800, letterSpacing: 0.6, fontSize: 10,
+            boxShadow: "0 1px 2px rgba(0, 0, 0, 0.25)",
+          }}>
+            AXON B2B
+          </span>
+        </div>
+      </footer>
     </div>
   );
 }
