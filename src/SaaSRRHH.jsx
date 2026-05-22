@@ -1,5 +1,166 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import GuiaEntrevista from "./GuiaEntrevista.jsx";
+
+// Demo: configurar VITE_CATALOGOS_PASSWORD en .env para producción (no commitear secretos reales).
+const CATALOGOS_ADMIN_PASSWORD = import.meta.env.VITE_CATALOGOS_PASSWORD ?? "12345";
+
+const safeMax = (values, floor = 0) => (values.length ? Math.max(...values) : floor);
+
+// html2canvas: carga única en memoria (evita imports duplicados en paralelo)
+let html2canvasFn = null;
+let html2canvasLoad = null;
+const loadHtml2canvas = () => {
+  if (html2canvasFn) return Promise.resolve(html2canvasFn);
+  if (!html2canvasLoad) {
+    html2canvasLoad = import("html2canvas")
+      .then((m) => {
+        html2canvasFn = m.default;
+        return html2canvasFn;
+      })
+      .catch((err) => {
+        html2canvasLoad = null;
+        throw err;
+      });
+  }
+  return html2canvasLoad;
+};
+
+const CHART_CAPTURE_OPTS = {
+  backgroundColor: "#ffffff",
+  logging: false,
+  removeContainer: true,
+  imageTimeout: 0,
+};
+
+const chartCaptureScale = () => Math.min(Math.max(window.devicePixelRatio || 1, 1), 1.5);
+
+const canvasToBlob = (canvas, type = "image/png", quality = 0.92) =>
+  new Promise((resolve) => {
+    canvas.toBlob((blob) => resolve(blob), type, quality);
+  });
+
+const canCopyImageToClipboard = () =>
+  typeof window !== "undefined"
+  && window.isSecureContext
+  && typeof navigator !== "undefined"
+  && navigator.clipboard?.write
+  && typeof ClipboardItem !== "undefined";
+
+const downloadChartBlob = (blob, fileName) => {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.download = fileName;
+  link.href = url;
+  link.click();
+  URL.revokeObjectURL(url);
+};
+
+// Helper: botón de copiar gráfica como imagen al portapapeles
+function ChartCopy({ children, label = "Gráfica" }) {
+  const captureRef = useRef(null);
+  const busyRef = useRef(false);
+  const timerRef = useRef(null);
+  const mountedRef = useRef(true);
+  const [estado, setEstado] = useState(null);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    loadHtml2canvas().catch(() => {});
+    return () => {
+      mountedRef.current = false;
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  const resetEstado = useCallback((ms = 1800) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      if (mountedRef.current) setEstado(null);
+    }, ms);
+  }, []);
+
+  const copiar = useCallback(async (e) => {
+    e.stopPropagation();
+    if (!captureRef.current || busyRef.current) return;
+    busyRef.current = true;
+    if (mountedRef.current) setEstado("copiando");
+    const fileName = `${String(label).replace(/[^\w.-]+/g, "_")}.png`;
+    try {
+      const html2canvas = await loadHtml2canvas();
+      const canvas = await html2canvas(captureRef.current, {
+        ...CHART_CAPTURE_OPTS,
+        scale: chartCaptureScale(),
+        onclone: (doc) => {
+          doc.querySelectorAll(".chart-copy-btn").forEach((el) => { el.style.visibility = "hidden"; });
+        },
+      });
+      const blob = await canvasToBlob(canvas);
+      if (!blob) throw new Error("empty blob");
+      if (canCopyImageToClipboard()) {
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+        if (mountedRef.current) setEstado("copiado");
+      } else {
+        downloadChartBlob(blob, fileName);
+        if (mountedRef.current) setEstado("descargado");
+      }
+      resetEstado();
+    } catch {
+      if (mountedRef.current) setEstado("error");
+      resetEstado();
+    } finally {
+      busyRef.current = false;
+    }
+  }, [label, resetEstado]);
+
+  const ok = estado === "copiado" || estado === "descargado";
+  return (
+    <div style={{ position: "relative" }}>
+      <div ref={captureRef}>{children}</div>
+      <button
+        type="button"
+        onClick={copiar}
+        disabled={estado === "copiando"}
+        className="chart-copy-btn no-print"
+        data-html2canvas-ignore="true"
+        aria-label={`Copiar gráfica: ${label}`}
+        title="Copiar como imagen al portapapeles"
+        style={{
+          position: "absolute", top: 8, right: 8, zIndex: 5,
+          background: ok ? "rgba(10, 125, 44, 0.95)" : "rgba(255,255,255,0.7)",
+          color: ok ? "#fff" : "#475569",
+          border: "1px solid rgba(15,23,42,0.1)",
+          borderRadius: 4, padding: "3px 6px",
+          cursor: estado === "copiando" ? "wait" : "pointer",
+          opacity: estado ? 1 : 0.45,
+          transition: "opacity 0.15s ease, background 0.15s ease",
+          backdropFilter: "blur(4px)",
+          fontSize: 10, fontWeight: 700, letterSpacing: 0.2,
+          display: "inline-flex", alignItems: "center", gap: 4,
+        }}
+        onMouseEnter={(e) => { loadHtml2canvas(); if (!estado) e.currentTarget.style.opacity = "0.95"; }}
+        onMouseLeave={(e) => { if (!estado) e.currentTarget.style.opacity = "0.45"; }}
+      >
+        {ok ? (
+          <>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span>{estado === "copiado" ? "Copiado" : "Descargado"}</span>
+          </>
+        ) : estado === "copiando" ? (
+          <span>...</span>
+        ) : estado === "error" ? (
+          <span>Error</span>
+        ) : (
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        )}
+      </button>
+    </div>
+  );
+}
 
 // =============================================================
 // TABLERO DE CONTROL PARA RRHH (sin branding)
@@ -850,11 +1011,7 @@ function Nomina({ periodo = "Abr 2026" }) {
 
   return (
     <div>
-      <h2 style={S.h2}>1. Variaciones al Costo de Nómina por Compensaciones</h2>
-      <p style={S.hint}>
-        Detecta cuánto de la nómina es base y cuánto es compensación variable (comisiones, bonos, destajos, otros).
-        Define un % límite por área y dispara alerta cuando se rebase.
-      </p>
+      <h2 style={S.h2}>Variaciones al Costo de Nómina por Compensaciones</h2>
 
       <div style={S.grid4}>
         <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
@@ -945,14 +1102,14 @@ function Nomina({ periodo = "Abr 2026" }) {
         </div>
       </div>
 
-      {chartView === "month" && (() => {
+      {chartView === "month" && (<ChartCopy label="Variaciones mes en curso">{(() => {
         const chartData = data
           .map((r) => {
             const c = calc(r);
             return { area: r.area, pctVar: c.pctVar };
           })
           .sort((a, b) => b.pctVar - a.pctVar);
-        const dataMax = Math.max(...chartData.map((d) => d.pctVar));
+        const dataMax = safeMax(chartData.map((d) => d.pctVar));
         const yMax = Math.max(Math.ceil((dataMax + 5) / 10) * 10, 50);
         const yTicks = [];
         for (let i = 0; i <= yMax; i += 10) yTicks.push(i);
@@ -1161,9 +1318,9 @@ function Nomina({ periodo = "Abr 2026" }) {
             </div>
           </div>
         );
-      })()}
+      })()}</ChartCopy>)}
 
-      {chartView === "areaMonth" && (() => {
+      {chartView === "areaMonth" && (<ChartCopy label="Variaciones por área mes a mes">{(() => {
         const idx = monthsOrder.indexOf(periodo);
         const months = monthsOrder.slice(0, idx + 1);
         const areasList = ["Comercial", "Posventa", "Operaciones", "Administración", "Dirección"];
@@ -1195,7 +1352,7 @@ function Nomina({ periodo = "Abr 2026" }) {
           };
         });
         const allValues = series.flatMap((s) => s.bars.map((b) => b.pctVar));
-        const dataMax = Math.max(...allValues);
+        const dataMax = safeMax(allValues);
         const yMax = Math.max(Math.ceil((dataMax + 5) / 10) * 10, 50);
         const yTicks = [];
         for (let i = 0; i <= yMax; i += 10) yTicks.push(i);
@@ -1398,9 +1555,9 @@ function Nomina({ periodo = "Abr 2026" }) {
             </div>
           </div>
         );
-      })()}
+      })()}</ChartCopy>)}
 
-      {chartView === "ytd" && (() => {
+      {chartView === "ytd" && (<ChartCopy label="Variaciones YTD">{(() => {
         const idx = monthsOrder.indexOf(periodo);
         const months = monthsOrder.slice(0, idx + 1);
         const series = months.map((m) => {
@@ -1423,7 +1580,7 @@ function Nomina({ periodo = "Abr 2026" }) {
           };
         });
         const limite = 18;
-        const dataMax = Math.max(...series.map((s) => s.pctVar), limite);
+        const dataMax = safeMax([...series.map((s) => s.pctVar), limite]);
         const yMax = Math.max(Math.ceil((dataMax + 5) / 5) * 5, 30);
         const yTicks = [];
         for (let i = 0; i <= yMax; i += 5) yTicks.push(i);
@@ -1622,7 +1779,7 @@ function Nomina({ periodo = "Abr 2026" }) {
             </div>
           </div>
         );
-      })()}
+      })()}</ChartCopy>)}
 
       <table style={S.table}>
         <thead>
@@ -2137,15 +2294,64 @@ function Nomina({ periodo = "Abr 2026" }) {
               </ul>
             )}
 
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button style={S.btnGhost} onClick={cerrarModal}>Cancelar</button>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
               <button
-                style={{ ...S.btn, opacity: errores.length > 0 ? 0.4 : 1, cursor: errores.length > 0 ? "not-allowed" : "pointer" }}
-                onClick={enviarBono}
+                style={{
+                  ...S.btnGhost,
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  opacity: errores.length > 0 ? 0.4 : 1,
+                  cursor: errores.length > 0 ? "not-allowed" : "pointer",
+                  borderColor: errores.length > 0 ? "#e2e8f0" : "#c2410c",
+                  color: errores.length > 0 ? "#94a3b8" : "#c2410c",
+                }}
                 disabled={errores.length > 0}
+                onClick={() => {
+                  const asunto = `Solicitud de bono · ${form.empleado || "(empleado)"} · $${(parseInt(String(form.monto).replace(/[^0-9]/g, "")) || 0).toLocaleString("es-MX")}`;
+                  const cuerpo = [
+                    `Solicito autorización del siguiente bono:`,
+                    ``,
+                    `Empleado: ${form.empleado || "(pendiente)"}`,
+                    `Área: ${form.area}`,
+                    `Monto: $${(parseInt(String(form.monto).replace(/[^0-9]/g, "")) || 0).toLocaleString("es-MX")}`,
+                    `Tipo: ${form.tipo}`,
+                    ``,
+                    `Justificación:`,
+                    `${form.justificacion || "(pendiente)"}`,
+                    ``,
+                    `Impacto medible:`,
+                    `${form.impacto || "(pendiente)"}`,
+                    ``,
+                    `Evidencia:`,
+                    `${form.evidencia || "(pendiente)"}`,
+                    ``,
+                    `Solicitante: ${form.solicitante || "(pendiente)"} · ${form.gerenciaSolicitante}`,
+                    `Autoriza: ${form.autoriza || "(por confirmar)"}`,
+                    `Medio de evidencia: ${form.medioEvidencia}`,
+                    ``,
+                    `--`,
+                    `Enviado desde el Tablero de Control RRHH`,
+                  ].join("%0D%0A");
+                  const destinatarios = "compensaciones@empresa.com.mx";
+                  const cc = "rh@empresa.com.mx";
+                  window.location.href = `mailto:${destinatarios}?cc=${cc}&subject=${encodeURIComponent(asunto)}&body=${cuerpo}`;
+                }}
               >
-                Enviar a aprobación
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                Mandar solicitud por correo
               </button>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button style={S.btnGhost} onClick={cerrarModal}>Cancelar</button>
+                <button
+                  style={{ ...S.btn, opacity: errores.length > 0 ? 0.4 : 1, cursor: errores.length > 0 ? "not-allowed" : "pointer" }}
+                  onClick={enviarBono}
+                  disabled={errores.length > 0}
+                >
+                  Enviar a aprobación
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -2947,8 +3153,7 @@ function Clima() {
 
   return (
     <div>
-      <h2 style={S.h2}>2. Clima Laboral</h2>
-      <p style={S.hint}>Diagnósticos rápidos, 360° formal y encuestas de salida — todo en un solo lugar.</p>
+      <h2 style={S.h2}>Clima Laboral</h2>
 
       <div style={S.grid3}>
         <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
@@ -3180,6 +3385,22 @@ function Clima() {
                                   <option key={r} value={r}>{r}</option>
                                 ))}
                               </select>
+                              {empleadoForm.razonPrelim === "Otra" && (
+                                <div style={{ marginTop: 10 }}>
+                                  <div style={labelStyle}>Explica la razón *</div>
+                                  <textarea
+                                    value={empleadoForm.razonPrelimOtra || ""}
+                                    onChange={(e) => setF("razonPrelimOtra", e.target.value)}
+                                    placeholder="Describe la razón específica de la salida del colaborador..."
+                                    rows={3}
+                                    style={{ ...inputStyle, resize: "vertical", minHeight: 60, fontFamily: "inherit", lineHeight: 1.5 }}
+                                    autoFocus
+                                  />
+                                  <div style={{ fontSize: 11, color: "#64748b", marginTop: 4, fontStyle: "italic" }}>
+                                    Esta explicación quedará registrada en el expediente del colaborador.
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </>
                         )}
@@ -3872,10 +4093,7 @@ function Denuncia() {
 
   return (
     <div>
-      <h2 style={S.h2}>3. Línea de Denuncia</h2>
-      <p style={S.hint}>
-        Registro de incidencias → cada una genera una <strong>Hoja de Ruta</strong> (plan de trabajo con responsables, fechas y entregables).
-      </p>
+      <h2 style={S.h2}>Línea de Denuncia</h2>
 
       <div style={S.grid4}>
         <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
@@ -4443,9 +4661,9 @@ function Cobertura({ onAbrirGuia }) {
     { etapa: "Oferta enviada", n: 8, dias: "26 días promedio" },
     { etapa: "Contratación efectiva", n: 6, dias: "33 días promedio" },
   ];
-  const topFunnel = funnel[1].n; // Para escala de barras: usamos sourceados como referencia
+  const topFunnel = Math.max(1, funnel[1]?.n ?? 1); // Para escala de barras: usamos sourceados como referencia
   const totalContratados = funnel[funnel.length - 1].n;
-  const tasaGlobal = ((totalContratados / funnel[1].n) * 100).toFixed(1);
+  const tasaGlobal = funnel[1]?.n > 0 ? ((totalContratados / funnel[1].n) * 100).toFixed(1) : "0.0";
 
   const porArea = [
     { area: "Comercial",      recibidas: 8, cerradas: 6, dias: 28 },
@@ -4460,8 +4678,7 @@ function Cobertura({ onAbrirGuia }) {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
         <div>
-          <h2 style={S.h2}>4. Cobertura de Plantilla</h2>
-          <p style={S.hint}>Seguimiento a solicitudes de otras áreas: solicitudes recibidas, embudo de reclutamiento, dónde se atoran los candidatos.</p>
+          <h2 style={S.h2}>Cobertura de Plantilla</h2>
         </div>
         <button
           onClick={onAbrirGuia}
@@ -4519,7 +4736,7 @@ function Cobertura({ onAbrirGuia }) {
       <h3 style={S.h3}>Solicitudes — mes a mes y acumulado</h3>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
         {/* Mensual: barras agrupadas recibidas vs cerradas */}
-        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, padding: "20px 22px 16px", boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}>
+        <ChartCopy label="Solicitudes mensuales recibidas vs cerradas"><div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, padding: "20px 22px 16px", boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}>
           <div style={{ borderBottom: "1px solid #f1f5f9", paddingBottom: 10, marginBottom: 14 }}>
             <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: "#64748b" }}>
               Mensual · últimos 7 meses
@@ -4572,10 +4789,10 @@ function Cobertura({ onAbrirGuia }) {
             <span>Cerradas YTD: <strong style={{ color: "#475569" }}>{totalCerradas}</strong></span>
             <span>Pendientes: <strong style={{ color: "#0f172a" }}>{totalRecibidas - totalCerradas}</strong></span>
           </div>
-        </div>
+        </div></ChartCopy>
 
         {/* Acumulado: línea/área */}
-        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, padding: "20px 22px 16px", boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}>
+        <ChartCopy label="Solicitudes acumuladas — backlog del proceso"><div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, padding: "20px 22px 16px", boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}>
           <div style={{ borderBottom: "1px solid #f1f5f9", paddingBottom: 10, marginBottom: 14 }}>
             <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: "#64748b" }}>
               Acumulado · brecha recibidas vs cerradas
@@ -4605,11 +4822,11 @@ function Cobertura({ onAbrirGuia }) {
           <div style={{ borderTop: "1px solid #f1f5f9", marginTop: 12, paddingTop: 8, fontSize: 11, color: "#64748b" }}>
             Las barras naranjas marcan recibidas acumuladas; las grises encima muestran las cerradas. La diferencia es el backlog histórico.
           </div>
-        </div>
+        </div></ChartCopy>
       </div>
 
       <h3 style={S.h3}>Embudo de reclutamiento (YTD)</h3>
-      <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, padding: "20px 28px 18px", marginBottom: 16, boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}>
+      <ChartCopy label="Embudo de reclutamiento YTD"><div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, padding: "20px 28px 18px", marginBottom: 16, boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}>
         <div style={{ borderBottom: "1px solid #f1f5f9", paddingBottom: 12, marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <div>
             <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: "#64748b" }}>
@@ -4624,7 +4841,8 @@ function Cobertura({ onAbrirGuia }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {funnel.map((s, idx) => {
             const widthPct = idx === 0 ? 100 : (s.n / topFunnel) * 100;
-            const conversionFromPrev = idx > 1 ? ((s.n / funnel[idx - 1].n) * 100).toFixed(0) : null;
+            const prevN = idx > 0 ? funnel[idx - 1].n : 0;
+            const conversionFromPrev = idx > 1 && prevN > 0 ? ((s.n / prevN) * 100).toFixed(0) : null;
             const isSourcing = idx === 1;
             const grad = idx === 0
               ? "linear-gradient(90deg, #1e293b 0%, #0f172a 100%)"
@@ -4671,20 +4889,21 @@ function Cobertura({ onAbrirGuia }) {
           <span>Mayor caída: <strong style={{ color: "#c2410c" }}>Sourcing → Filtro CV</strong> (50% queda fuera)</span>
           <span>Cuello de botella: <strong style={{ color: "#c2410c" }}>Entrevista RH → Gerente</strong> (44% conversión, 5 días extra)</span>
         </div>
-      </div>
+      </div></ChartCopy>
 
       <h3 style={S.h3}>Solicitudes por área (YTD)</h3>
-      <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, padding: "16px 22px", marginBottom: 16, boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}>
+      <ChartCopy label="Solicitudes por área YTD"><div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, padding: "16px 22px", marginBottom: 16, boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {porArea.map((a) => {
-            const max = Math.max(...porArea.map((x) => x.recibidas));
+          {(() => {
+            const maxPorArea = Math.max(1, ...porArea.map((x) => x.recibidas));
+            return porArea.map((a) => {
             const pendientes = a.recibidas - a.cerradas;
             return (
               <div key={a.area} style={{ display: "grid", gridTemplateColumns: "130px 1fr 110px 90px", gap: 10, alignItems: "center", fontSize: 12 }}>
                 <div style={{ color: "#0f172a", fontWeight: 600 }}>{a.area}</div>
                 <div style={{ position: "relative", height: 18, background: "#f1f5f9", borderRadius: 3, overflow: "hidden" }}>
-                  <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${(a.recibidas / max) * 100}%`, background: "linear-gradient(90deg, #ea580c 0%, #c2410c 100%)", borderRadius: 3 }} />
-                  <div style={{ position: "absolute", left: 0, top: 2, bottom: 2, width: `${(a.cerradas / max) * 100}%`, background: "linear-gradient(90deg, #64748b 0%, #475569 100%)", borderRadius: 3 }} />
+                  <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${(a.recibidas / maxPorArea) * 100}%`, background: "linear-gradient(90deg, #ea580c 0%, #c2410c 100%)", borderRadius: 3 }} />
+                  <div style={{ position: "absolute", left: 0, top: 2, bottom: 2, width: `${(a.cerradas / maxPorArea) * 100}%`, background: "linear-gradient(90deg, #64748b 0%, #475569 100%)", borderRadius: 3 }} />
                 </div>
                 <div style={{ textAlign: "right", fontVariantNumeric: "tabular-nums", color: "#0f172a", fontWeight: 600 }}>
                   {a.cerradas}/{a.recibidas} ({pendientes} pend.)
@@ -4694,9 +4913,10 @@ function Cobertura({ onAbrirGuia }) {
                 </div>
               </div>
             );
-          })}
+          });
+          })()}
         </div>
-      </div>
+      </div></ChartCopy>
 
       <h3 style={S.h3}>Vacantes abiertas</h3>
       <p style={{ ...S.hint, marginTop: -4 }}>Haz click en cualquier vacante para ver el expediente completo.</p>
@@ -5347,11 +5567,7 @@ function Rotacion() {
 
   return (
     <div>
-      <h2 style={S.h2}>6. Rotación</h2>
-      <p style={S.hint}>
-        % de rotación por área + costo total de cada baja: directos, indirectos, ocultos y hundidos.
-        El objetivo es ponerle precio a algo que normalmente nadie cuantifica.
-      </p>
+      <h2 style={S.h2}>Rotación</h2>
 
       <div style={S.grid4}>
         <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
@@ -5784,11 +6000,16 @@ function Capacitacion() {
   const meses = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
   const parseFecha = (s) => {
     if (!s) return null;
-    if (s.includes("-") && s.length === 6) {
+    if (s.includes("-") && s.length <= 7) {
       const [d, m] = s.split("-");
-      return new Date(2026, meses.indexOf(m), parseInt(d));
+      const monthIdx = meses.indexOf(m);
+      const day = parseInt(d, 10);
+      if (monthIdx < 0 || !day || day < 1 || day > 31) return null;
+      const dt = new Date(2026, monthIdx, day);
+      return Number.isNaN(dt.getTime()) ? null : dt;
     }
-    return new Date(s);
+    const dt = new Date(s);
+    return Number.isNaN(dt.getTime()) ? null : dt;
   };
   const formatFechaCorta = (d) => `${String(d.getDate()).padStart(2, "0")}-${meses[d.getMonth()]}`;
 
@@ -6390,12 +6611,19 @@ function Capacitacion() {
   };
 
   // Calcular ventana del Gantt: del 1 del mes mínimo al último día del mes máximo + 1
-  const fechasParseadas = cursos.map((c) => ({ ini: parseFecha(c.fechaIni), fin: parseFecha(c.fechaFin) }));
-  const minDate = new Date(Math.min(...fechasParseadas.map((f) => f.ini.getTime())));
-  const maxDate = new Date(Math.max(...fechasParseadas.map((f) => f.fin.getTime())));
+  const fechasValidas = cursos
+    .map((c) => ({ ini: parseFecha(c.fechaIni), fin: parseFecha(c.fechaFin) }))
+    .filter((f) => f.ini && f.fin);
+  const fallbackGantt = new Date(2026, 4, 1);
+  const minDate = fechasValidas.length
+    ? new Date(Math.min(...fechasValidas.map((f) => f.ini.getTime())))
+    : fallbackGantt;
+  const maxDate = fechasValidas.length
+    ? new Date(Math.max(...fechasValidas.map((f) => f.fin.getTime())))
+    : new Date(2026, 6, 30);
   const ganttIni = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
   const ganttFin = new Date(maxDate.getFullYear(), maxDate.getMonth() + 2, 0); // último día del mes siguiente
-  const totalDias = Math.ceil((ganttFin - ganttIni) / 86400000) + 1;
+  const totalDias = Math.max(1, Math.ceil((ganttFin - ganttIni) / 86400000) + 1);
 
   // Generar columnas de meses
   const mesesGantt = [];
@@ -6419,8 +6647,7 @@ function Capacitacion() {
 
   return (
     <div>
-      <h2 style={S.h2}>7. Capacitación y Entrenamiento</h2>
-      <p style={S.hint}>Solicitudes, calendario, project manager, costos y ROI esperado de cada programa.</p>
+      <h2 style={S.h2}>Capacitación y Entrenamiento</h2>
 
       <div style={S.grid4}>
         <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
@@ -6675,7 +6902,7 @@ function Capacitacion() {
         <button style={S.btn} onClick={() => setNuevoOpen(true)}>+ Nueva entrada</button>
       </div>
       <p style={S.hint}>Gantt mensual con los programas activos, traslapes y responsables. Click en cualquier barra para ver el detalle.</p>
-      <div style={S.card}>
+      <ChartCopy label="Gantt mensual de capacitación"><div style={S.card}>
         {/* Header con meses */}
         <div style={{ display: "flex", marginBottom: 6, fontSize: 11, fontWeight: 700, color: "#666", textTransform: "uppercase", letterSpacing: 0.5 }}>
           <div style={{ width: 220, flexShrink: 0 }}>Programa</div>
@@ -6710,8 +6937,9 @@ function Capacitacion() {
             {cursos.map((c) => {
               const ini = parseFecha(c.fechaIni);
               const fin = parseFecha(c.fechaFin);
-              const pctIni = ((ini - ganttIni) / 86400000 / totalDias) * 100;
-              const pctAncho = Math.max(2, ((fin - ini) / 86400000 / totalDias) * 100);
+              const fechasOk = ini && fin && fin >= ini;
+              const pctIni = fechasOk ? ((ini - ganttIni) / 86400000 / totalDias) * 100 : 0;
+              const pctAncho = fechasOk ? Math.max(2, ((fin - ini) / 86400000 / totalDias) * 100) : 0;
               return (
                 <div key={c.id} style={{ height: 38, borderTop: "1px solid #f1f5f9", display: "flex", alignItems: "center" }}>
                   <div style={{ width: "100%", position: "relative", height: 24, background: "#fafafa", borderRadius: 3 }}>
@@ -6720,6 +6948,7 @@ function Capacitacion() {
                       <div key={i} style={{ position: "absolute", left: `${m.pctIni}%`, top: 0, bottom: 0, width: 1, background: "#e5e5e5" }} />
                     ))}
                     {/* Barra del curso */}
+                    {fechasOk ? (
                     <div
                       onClick={() => setCursoAbierto(c)}
                       title={`${c.nombre} · ${c.fechaIni} → ${c.fechaFin} · $${c.costo.toLocaleString("es-MX")} · ROI ${c.roi}`}
@@ -6748,6 +6977,11 @@ function Capacitacion() {
                   >
                     {c.id} · ${(c.costo / 1000).toFixed(0)}K · {c.roi}
                   </div>
+                    ) : (
+                      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", paddingLeft: 8, fontSize: 10, color: "#94a3b8" }}>
+                        Fechas inválidas ({c.fechaIni} → {c.fechaFin})
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -6774,7 +7008,7 @@ function Capacitacion() {
             Hoy
           </span>
         </div>
-      </div>
+      </div></ChartCopy>
 
       {/* Incidencias de capacitación — accountability */}
       <h3 style={S.h3}>Incidencias de capacitación · Accountability</h3>
@@ -7405,8 +7639,7 @@ function Seleccion() {
 
   return (
     <div>
-      <h2 style={S.h2}>5. Proceso de Selección</h2>
-      <p style={S.hint}>Pipeline completo: desde la solicitud autorizada hasta el onboarding 30-60-90+.</p>
+      <h2 style={S.h2}>Proceso de Selección</h2>
 
       <div style={S.grid4}>
         <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
@@ -7991,7 +8224,7 @@ export default function SaaSRRHH() {
     }
   };
   const validarPwdCatalogos = () => {
-    if (catalogosPwdInput === "12345") {
+    if (CATALOGOS_ADMIN_PASSWORD && catalogosPwdInput === CATALOGOS_ADMIN_PASSWORD) {
       setCatalogosUnlocked(true);
       setCatalogosPwdOpen(false);
       setCatalogosPwdInput("");
@@ -8027,9 +8260,9 @@ export default function SaaSRRHH() {
   }
 
   return (
-    <div style={S.page}>
+    <div style={S.page} className="print-page">
       {/* Topbar */}
-      <div style={S.topbar}>
+      <div style={S.topbar} className="no-print">
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{
             width: 38, height: 38, borderRadius: 9,
@@ -8057,14 +8290,24 @@ export default function SaaSRRHH() {
               <option key={p} value={p}>Periodo: {p}</option>
             ))}
           </select>
-          <button style={S.btn}>Exportar</button>
+          <button
+            style={S.btn}
+            onClick={() => {
+              const tabActual = TABS.find((t) => t.id === tab)?.label || (tab === "catalogos" ? "Catálogos maestros" : "Vista");
+              document.title = `${tabActual} · ${periodo} · Tablero RRHH`;
+              setTimeout(() => window.print(), 50);
+            }}
+            title="Imprimir / Exportar a PDF la pestaña actual"
+          >
+            Exportar
+          </button>
         </div>
       </div>
 
       {/* Layout: sidebar izquierdo + contenido */}
       <div style={S.layout}>
         {/* Sidebar de catálogo a la IZQUIERDA */}
-        <aside style={S.sidebar}>
+        <aside style={S.sidebar} className="no-print">
           <div style={{ padding: "0 20px 12px" }}>
             <input
               type="text"
@@ -8132,19 +8375,21 @@ export default function SaaSRRHH() {
                     <div
                       style={{
                         ...S.sidebarItem(isActive),
-                        background: isActive ? "#0f172a" : "transparent",
+                        background: isActive ? "linear-gradient(135deg, #ea580c 0%, #c2410c 100%)" : "transparent",
                         color: isActive ? "#fff" : "#0f172a",
-                        borderLeft: isActive ? "3px solid #facc15" : "3px solid transparent",
+                        borderLeft: isActive ? "3px solid #c2410c" : "3px solid transparent",
                         marginBottom: 4,
+                        boxShadow: isActive ? "0 1px 2px rgba(194, 65, 12, 0.25)" : "none",
                       }}
                       onClick={() => setTab("dashboard")}
                     >
                       <div style={{
                         width: 22, height: 22, borderRadius: 6,
-                        background: isActive ? "#facc15" : "#1e293b",
-                        color: isActive ? "#0f172a" : "#facc15",
+                        background: isActive ? "rgba(255,255,255,0.2)" : "linear-gradient(135deg, #ea580c 0%, #c2410c 100%)",
+                        color: "#fff",
                         display: "flex", alignItems: "center", justifyContent: "center",
                         flexShrink: 0,
+                        boxShadow: isActive ? "none" : "0 1px 2px rgba(194, 65, 12, 0.25)",
                       }}>
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="3" y="3" width="7" height="9" rx="1" />
@@ -8197,7 +8442,7 @@ export default function SaaSRRHH() {
         </aside>
 
         {/* Contenido principal */}
-        <div style={S.main}>{render()}</div>
+        <div style={S.main} className="print-main">{render()}</div>
       </div>
 
       {/* Password modal · Catálogos maestros */}
@@ -8258,7 +8503,7 @@ export default function SaaSRRHH() {
       )}
 
       {/* Footer */}
-      <footer style={{
+      <footer className="no-print" style={{
         borderTop: "1px solid #e2e8f0",
         padding: "14px 28px",
         background: "#fafafa",

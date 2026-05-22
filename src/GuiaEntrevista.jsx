@@ -150,10 +150,25 @@ Responde SOLO con un JSON válido, sin markdown, sin backticks, con esta estruct
 
 Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej: Liderazgo, Comunicación, Resiliencia, Pensamiento Estratégico, Trabajo en Equipo, Negociación, Integridad, Gestión del Tiempo, etc). Ordénalas de mayor a menor porcentaje. Los porcentajes deben reflejar coherentemente los scores y notas proporcionados.`;
 
+    const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      setAiResult({
+        dictamen: "Configura VITE_ANTHROPIC_API_KEY en tu entorno local para habilitar el dictamen con IA. Mientras tanto, usa los scores y notas de la entrevista.",
+        habilidades: [],
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
@@ -161,18 +176,23 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
         }),
       });
       const data = await response.json();
-      const text = data.content.map((i) => i.text || "").join("");
+      if (!response.ok) {
+        throw new Error(data?.error?.message || `HTTP ${response.status}`);
+      }
+      const text = (data.content || []).map((i) => i.text || "").join("");
       const clean = text.replace(/```json|```/g, "").trim();
       const parsed = JSON.parse(clean);
+      if (!parsed?.dictamen) throw new Error("Respuesta incompleta");
       setAiResult(parsed);
     } catch (err) {
       console.error("Error:", err);
       setAiResult({
-        dictamen: "Error al generar el dictamen. Verifica que las preguntas tengan score y notas, luego intenta de nuevo.",
+        dictamen: "No se pudo generar el dictamen con IA. Verifica la API key, la conexión y que todas las preguntas tengan score y notas.",
         habilidades: [],
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

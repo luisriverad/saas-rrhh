@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node -e \"const fs = require\\('fs'\\); const src = fs.readFileSync\\('src/SaaSRRHH.jsx', 'utf-8'\\); console.log\\('Lines:', src.split\\('\\\\n'\\).length\\);\")"
+      "Bash(node -e \"const fs = require\\('fs'\\); const src = fs.readFileSync\\('src/SaaSRRHH.jsx', 'utf-8'\\); console.log\\('Lines:', src.split\\('\\\\n'\\).length\\);\")",
+      "Bash(awk 'NR>=1016 && NR<=1250 && /^      \\\\}\\\\\\)\\\\\\(\\\\\\)\\\\}/{print NR; exit}' /Users/luisriveradelissalde/Documents/GitHub/saas-rrhh/src/SaaSRRHH.jsx)",
+      "Bash(awk 'NR>=1240 && NR<=1500 && /^      \\\\}\\\\\\)\\\\\\(\\\\\\)\\\\}/{print NR; exit}' /Users/luisriveradelissalde/Documents/GitHub/saas-rrhh/src/SaaSRRHH.jsx)",
+      "Bash(awk 'NR>=1480 && NR<=1800 && /^      \\\\}\\\\\\)\\\\\\(\\\\\\)\\\\}/{print NR; exit}' /Users/luisriveradelissalde/Documents/GitHub/saas-rrhh/src/SaaSRRHH.jsx)",
+      "Bash(awk 'NR>=4605 && NR<=4700 && /^        <\\\\/div>/{print NR; exit}' /Users/luisriveradelissalde/Documents/GitHub/saas-rrhh/src/SaaSRRHH.jsx)",
+      "Bash(awk 'NR>=4661 && NR<=4800 && /^        <\\\\/div>/{print NR; exit}' /Users/luisriveradelissalde/Documents/GitHub/saas-rrhh/src/SaaSRRHH.jsx)",
+      "Bash(awk 'NR>=4695 && NR<=4850 && /^      <\\\\/div>/{print NR; exit}' /Users/luisriveradelissalde/Documents/GitHub/saas-rrhh/src/SaaSRRHH.jsx)",
+      "Bash(awk 'NR>=4760 && NR<=4900 && /^      <\\\\/div>/{print NR; exit}' /Users/luisriveradelissalde/Documents/GitHub/saas-rrhh/src/SaaSRRHH.jsx)",
+      "Bash(awk 'NR>=6761 && NR<=6900 && /^      <\\\\/div>/{print NR; exit}' /Users/luisriveradelissalde/Documents/GitHub/saas-rrhh/src/SaaSRRHH.jsx)"
     ]
   }
 }
