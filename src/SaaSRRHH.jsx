@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback, Fragment } from "react";
 import GuiaEntrevista from "./GuiaEntrevista.jsx";
 
 // Demo: configurar VITE_CATALOGOS_PASSWORD en .env para producción (no commitear secretos reales).
@@ -176,6 +176,7 @@ const TABS = [
   { id: "seleccion", label: "Proceso de Selección", num: "5" },
   { id: "rotacion", label: "Rotación", num: "6" },
   { id: "capacitacion", label: "Capacitación", num: "7" },
+  { id: "desempeno", label: "Desempeño", num: "8" },
 ];
 
 // ---------- estilos base — paleta cálida profesional, branding naranja de Cobertura ----------
@@ -266,8 +267,8 @@ const S = {
   },
   h3: { fontSize: 14, fontWeight: 700, marginTop: 22, marginBottom: 10, color: COLOR.ink, letterSpacing: "-0.01em" },
   hint: { fontSize: 12, color: COLOR.textMuted, marginBottom: 16, lineHeight: 1.5 },
-  card: { border: "1px solid " + COLOR.border, borderRadius: 8, padding: 16, marginBottom: 16, background: COLOR.surface, boxShadow: COLOR.shadow },
-  kpi: { border: "1px solid " + COLOR.border, borderRadius: 8, padding: 14, background: COLOR.surface, boxShadow: COLOR.shadow },
+  card: { border: "1px solid " + COLOR.border, borderRadius: 0, padding: 16, marginBottom: 16, background: COLOR.surface, boxShadow: COLOR.shadow },
+  kpi: { border: "1px solid " + COLOR.border, borderRadius: 0, padding: 14, background: COLOR.surface, boxShadow: COLOR.shadow },
   kpiLabel: { fontSize: 10, fontWeight: 700, color: COLOR.textMuted, textTransform: "uppercase", letterSpacing: 0.8 },
   kpiValue: { fontSize: 28, fontWeight: 700, marginTop: 4, color: COLOR.ink, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" },
   kpiDelta: (positive) => ({ fontSize: 14, color: positive ? "#0a7d2c" : "#b00020", marginTop: 4, fontWeight: 600 }),
@@ -666,7 +667,7 @@ function Dashboard({ go, periodo = "Abr 2026" }) {
                 <div style={S.kpiLabel}>{k.label}</div>
                 <div style={S.kpiValue}>{k.value}</div>
                 <div style={S.kpiDelta(k.light === "green" || k.up)}>{k.delta}</div>
-                {k.benchmark && <div style={S.kpiBenchmark(k.light)}>Benchmark · {k.benchmark}</div>}
+                {k.benchmark && <div style={S.kpiBenchmark(k.light)}>{k.benchmark}</div>}
               </div>
               <TrafficLight light={k.light} />
             </div>
@@ -1019,7 +1020,7 @@ function Nomina({ periodo = "Abr 2026" }) {
             <div style={S.kpiLabel}>Nómina base total</div>
             <div style={S.kpiValue}>{fmt(totales.base)}</div>
             <div style={{ fontSize: 14, color: cmpColor(dBase), marginTop: 4 }}>{fmtDelta(dBase)}</div>
-            <div style={S.kpiBenchmark(cmpLight(dBase))}>Benchmark · Estable vs media móvil (±2%)</div>
+            <div style={S.kpiBenchmark(cmpLight(dBase))}>Estable vs media móvil (±2%)</div>
           </div>
           <TrafficLight light={cmpLight(dBase)} />
         </div>
@@ -1028,7 +1029,7 @@ function Nomina({ periodo = "Abr 2026" }) {
             <div style={S.kpiLabel}>Compensación variable</div>
             <div style={S.kpiValue}>{fmt(totales.variable)}</div>
             <div style={{ fontSize: 14, color: cmpColor(dVar), marginTop: 4 }}>{fmtDelta(dVar)}</div>
-            <div style={S.kpiBenchmark(cmpLight(dVar))}>Benchmark · Variación esperada ≤±3% vs MA</div>
+            <div style={S.kpiBenchmark(cmpLight(dVar))}>Variación esperada ≤±3% vs MA</div>
           </div>
           <TrafficLight light={cmpLight(dVar)} />
         </div>
@@ -1037,7 +1038,7 @@ function Nomina({ periodo = "Abr 2026" }) {
             <div style={S.kpiLabel}>Total nómina</div>
             <div style={S.kpiValue}>{fmt(totales.total)}</div>
             <div style={{ fontSize: 14, color: cmpColor(dTot), marginTop: 4 }}>{fmtDelta(dTot)}</div>
-            <div style={S.kpiBenchmark(cmpLight(dTot))}>Benchmark · Aceptable: ≤+2% vs MA</div>
+            <div style={S.kpiBenchmark(cmpLight(dTot))}>Aceptable: ≤+2% vs MA</div>
           </div>
           <TrafficLight light={cmpLight(dTot)} />
         </div>
@@ -1048,7 +1049,7 @@ function Nomina({ periodo = "Abr 2026" }) {
             <div style={S.kpiDelta(variacionPp <= 0)}>
               {variacionPp >= 0 ? "+" : ""}{variacionPp.toFixed(1)}% vs límite ({limiteConsolidado}%)
             </div>
-            <div style={S.kpiBenchmark(semaforoVariable)}>Benchmark · Política interna: {limiteConsolidado}%</div>
+            <div style={S.kpiBenchmark(semaforoVariable)}>Política interna: {limiteConsolidado}%</div>
           </div>
           <TrafficLight light={semaforoVariable} />
         </div>
@@ -2299,12 +2300,9 @@ function Nomina({ periodo = "Abr 2026" }) {
                 style={{
                   ...S.btnGhost,
                   display: "inline-flex", alignItems: "center", gap: 6,
-                  opacity: errores.length > 0 ? 0.4 : 1,
-                  cursor: errores.length > 0 ? "not-allowed" : "pointer",
-                  borderColor: errores.length > 0 ? "#e2e8f0" : "#c2410c",
-                  color: errores.length > 0 ? "#94a3b8" : "#c2410c",
+                  borderColor: "#c2410c",
+                  color: "#c2410c",
                 }}
-                disabled={errores.length > 0}
                 onClick={() => {
                   const asunto = `Solicitud de bono · ${form.empleado || "(empleado)"} · $${(parseInt(String(form.monto).replace(/[^0-9]/g, "")) || 0).toLocaleString("es-MX")}`;
                   const cuerpo = [
@@ -3097,13 +3095,31 @@ function Clima() {
   const guardarEdicion = () => {
     if (editingIdx === null) return;
     const texto = editDraft.trim();
-    if (!texto) { setEditingIdx(null); return; }
+    if (!texto) {
+      // Reactivo vacío (p. ej. recién agregado): lo descartamos al guardar
+      setPreguntasEditadas((prev) => prev.filter((_, i) => i !== editingIdx));
+      setEditingIdx(null);
+      setEditDraft("");
+      return;
+    }
     setPreguntasEditadas((prev) => prev.map((p, i) => (i === editingIdx ? texto : p)));
     setEditingIdx(null);
     setEditDraft("");
   };
   const cancelarEdicion = () => {
+    // Si era un reactivo nuevo que quedó vacío, lo quitamos
+    setPreguntasEditadas((prev) => prev.filter((p, i) => !(i === editingIdx && !p.trim())));
     setEditingIdx(null);
+    setEditDraft("");
+  };
+  const eliminarPregunta = (idx) => {
+    setPreguntasEditadas((prev) => prev.filter((_, i) => i !== idx));
+    if (editingIdx === idx) { setEditingIdx(null); setEditDraft(""); }
+  };
+  const agregarPregunta = () => {
+    const nuevoIdx = preguntasEditadas.length;
+    setPreguntasEditadas((prev) => [...prev, ""]);
+    setEditingIdx(nuevoIdx);
     setEditDraft("");
   };
 
@@ -3161,7 +3177,7 @@ function Clima() {
             <div style={S.kpiLabel}>Pulso semanal (último)</div>
             <div style={S.kpiValue}>7.2 / 10</div>
             <div style={S.kpiDelta(true)}>+0.3 vs semana anterior</div>
-            <div style={S.kpiBenchmark("green")}>Benchmark · Meta: ≥7.0 · Excelente: ≥7.5</div>
+            <div style={S.kpiBenchmark("green")}>Meta: ≥7.0 · Excelente: ≥7.5</div>
           </div>
           <TrafficLight light="green" />
         </div>
@@ -3170,7 +3186,7 @@ function Clima() {
             <div style={S.kpiLabel}>eNPS</div>
             <div style={S.kpiValue}>+18</div>
             <div style={S.kpiDelta(false)}>Promotores 42% / Detractores 24%</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · Saludable: ≥+20 · Líder: ≥+30</div>
+            <div style={S.kpiBenchmark("yellow")}>Saludable: ≥+20 · Líder: ≥+30</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -3179,7 +3195,7 @@ function Clima() {
             <div style={S.kpiLabel}>Tasa de respuesta</div>
             <div style={S.kpiValue}>68%</div>
             <div style={S.kpiDelta(true)}>168 / 248 colaboradores</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · Meta: ≥75% · Mínimo válido: ≥60%</div>
+            <div style={S.kpiBenchmark("yellow")}>Meta: ≥75% · Mínimo válido: ≥60%</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -3296,11 +3312,41 @@ function Clima() {
                               onClick={() => iniciarEdicion(i)}
                               style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.4, padding: "5px 9px", border: "1px solid #ccc", background: "#fff", color: "#333", borderRadius: 3, cursor: "pointer" }}
                             >EDITAR</button>
+                            <button
+                              onClick={() => eliminarPregunta(i)}
+                              title="Eliminar reactivo"
+                              aria-label="Eliminar reactivo"
+                              style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "5px 7px", border: "1px solid #fecaca", background: "#fff", color: "#dc2626", borderRadius: 3, cursor: "pointer" }}
+                            >
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                <path d="M10 11v6M14 11v6" />
+                                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                              </svg>
+                            </button>
                           </>
                         )}
                       </div>
                     ))}
                   </div>
+                  <button
+                    onClick={agregarPregunta}
+                    disabled={editingIdx !== null}
+                    style={{
+                      marginTop: 10, display: "inline-flex", alignItems: "center", gap: 6,
+                      fontSize: 11, fontWeight: 700, letterSpacing: 0.4, textTransform: "uppercase",
+                      padding: "7px 12px", border: "1px dashed #94a3b8", background: "#fff",
+                      color: editingIdx !== null ? "#cbd5e1" : "#475569", borderRadius: 4,
+                      cursor: editingIdx !== null ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Agregar reactivo
+                  </button>
                 </div>
 
                 {modal.instrumento.individual && (() => {
@@ -4056,6 +4102,108 @@ const INCIDENCIAS = [
   },
 ];
 
+// Casos cerrados de meses anteriores — alimentan el historial (resueltos vs no resueltos).
+const CASOS_ARCHIVADOS = [
+  {
+    id: "DN-023", fecha: "06-mar", cierre: "24-mar", tipo: "Mal uso de recursos", area: "Operaciones",
+    estado: "Resuelta", resultado: "Fundada", hr: "Sí", severidad: "Media",
+    canal: "Línea ética 800 (anónima)",
+    denunciante: { anonimo: true, descripcion: "Colaborador del área de Operaciones", relacion: "Compañero del denunciado" },
+    denunciado: {
+      nombre: "Raúl Espinoza", empNo: "EMP-0331", area: "Operaciones",
+      puesto: "Supervisor de Almacén", jefe: "M. Quintana (Jefa de Operaciones)",
+      antiguedad: "6 años 1 mes", fechaIngreso: "14-feb-2020",
+      reportes: 5, sueldo: 24000, expediente: "1 llamada de atención verbal (2023)",
+    },
+    confidencialidad: "Estándar",
+    descripcion: "Uso de vehículo y herramienta de la empresa para fines personales en fin de semana, sin autorización.",
+    evidencias: ["Bitácora de salida del almacén (sábado)", "Reporte de GPS de la unidad U-12", "Testimonio de vigilancia"],
+    comentariosComite: [
+      { autor: "Comité Ético", fecha: "18-mar", texto: "Hechos confirmados. Procede acción disciplinaria sin despido por ser primera falta documentada." },
+    ],
+    resolucion: "Acta administrativa y reposición del costo de combustible. Capacitación en uso de activos completada el 22-mar.",
+    proximosPasos: ["Seguimiento por 60 días", "Refuerzo de política de uso de activos al equipo"],
+    hojaRuta: [
+      { paso: 1, accion: "Entrevista con testigos", responsable: "Gerente RH", fecha: "10-mar", estado: "Hecho" },
+      { paso: 2, accion: "Entrevista con denunciado", responsable: "Gerente RH + Legal", fecha: "14-mar", estado: "Hecho" },
+      { paso: 3, accion: "Resolución del Comité", responsable: "Comité ético", fecha: "18-mar", estado: "Hecho" },
+      { paso: 4, accion: "Acción disciplinaria y cierre", responsable: "Director RH", fecha: "24-mar", estado: "Hecho" },
+    ],
+  },
+  {
+    id: "DN-021", fecha: "11-feb", cierre: "02-mar", tipo: "Acoso laboral", area: "Posventa",
+    estado: "Resuelta", resultado: "Fundada", hr: "Sí", severidad: "Alta",
+    canal: "Reporte directo con HRBP",
+    denunciante: {
+      anonimo: false, nombre: "Verónica Lugo", empNo: "EMP-0276", area: "Posventa",
+      puesto: "Asesora de Servicio", jefe: "C. Mendoza (Gte. Posventa)", antiguedad: "3 años 5 meses",
+      relacion: "Reporte directo del denunciado",
+    },
+    denunciado: {
+      nombre: "Hugo Pérez", empNo: "EMP-0150", area: "Posventa",
+      puesto: "Jefe de Taller", jefe: "C. Mendoza (Gte. Posventa)",
+      antiguedad: "8 años 0 meses", fechaIngreso: "20-ene-2018",
+      reportes: 12, sueldo: 38000, expediente: "Reporte previo cerrado sin acción (2023)",
+    },
+    confidencialidad: "Estricta",
+    descripcion: "Comentarios humillantes reiterados y asignación de cargas desproporcionadas como represalia.",
+    evidencias: ["Mensajes de WhatsApp del grupo del taller", "2 testimonios firmados", "Pulso de clima del taller: 4.8/10"],
+    comentariosComite: [
+      { autor: "Comité Ético", fecha: "20-feb", texto: "Patrón de conducta confirmado. Recomendación: separación del cargo de liderazgo." },
+      { autor: "Legal", fecha: "26-feb", texto: "Procede rescisión conforme al art. 47 LFT con expediente documentado." },
+    ],
+    resolucion: "Baja del denunciado por rescisión justificada. Acompañamiento psicológico activado para la denunciante. Reasignación de liderazgo del taller.",
+    proximosPasos: ["Monitoreo de clima del taller por 90 días", "Protocolo de no represalia vigente"],
+    hojaRuta: [
+      { paso: 1, accion: "Entrevista con denunciante", responsable: "Gerente RH", fecha: "13-feb", estado: "Hecho" },
+      { paso: 2, accion: "Recolección de evidencias", responsable: "Comité ético", fecha: "18-feb", estado: "Hecho" },
+      { paso: 3, accion: "Entrevista con denunciado", responsable: "Gerente RH + Legal", fecha: "22-feb", estado: "Hecho" },
+      { paso: 4, accion: "Resolución y comunicación", responsable: "Director RH", fecha: "02-mar", estado: "Hecho" },
+    ],
+  },
+  {
+    id: "DN-019", fecha: "20-ene", cierre: "05-feb", tipo: "Conflicto interpersonal", area: "Administración",
+    estado: "Resuelta", resultado: "No fundada", hr: "Sí", severidad: "Baja",
+    canal: "Buzón interno",
+    denunciante: {
+      anonimo: false, nombre: "Daniela Ortega", empNo: "EMP-0298", area: "Administración",
+      puesto: "Analista de Nómina", jefe: "J. Fuentes (Jefe de Administración)", antiguedad: "2 años 3 meses",
+      relacion: "Compañera del denunciado",
+    },
+    denunciado: {
+      nombre: "Mario Salas", empNo: "EMP-0301", area: "Administración",
+      puesto: "Analista de Cuentas por Pagar", jefe: "J. Fuentes (Jefe de Administración)",
+      antiguedad: "2 años 8 meses", fechaIngreso: "12-sep-2023",
+      reportes: 0, sueldo: 22000, expediente: "Sin antecedentes",
+    },
+    confidencialidad: "Estándar",
+    descripcion: "Reporte de discusiones frecuentes y mal ambiente entre dos analistas del área.",
+    evidencias: ["Entrevistas a ambas partes", "Sin evidencia de conducta sancionable"],
+    comentariosComite: [
+      { autor: "HRBP", fecha: "30-ene", texto: "No se acredita falta. Se trata de un conflicto de comunicación; procede mediación." },
+    ],
+    resolucion: "Caso no fundado. Sesión de mediación realizada el 04-feb con acuerdos de convivencia. Sin acción disciplinaria.",
+    proximosPasos: ["Seguimiento informal del clima del área por 30 días"],
+    hojaRuta: [
+      { paso: 1, accion: "Entrevista con ambas partes", responsable: "HRBP", fecha: "26-ene", estado: "Hecho" },
+      { paso: 2, accion: "Sesión de mediación", responsable: "HRBP + Jefe de área", fecha: "04-feb", estado: "Hecho" },
+      { paso: 3, accion: "Cierre y acuerdos", responsable: "Gerente RH", fecha: "05-feb", estado: "Hecho" },
+    ],
+  },
+];
+
+const TODOS_CASOS = [...INCIDENCIAS, ...CASOS_ARCHIVADOS];
+
+// Tendencia mensual (recibidas vs resueltas) — para el historial.
+const HISTORIAL_MENSUAL = [
+  { mes: "Dic", recibidas: 4, resueltas: 3 },
+  { mes: "Ene", recibidas: 5, resueltas: 4 },
+  { mes: "Feb", recibidas: 3, resueltas: 3 },
+  { mes: "Mar", recibidas: 6, resueltas: 4 },
+  { mes: "Abr", recibidas: 5, resueltas: 3 },
+  { mes: "May", recibidas: 4, resueltas: 4 },
+];
+
 function Denuncia() {
   const [openId, setOpenId] = useState(null);
   const [pwdRequestId, setPwdRequestId] = useState(null);
@@ -4082,7 +4230,7 @@ function Denuncia() {
     setPwdInput("");
     setPwdError(false);
   };
-  const incidencia = INCIDENCIAS.find((i) => i.id === openId);
+  const incidencia = TODOS_CASOS.find((i) => i.id === openId);
 
   const estadoBadgeColor = (estado) =>
     estado === "Resuelta" ? "#e8f5e9" : estado === "En investigación" ? "#fff7e0" : "#fdecea";
@@ -4100,7 +4248,7 @@ function Denuncia() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Activas</div>
             <div style={S.kpiValue}>5</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · Histórico mensual: 3-6</div>
+            <div style={S.kpiBenchmark("yellow")}>Histórico mensual: 3-6</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -4108,7 +4256,7 @@ function Denuncia() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Sin Hoja de Ruta</div>
             <div style={S.kpiValue}>2</div>
-            <div style={S.kpiBenchmark("red")}>Benchmark · Meta: 0 (toda activa con plan)</div>
+            <div style={S.kpiBenchmark("red")}>Meta: 0 (toda activa con plan)</div>
           </div>
           <TrafficLight light="red" />
         </div>
@@ -4116,7 +4264,7 @@ function Denuncia() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Resueltas (mes)</div>
             <div style={S.kpiValue}>3</div>
-            <div style={S.kpiBenchmark("green")}>Benchmark · Meta: ≥3 / mes</div>
+            <div style={S.kpiBenchmark("green")}>Meta: ≥3 / mes</div>
           </div>
           <TrafficLight light="green" />
         </div>
@@ -4124,7 +4272,7 @@ function Denuncia() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Tiempo medio resolución</div>
             <div style={S.kpiValue}>22 días</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · SLA interno: ≤15 días</div>
+            <div style={S.kpiBenchmark("yellow")}>SLA interno: ≤15 días</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -4166,30 +4314,131 @@ function Denuncia() {
         </tbody>
       </table>
 
-      <h3 style={S.h3}>Hoja de Ruta — Ejemplo</h3>
-      <div style={S.card}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-          <strong>DN-024 · Acoso laboral · Comercial</strong>
-          <span style={S.badge("#fff7e0")}>En investigación</span>
-        </div>
-        <table style={S.table}>
-          <thead>
-            <tr>
-              <th style={S.th}>#</th>
-              <th style={S.th}>Acción</th>
-              <th style={S.th}>Responsable</th>
-              <th style={S.th}>Fecha límite</th>
-              <th style={S.th}>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td style={S.td}>1</td><td style={S.td}>Entrevista con denunciante</td><td style={S.td}>Gerente RH</td><td style={S.td}>15-abr</td><td style={S.td}><span style={S.badge("#e8f5e9")}>Hecho</span></td></tr>
-            <tr><td style={S.td}>2</td><td style={S.td}>Entrevista con denunciado</td><td style={S.td}>Gerente RH + Legal</td><td style={S.td}>20-abr</td><td style={S.td}><span style={S.badge("#e8f5e9")}>Hecho</span></td></tr>
-            <tr><td style={S.td}>3</td><td style={S.td}>Recolección de evidencias</td><td style={S.td}>Comité ético</td><td style={S.td}>30-abr</td><td style={S.td}><span style={S.badge("#fff7e0")}>En curso</span></td></tr>
-            <tr><td style={S.td}>4</td><td style={S.td}>Resolución y comunicación</td><td style={S.td}>Director RH</td><td style={S.td}>10-may</td><td style={S.td}><span style={S.badge("#eee")}>Pendiente</span></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <h3 style={S.h3}>Historial de casos — Resueltos vs No resueltos</h3>
+      {(() => {
+        const resueltos = TODOS_CASOS.filter((c) => c.estado === "Resuelta");
+        const noResueltos = TODOS_CASOS.filter((c) => c.estado !== "Resuelta");
+        const totalCasos = TODOS_CASOS.length;
+        const tasa = totalCasos ? Math.round((resueltos.length / totalCasos) * 100) : 0;
+        const maxMes = Math.max(1, ...HISTORIAL_MENSUAL.map((m) => m.recibidas));
+
+        const CasoCard = ({ c, resuelto }) => {
+          const hechos = c.hojaRuta.filter((p) => p.estado === "Hecho").length;
+          const tot = c.hojaRuta.length || 1;
+          const prog = Math.round((hechos / tot) * 100);
+          const ac = resuelto ? "#0a7d2c" : "#c2410c";
+          return (
+            <button
+              onClick={() => intentarAbrir(c.id)}
+              title={`${c.id} · clic para abrir el expediente (confidencial)`}
+              style={{
+                textAlign: "left", width: "100%", cursor: "pointer",
+                border: "1px solid " + COLOR.border,
+                borderRadius: 0, padding: "11px 13px", background: "#fff",
+                display: "flex", flexDirection: "column", gap: 8, boxShadow: COLOR.shadow,
+                transition: "box-shadow 0.12s ease, transform 0.12s ease",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = COLOR.shadowHover; e.currentTarget.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = COLOR.shadow; e.currentTarget.style.transform = "none"; }}
+            >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0 }}>
+                  <span style={{ color: COLOR.textMuted, display: "inline-flex" }}><IconLock size={12} /></span>
+                  <strong style={{ fontSize: 13, color: COLOR.ink }}>{c.id}</strong>
+                  <span style={{ fontSize: 12, color: COLOR.textSoft, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>· {c.tipo}</span>
+                </div>
+                <span style={{ ...S.badge("#f1f5f9"), color: severidadColor(c.severidad), fontWeight: 700, flexShrink: 0 }}>{c.severidad}</span>
+              </div>
+              <div style={{ fontSize: 11, color: COLOR.textMuted }}>
+                {c.area} · Recibida {c.fecha}{resuelto && c.cierre ? ` · Cerrada ${c.cierre}` : ""}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ flex: 1, height: 6, borderRadius: 4, background: hexA(ac, 0.12), overflow: "hidden" }}>
+                  <div style={{ width: `${prog}%`, height: "100%", background: ac, borderRadius: 4 }} />
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: ac }}>{hechos}/{tot}</span>
+                {resuelto
+                  ? <span style={{ ...S.badge("#e8f5e9"), color: "#0a7d2c", fontWeight: 700 }}>{c.resultado || "Resuelta"}</span>
+                  : <span style={{ ...S.badge(c.hr === "Sí" ? "#fff7e0" : "#fdecea"), fontWeight: 700 }}>{c.estado}</span>}
+              </div>
+            </button>
+          );
+        };
+
+        return (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "minmax(220px, 1fr) 1.6fr", gap: 12, marginBottom: 14 }}>
+              {/* Tasa de resolución */}
+              <div style={{ ...S.card, marginBottom: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div style={S.kpiLabel}>Tasa de resolución (histórico)</div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 4 }}>
+                  <div style={{ fontSize: 34, fontWeight: 700, color: "#0a7d2c", letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>{tasa}%</div>
+                  <div style={{ fontSize: 12, color: COLOR.textMuted }}>{resueltos.length} de {totalCasos} casos</div>
+                </div>
+                <div style={{ display: "flex", height: 12, overflow: "hidden", marginTop: 12, border: "1px solid " + COLOR.border }}>
+                  <div style={{ width: `${tasa}%`, background: "linear-gradient(90deg, #16a34a 0%, #0a7d2c 100%)" }} title={`Resueltos: ${resueltos.length}`} />
+                  <div style={{ flex: 1, background: "linear-gradient(90deg, #ea580c 0%, #c2410c 100%)" }} title={`No resueltos: ${noResueltos.length}`} />
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 11 }}>
+                  <span style={{ color: "#0a7d2c", fontWeight: 700 }}>● Resueltos {resueltos.length}</span>
+                  <span style={{ color: "#c2410c", fontWeight: 700 }}>No resueltos {noResueltos.length} ●</span>
+                </div>
+              </div>
+
+              {/* Tendencia 6 meses */}
+              <div style={{ ...S.card, marginBottom: 0 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                  <div style={S.kpiLabel}>Tendencia · recibidas vs resueltas</div>
+                  <div style={{ display: "flex", gap: 12, fontSize: 10, color: COLOR.textMuted }}>
+                    <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "#94a3b8", marginRight: 4 }} />Recibidas</span>
+                    <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "#0a7d2c", marginRight: 4 }} />Resueltas</span>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 14, height: 96, paddingTop: 4 }}>
+                  {HISTORIAL_MENSUAL.map((m) => (
+                    <div key={m.mes} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+                      <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 72, width: "100%", justifyContent: "center" }}>
+                        <div title={`Recibidas: ${m.recibidas}`} style={{ position: "relative", width: 14, height: `${(m.recibidas / maxMes) * 100}%`, background: "#94a3b8" }}>
+                          <span style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", fontSize: 10, fontWeight: 700, color: "#64748b" }}>{m.recibidas}</span>
+                        </div>
+                        <div title={`Resueltas: ${m.resueltas}`} style={{ position: "relative", width: 14, height: `${(m.resueltas / maxMes) * 100}%`, background: "#0a7d2c" }}>
+                          <span style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", fontSize: 10, fontWeight: 700, color: "#0a7d2c" }}>{m.resueltas}</span>
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 10, color: COLOR.textMuted, fontWeight: 600 }}>{m.mes}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Dos carriles de casos */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#c2410c" }} />
+                  <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: COLOR.textSoft }}>No resueltos · en proceso ({noResueltos.length})</span>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {noResueltos.map((c) => <CasoCard key={c.id} c={c} resuelto={false} />)}
+                </div>
+              </div>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#0a7d2c" }} />
+                  <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: COLOR.textSoft }}>Resueltos ({resueltos.length})</span>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {resueltos.map((c) => <CasoCard key={c.id} c={c} resuelto={true} />)}
+                </div>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: COLOR.textMuted, marginTop: 10, display: "flex", alignItems: "center", gap: 6 }}>
+              <IconLock size={11} /> Cada tarjeta abre el expediente y su histórico completo · acceso protegido (password).
+            </div>
+          </>
+        );
+      })()}
 
       {pwdRequestId && (
         <div
@@ -4470,7 +4719,7 @@ function Denuncia() {
 // =============================================================
 // 4. COBERTURA DE PLANTILLA
 // =============================================================
-function Cobertura({ onAbrirGuia }) {
+function Cobertura() {
   const [vacanteAbierta, setVacanteAbierta] = useState(null);
 
   const etapasReclutamiento = [
@@ -4676,34 +4925,14 @@ function Cobertura({ onAbrirGuia }) {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-        <div>
-          <h2 style={S.h2}>Cobertura de Plantilla</h2>
-        </div>
-        <button
-          onClick={onAbrirGuia}
-          style={{
-            ...S.btn,
-            background: "linear-gradient(135deg, #71b248 0%, #5a9438 100%)",
-            border: "none",
-            color: "#fff",
-            padding: "10px 18px",
-            fontSize: 13,
-            fontWeight: 700,
-            whiteSpace: "nowrap",
-            boxShadow: "0 1px 3px rgba(15,23,42,0.12)",
-          }}
-        >
-          Guía de entrevista →
-        </button>
-      </div>
+      <h2 style={S.h2}>Cobertura de Plantilla</h2>
 
       <div style={S.grid4}>
         <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Plantilla autorizada</div>
             <div style={S.kpiValue}>248</div>
-            <div style={S.kpiBenchmark("green")}>Benchmark · Plan anual 2026: 248</div>
+            <div style={S.kpiBenchmark("green")}>Plan anual 2026: 248</div>
           </div>
           <TrafficLight light="green" />
         </div>
@@ -4711,7 +4940,7 @@ function Cobertura({ onAbrirGuia }) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Cubierta</div>
             <div style={S.kpiValue}>228</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · Objetivo: 248 (autorizado)</div>
+            <div style={S.kpiBenchmark("yellow")}>Objetivo: 248 (autorizado)</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -4719,7 +4948,7 @@ function Cobertura({ onAbrirGuia }) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>% cobertura</div>
             <div style={S.kpiValue}>92%</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · Meta: ≥95% · Crítico: &lt;90%</div>
+            <div style={S.kpiBenchmark("yellow")}>Meta: ≥95% · Crítico: &lt;90%</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -4727,7 +4956,7 @@ function Cobertura({ onAbrirGuia }) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Vacantes &gt; 60 días</div>
             <div style={S.kpiValue}>2</div>
-            <div style={S.kpiBenchmark("red")}>Benchmark · Meta: 0 · Alerta: ≥1</div>
+            <div style={S.kpiBenchmark("red")}>Meta: 0 · Alerta: ≥1</div>
           </div>
           <TrafficLight light="red" />
         </div>
@@ -5163,6 +5392,25 @@ function Cobertura({ onAbrirGuia }) {
 function Rotacion() {
   const [conceptoAbierto, setConceptoAbierto] = useState(null);
   const [bajaSeleccionadaId, setBajaSeleccionadaId] = useState(null);
+  const [mostrarTodosCasos, setMostrarTodosCasos] = useState(false);
+  const [vistaRot, setVistaRot] = useState("costo"); // "costo" | "pct"
+  const [areaAbierta, setAreaAbierta] = useState(null);
+
+  // Serie mes a mes (últimos 12 meses) — costo de rotación y % de rotación mensual.
+  const rotacionMensual = [
+    { mes: "Jun", anio: "'25", bajas: 2, costo: 185000, pct: 0.8 },
+    { mes: "Jul", anio: "'25", bajas: 1, costo: 92000, pct: 0.4 },
+    { mes: "Ago", anio: "'25", bajas: 2, costo: 168000, pct: 0.8 },
+    { mes: "Sep", anio: "'25", bajas: 3, costo: 255000, pct: 1.2 },
+    { mes: "Oct", anio: "'25", bajas: 2, costo: 176000, pct: 0.8 },
+    { mes: "Nov", anio: "'25", bajas: 1, costo: 84000, pct: 0.4 },
+    { mes: "Dic", anio: "'25", bajas: 2, costo: 198000, pct: 0.8 },
+    { mes: "Ene", anio: "'26", bajas: 4, costo: 352000, pct: 1.6 },
+    { mes: "Feb", anio: "'26", bajas: 3, costo: 286000, pct: 1.2 },
+    { mes: "Mar", anio: "'26", bajas: 5, costo: 465000, pct: 2.0 },
+    { mes: "Abr", anio: "'26", bajas: 3, costo: 243000, pct: 1.2 },
+    { mes: "May", anio: "'26", bajas: 2, costo: 178000, pct: 0.8 },
+  ];
 
   const bajas = [
     { area: "Comercial", n: 7, motivo: "Mejor oferta", tipo: "Voluntaria" },
@@ -5385,6 +5633,10 @@ function Rotacion() {
     },
   ];
 
+  // Costo económico real de cada baja (suma de los 4 componentes) y total real YTD por área.
+  const costoTotalBaja = (b) => b.costos.directo + b.costos.indirecto + b.costos.oculto + b.costos.hundido;
+  const costoRealArea = (area) => bajasRecientes.filter((b) => b.area === area).reduce((a, b) => a + costoTotalBaja(b), 0);
+
   // Notas personalizadas sobre el desglose, por baja y concepto. Si no hay, se usa la nota genérica del concepto.
   const notasPersonalizadas = {
     "B-001": {
@@ -5574,7 +5826,7 @@ function Rotacion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Bajas YTD</div>
             <div style={S.kpiValue}>{totalBajas}</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · Meta anual: ≤30 bajas</div>
+            <div style={S.kpiBenchmark("yellow")}>Meta anual: ≤30 bajas</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -5582,7 +5834,7 @@ function Rotacion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>% rotación anualizada</div>
             <div style={S.kpiValue}>20.6%</div>
-            <div style={S.kpiBenchmark("red")}>Benchmark · Industria 15-18% · Meta: ≤18%</div>
+            <div style={S.kpiBenchmark("red")}>Industria 15-18% · Meta: ≤18%</div>
           </div>
           <TrafficLight light="red" />
         </div>
@@ -5590,7 +5842,7 @@ function Rotacion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Costo unitario promedio</div>
             <div style={S.kpiValue}>$43,000</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · Histórico promedio: $38,000</div>
+            <div style={S.kpiBenchmark("yellow")}>Histórico promedio: $38,000</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -5598,7 +5850,7 @@ function Rotacion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Costo total estimado</div>
             <div style={S.kpiValue}>${(costoTotal / 1000000).toFixed(2)}M</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · Presupuesto anual: $1.0M</div>
+            <div style={S.kpiBenchmark("yellow")}>Presupuesto anual: $1.0M</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -5641,6 +5893,7 @@ function Rotacion() {
                     setConceptoAbierto(c);
                     const masReciente = [...bajasRecientes].sort((a, b) => b.costos[c.campoCosto] - a.costos[c.campoCosto])[0];
                     setBajaSeleccionadaId(masReciente.id);
+                    setMostrarTodosCasos(false);
                   }}
                   style={{ cursor: "pointer" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
@@ -5659,6 +5912,7 @@ function Rotacion() {
       })()}
 
       <h3 style={S.h3}>Rotación por área</h3>
+      <p style={{ ...S.hint, marginTop: 0, marginBottom: 8 }}>Haz clic en un área para ver el desglose de sus bajas.</p>
       <table style={S.table}>
         <thead>
           <tr>
@@ -5666,21 +5920,183 @@ function Rotacion() {
             <th style={S.th}>Bajas</th>
             <th style={S.th}>Motivo principal</th>
             <th style={S.th}>Tipo</th>
-            <th style={S.th}>Costo estimado</th>
+            <th style={S.th}>Costo real YTD</th>
+            <th style={S.th}></th>
           </tr>
         </thead>
         <tbody>
           {bajas.map((b) => (
-            <tr key={b.area}>
+            <tr
+              key={b.area}
+              onClick={() => setAreaAbierta(b.area)}
+              style={{ cursor: "pointer" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            >
               <td style={S.td}><strong>{b.area}</strong></td>
               <td style={S.td}>{b.n}</td>
               <td style={S.td}>{b.motivo}</td>
               <td style={S.td}>{b.tipo}</td>
-              <td style={S.td}>${(100000 * b.n).toLocaleString("es-MX")}</td>
+              <td style={S.td}><strong>${costoRealArea(b.area).toLocaleString("es-MX")}</strong></td>
+              <td style={{ ...S.td, textAlign: "right", color: "#64748b", fontSize: 12, whiteSpace: "nowrap" }}>Ver desglose →</td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* ---------- Modal: desglose de bajas por área ---------- */}
+      {areaAbierta && (() => {
+        const lista = bajasRecientes.filter((b) => b.area === areaAbierta);
+        const totalArea = lista.reduce((a, b) => a + costoTotalBaja(b), 0);
+        const vol = lista.filter((b) => b.tipo === "Voluntaria").length;
+        const invol = lista.length - vol;
+        const fmt = (v) => "$" + v.toLocaleString("es-MX");
+        return (
+          <div onClick={() => setAreaAbierta(null)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", backdropFilter: "blur(3px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 120, padding: 16 }}>
+            <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", width: 860, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto", border: "1px solid " + COLOR.border, boxShadow: COLOR.shadowHover }}>
+              <div style={{ position: "relative", padding: "20px 24px", background: `radial-gradient(circle at 100% 0%, ${hexA(COLOR.accentLight, 0.16)} 0%, transparent 60%), linear-gradient(135deg, ${hexA(COLOR.accentLight, 0.1)} 0%, ${hexA(COLOR.accent, 0.04)} 100%), #fff`, borderBottom: "1px solid " + COLOR.border }}>
+                <button onClick={() => setAreaAbierta(null)} style={{ position: "absolute", top: 14, right: 14, border: "none", background: "transparent", fontSize: 20, cursor: "pointer", color: COLOR.textMuted, lineHeight: 1 }}>×</button>
+                <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: COLOR.accent }}>Desglose de bajas por área</div>
+                <h3 style={{ margin: "6px 0 2px", fontSize: 20, fontWeight: 700, color: COLOR.ink }}>{areaAbierta}</h3>
+                <div style={{ fontSize: 13, color: COLOR.textSoft }}>{lista.length} baja{lista.length !== 1 ? "s" : ""} YTD · {vol} voluntaria{vol !== 1 ? "s" : ""} · {invol} involuntaria{invol !== 1 ? "s" : ""}</div>
+              </div>
+
+              <div style={{ padding: 24 }}>
+                {/* Resumen */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 16 }}>
+                  <div style={{ ...S.kpi, padding: 12 }}>
+                    <div style={S.kpiLabel}>Bajas en el área</div>
+                    <div style={{ fontSize: 24, fontWeight: 700, marginTop: 2 }}>{lista.length}</div>
+                  </div>
+                  <div style={{ ...S.kpi, padding: 12 }}>
+                    <div style={S.kpiLabel}>Costo total estimado</div>
+                    <div style={{ fontSize: 24, fontWeight: 700, marginTop: 2, color: COLOR.accent }}>{fmt(totalArea)}</div>
+                  </div>
+                  <div style={{ ...S.kpi, padding: 12 }}>
+                    <div style={S.kpiLabel}>Costo promedio por baja</div>
+                    <div style={{ fontSize: 24, fontWeight: 700, marginTop: 2 }}>{fmt(Math.round(totalArea / (lista.length || 1)))}</div>
+                  </div>
+                </div>
+
+                <table style={{ ...S.table, fontSize: 12 }}>
+                  <thead>
+                    <tr>
+                      <th style={S.th}>Empleado</th>
+                      <th style={S.th}>Puesto</th>
+                      <th style={S.th}>Antig.</th>
+                      <th style={S.th}>Fecha</th>
+                      <th style={S.th}>Motivo</th>
+                      <th style={S.th}>Tipo</th>
+                      <th style={{ ...S.th, textAlign: "right" }}>Costo total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...lista].sort((a, b) => costoTotalBaja(b) - costoTotalBaja(a)).map((b) => (
+                      <tr key={b.id}>
+                        <td style={S.td}>
+                          <div style={{ fontWeight: 700 }}>{b.nombre}</div>
+                          <div style={{ fontSize: 10, color: "#666" }}>{b.empNo}</div>
+                        </td>
+                        <td style={S.td}>{b.puesto}</td>
+                        <td style={S.td}>{b.años} años</td>
+                        <td style={S.td}>{b.fecha}</td>
+                        <td style={S.td} title={b.motivoExtendido}>{b.motivo}</td>
+                        <td style={S.td}><span style={S.badge(b.tipo === "Voluntaria" ? "#eef5ff" : "#fdecea")}>{b.tipo}</span></td>
+                        <td style={{ ...S.td, textAlign: "right", fontWeight: 700, whiteSpace: "nowrap" }}>{fmt(costoTotalBaja(b))}</td>
+                      </tr>
+                    ))}
+                    <tr style={{ background: "#fafafa" }}>
+                      <td style={{ ...S.td, fontWeight: 700 }} colSpan={6}>Total {areaAbierta}</td>
+                      <td style={{ ...S.td, fontWeight: 700, textAlign: "right" }}>{fmt(totalArea)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div style={{ fontSize: 11, color: COLOR.textMuted, marginTop: 10 }}>
+                  Costo total = directo + indirecto + oculto + hundido de cada baja. Para el desglose por concepto de un caso, usa la sección de costo de baja de arriba.
+                </div>
+                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+                  <button style={S.btn} onClick={() => setAreaAbierta(null)}>Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      <h3 style={S.h3}>Costo y % de rotación · mes a mes</h3>
+      {(() => {
+        const esCosto = vistaRot === "costo";
+        const ac = esCosto ? COLOR.accent : "#2e4773";
+        const acLight = esCosto ? COLOR.accentLight : "#3e5f96";
+        const valor = (m) => (esCosto ? m.costo : m.pct);
+        const maxV = Math.max(...rotacionMensual.map(valor));
+        const totalCosto = rotacionMensual.reduce((a, m) => a + m.costo, 0);
+        const totalBajas = rotacionMensual.reduce((a, m) => a + m.bajas, 0);
+        const pctProm = (rotacionMensual.reduce((a, m) => a + m.pct, 0) / rotacionMensual.length);
+        const fmtMonto = (v) => "$" + v.toLocaleString("es-MX");
+        const fmtK = (v) => "$" + Math.round(v / 1000) + "K";
+        const etiqueta = (m) => (esCosto ? fmtK(m.costo) : m.pct.toFixed(1) + "%");
+        const tabBtn = (activo) => ({
+          ...S.btnGhost, padding: "7px 14px", fontWeight: 700,
+          background: activo ? ac : COLOR.surface,
+          color: activo ? "#fff" : COLOR.textSoft,
+          borderColor: activo ? ac : COLOR.border,
+        });
+        return (
+          <div style={S.card}>
+            {/* Cabecera: resumen + toggle */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
+              <div style={{ display: "flex", gap: 28, flexWrap: "wrap" }}>
+                <div>
+                  <div style={S.kpiLabel}>Total gastado · 12 meses</div>
+                  <div style={{ fontSize: 26, fontWeight: 700, color: COLOR.accent, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>{fmtMonto(totalCosto)}</div>
+                  <div style={{ fontSize: 11, color: COLOR.textMuted }}>{totalBajas} bajas · {fmtMonto(Math.round(totalCosto / totalBajas))} promedio por baja</div>
+                </div>
+                <div>
+                  <div style={S.kpiLabel}>Rotación mensual promedio</div>
+                  <div style={{ fontSize: 26, fontWeight: 700, color: "#2e4773", letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>{pctProm.toFixed(1)}%</div>
+                  <div style={{ fontSize: 11, color: COLOR.textMuted }}>≈ {(pctProm * 12).toFixed(1)}% anualizado</div>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button style={tabBtn(esCosto)} onClick={() => setVistaRot("costo")}>$ Costo</button>
+                <button style={tabBtn(!esCosto)} onClick={() => setVistaRot("pct")}>% Rotación</button>
+              </div>
+            </div>
+
+            {/* Gráfica de barras mes a mes */}
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 200, paddingTop: 22, borderBottom: "2px solid " + COLOR.ink }}>
+              {rotacionMensual.map((m, i) => (
+                <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }}>
+                  <div style={{ position: "relative", width: "100%", maxWidth: 46, display: "flex", justifyContent: "center", alignItems: "flex-end", flex: 1 }}>
+                    <div
+                      title={`${m.mes} ${m.anio}: ${esCosto ? fmtMonto(m.costo) : m.pct + "%"} · ${m.bajas} baja${m.bajas !== 1 ? "s" : ""}`}
+                      style={{
+                        width: "100%", maxWidth: 38,
+                        height: `${Math.max((valor(m) / maxV) * 100, 2)}%`,
+                        background: `linear-gradient(180deg, ${acLight} 0%, ${ac} 100%)`,
+                        transition: "height 0.3s ease",
+                        position: "relative",
+                      }}
+                    >
+                      <span style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%)", fontSize: 11, fontWeight: 700, color: ac, whiteSpace: "nowrap" }}>
+                        {etiqueta(m)}
+                      </span>
+                    </div>
+                  </div>
+                  <div style={{ marginTop: 6, fontSize: 11, fontWeight: 600, color: COLOR.textSoft }}>{m.mes}</div>
+                  <div style={{ fontSize: 9, color: COLOR.textMuted }}>{m.anio}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ fontSize: 11, color: COLOR.textMuted, marginTop: 10 }}>
+              {esCosto
+                ? "Costo total de rotación por mes (liquidaciones, finiquitos, reemplazo y costos asociados)."
+                : "Porcentaje de rotación mensual (bajas del mes ÷ plantilla promedio)."}
+            </div>
+          </div>
+        );
+      })()}
 
       {conceptoAbierto && (
         <div
@@ -5883,10 +6299,20 @@ function Rotacion() {
               );
             })()}
 
-            {/* Cambiar caso seleccionado */}
-            <div style={{ ...S.kpiLabel, marginBottom: 8 }}>Cambiar caso · {bajasRecientes.length} bajas YTD (click en cualquier fila para ver su desglose)</div>
-            <p style={{ ...S.hint, marginTop: 0, marginBottom: 10 }}>{conceptoAbierto.casosDetalle}</p>
-            <div style={{ overflowX: "auto", marginBottom: 16 }}>
+            {/* Botón: ver / cambiar entre todos los casos */}
+            <button
+              onClick={() => setMostrarTodosCasos((v) => !v)}
+              style={{ ...S.btnGhost, display: "inline-flex", alignItems: "center", gap: 8 }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: mostrarTodosCasos ? "rotate(180deg)" : "none", transition: "transform 0.15s ease" }}>
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+              {mostrarTodosCasos ? "Ocultar otros casos" : `Ver / cambiar caso · ${bajasRecientes.length} bajas YTD`}
+            </button>
+            {mostrarTodosCasos && (
+            <div style={{ overflowX: "auto", marginTop: 12, marginBottom: 16 }}>
+              <div style={{ ...S.kpiLabel, marginBottom: 6 }}>Click en cualquier fila para ver su desglose</div>
+              <p style={{ ...S.hint, marginTop: 0, marginBottom: 10 }}>{conceptoAbierto.casosDetalle}</p>
               <table style={{ ...S.table, fontSize: 12 }}>
                 <thead>
                   <tr>
@@ -5954,6 +6380,7 @@ function Rotacion() {
                 </tbody>
               </table>
             </div>
+            )}
 
             <div style={{
               padding: "12px 14px",
@@ -6654,7 +7081,7 @@ function Capacitacion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Cursos activos</div>
             <div style={S.kpiValue}>2</div>
-            <div style={S.kpiBenchmark("green")}>Benchmark · Capacidad simultánea: 2-3</div>
+            <div style={S.kpiBenchmark("green")}>Capacidad simultánea: 2-3</div>
           </div>
           <TrafficLight light="green" />
         </div>
@@ -6662,7 +7089,7 @@ function Capacitacion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Programados</div>
             <div style={S.kpiValue}>1</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · Pipeline saludable: ≥3</div>
+            <div style={S.kpiBenchmark("yellow")}>Pipeline saludable: ≥3</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -6670,7 +7097,7 @@ function Capacitacion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Inversión YTD</div>
             <div style={S.kpiValue}>$288K</div>
-            <div style={S.kpiBenchmark("green")}>Benchmark · Presupuesto anual: $360K</div>
+            <div style={S.kpiBenchmark("green")}>Presupuesto anual: $360K</div>
           </div>
           <TrafficLight light="green" />
         </div>
@@ -6678,7 +7105,7 @@ function Capacitacion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>ROI promedio</div>
             <div style={S.kpiValue}>1.8x</div>
-            <div style={S.kpiBenchmark("green")}>Benchmark · Meta: ≥1.5x</div>
+            <div style={S.kpiBenchmark("green")}>Meta: ≥1.5x</div>
           </div>
           <TrafficLight light="green" />
         </div>
@@ -7453,7 +7880,7 @@ function Capacitacion() {
 // =============================================================
 // 5. PROCESO DE SELECCIÓN
 // =============================================================
-function Seleccion() {
+function Seleccion({ onAbrirGuia }) {
   const [candidatoAbierto, setCandidatoAbierto] = useState(null);
 
   const etapas = [
@@ -7639,14 +8066,34 @@ function Seleccion() {
 
   return (
     <div>
-      <h2 style={S.h2}>Proceso de Selección</h2>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+        <div>
+          <h2 style={S.h2}>Proceso de Selección</h2>
+        </div>
+        <button
+          onClick={onAbrirGuia}
+          style={{
+            ...S.btn,
+            background: "linear-gradient(135deg, #71b248 0%, #5a9438 100%)",
+            border: "none",
+            color: "#fff",
+            padding: "10px 18px",
+            fontSize: 13,
+            fontWeight: 700,
+            whiteSpace: "nowrap",
+            boxShadow: "0 1px 3px rgba(15,23,42,0.12)",
+          }}
+        >
+          Guía de entrevista →
+        </button>
+      </div>
 
       <div style={S.grid4}>
         <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Candidatos activos</div>
             <div style={S.kpiValue}>28</div>
-            <div style={S.kpiBenchmark("green")}>Benchmark · Pool saludable: ≥20</div>
+            <div style={S.kpiBenchmark("green")}>Pool saludable: ≥20</div>
           </div>
           <TrafficLight light="green" />
         </div>
@@ -7654,7 +8101,7 @@ function Seleccion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Tiempo medio de cobertura</div>
             <div style={S.kpiValue}>38 días</div>
-            <div style={S.kpiBenchmark("yellow")}>Benchmark · SLA: ≤30 días</div>
+            <div style={S.kpiBenchmark("yellow")}>SLA: ≤30 días</div>
           </div>
           <TrafficLight light="yellow" />
         </div>
@@ -7662,7 +8109,7 @@ function Seleccion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Tasa de oferta aceptada</div>
             <div style={S.kpiValue}>78%</div>
-            <div style={S.kpiBenchmark("green")}>Benchmark · Meta: ≥70% · Excelente: ≥85%</div>
+            <div style={S.kpiBenchmark("green")}>Meta: ≥70% · Excelente: ≥85%</div>
           </div>
           <TrafficLight light="green" />
         </div>
@@ -7670,7 +8117,7 @@ function Seleccion() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={S.kpiLabel}>Onboardings activos</div>
             <div style={S.kpiValue}>4</div>
-            <div style={S.kpiBenchmark("green")}>Benchmark · Capacidad mensual: 6</div>
+            <div style={S.kpiBenchmark("green")}>Capacidad mensual: 6</div>
           </div>
           <TrafficLight light="green" />
         </div>
@@ -7977,6 +8424,607 @@ const IconLock = ({ size = 11, color = "currentColor" }) => (
   </svg>
 );
 
+// =============================================================
+// 8. DESEMPEÑO — Modelo de 9 Box (Potencial × Desempeño)
+// =============================================================
+// Casillas ordenadas por posición visual: índice 0..8, de arriba-izquierda
+// (potencial alto / desempeño bajo) a abajo-derecha (potencial bajo / desempeño alto).
+// Paleta homologada al branding cálido (naranjas / terracotas) con capas de
+// transparencia y textura mediante gradientes radiales.
+const hexA = (hex, a) => {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+const cellBg = (accent) =>
+  `radial-gradient(circle at 100% 0%, ${hexA(accent, 0.16)} 0%, transparent 58%), ` +
+  `radial-gradient(circle at 0% 100%, ${hexA(accent, 0.08)} 0%, transparent 52%), ` +
+  `linear-gradient(180deg, ${hexA(accent, 0.06)} 0%, ${hexA(accent, 0.02)} 100%), #ffffff`;
+
+const NINE_BOX = [
+  // Fila superior — POTENCIAL ALTO
+  { id: 0, titulo: "Diamante en bruto", eje: "Pot. alto · Desemp. bajo", accent: "#5d6678",
+    resumen: "Diagnosticar barreras y acelerar su desarrollo.",
+    plan: {
+      d30: ["1:1 de diagnóstico: detectar barreras (claridad de rol, recursos, motivación).", "Definir 3 objetivos medibles a 90 días.", "Asignar mentor interno."],
+      d60: ["Capacitación dirigida a las brechas técnicas detectadas.", "Eliminar obstáculos operativos identificados.", "Revisión quincenal de avances con su jefe."],
+      d90: ["Asignar un proyecto de visibilidad media.", "Medir el salto de desempeño vs. objetivos.", "Decidir: acelerar promoción o reforzar plan."],
+    } },
+  { id: 1, titulo: "Futuro líder", eje: "Pot. alto · Desemp. medio", accent: "#2e4773",
+    resumen: "Estirar con retos, mentoría y proyectos visibles.",
+    plan: {
+      d30: ["Conversación de carrera: aspiración y rol objetivo.", "Inscribir en programa de liderazgo.", "Feedback 360° inicial."],
+      d60: ["Asignar proyecto cross-funcional como líder.", "Job shadowing con un directivo.", "Revisión de competencias de liderazgo."],
+      d90: ["Ampliar alcance / span de control.", "Medir resultados del proyecto liderado.", "Incluir formalmente en pipeline de sucesión."],
+    } },
+  { id: 2, titulo: "Estrella", eje: "Pot. alto · Desemp. alto", accent: "#233a63",
+    resumen: "Retener, plan de sucesión y promoción.",
+    plan: {
+      d30: ["Reconocimiento formal del desempeño.", "Conversación de retención (compensación y carrera).", "Identificar posición clave de sucesión."],
+      d60: ["Liderar una iniciativa estratégica.", "Exposición al comité directivo.", "Mentoría inversa hacia el equipo."],
+      d90: ["Plan de promoción / ascenso definido.", "Esquema de retención (bono / equity / desarrollo).", "Formalizar como sucesor de una posición crítica."],
+    } },
+  // Fila media — POTENCIAL MEDIO
+  { id: 3, titulo: "Enigma", eje: "Pot. medio · Desemp. bajo", accent: "#9c5152",
+    resumen: "Conversación clara y objetivos a 90 días.",
+    plan: {
+      d30: ["Conversación franca de expectativas.", "Definir objetivos explícitos a 90 días.", "Identificar causa raíz: ajuste de puesto vs. motivación."],
+      d60: ["Acompañamiento cercano y quick wins.", "Revisión semanal de avances.", "Ajustar funciones si hay desajuste de rol."],
+      d90: ["Evaluar la mejora real.", "Decidir: consolidar, reubicar o plan de mejora formal.", "Documentar acuerdos."],
+    } },
+  { id: 4, titulo: "Pilar / Core", eje: "Pot. medio · Desemp. medio", accent: "#4c5c79",
+    resumen: "Mantener motivado y desarrollar lateralmente.",
+    plan: {
+      d30: ["Reconocer su aporte estable.", "Encuesta de motivación e intereses.", "Detectar apetito de desarrollo lateral."],
+      d60: ["Rotación o ampliación de funciones.", "Capacitación de actualización.", "Asignar responsabilidades de mayor alcance."],
+      d90: ["Definir ruta: especialización o liderazgo.", "Plan de engagement a 12 meses.", "Reconocimiento por consistencia."],
+    } },
+  { id: 5, titulo: "Alto desempeño", eje: "Pot. medio · Desemp. alto", accent: "#36507a",
+    resumen: "Reconocer y ampliar el alcance del rol.",
+    plan: {
+      d30: ["Reconocer resultados sobresalientes.", "Explorar si el potencial está subestimado.", "Plantear nuevos retos."],
+      d60: ["Ampliar alcance del rol o complejidad.", "Asignar proyecto de mayor exigencia.", "Mentor para desarrollar potencial latente."],
+      d90: ["Reevaluar potencial.", "Si crece → mover a Futuro líder.", "Si se mantiene → consolidar como experto clave."],
+    } },
+  // Fila inferior — POTENCIAL BAJO
+  { id: 6, titulo: "Bajo rendimiento", eje: "Pot. bajo · Desemp. bajo", accent: "#983838",
+    resumen: "Plan de mejora (PIP) y decisión a corto plazo.",
+    plan: {
+      d30: ["Plan de mejora formal (PIP) con metas y fechas.", "Documentar acuerdos por escrito.", "1:1 semanal de seguimiento."],
+      d60: ["Soporte y capacitación puntual.", "Medir avance objetivo vs. metas del PIP.", "Alertar a RH si no hay progreso."],
+      d90: ["Decisión final: reintegrar si mejora.", "Gestionar salida ordenada si no cumple.", "Cerrar expediente con RH."],
+    } },
+  { id: 7, titulo: "Confiable", eje: "Pot. bajo · Desemp. medio", accent: "#6f6b73",
+    resumen: "Mantener en el rol con objetivos claros.",
+    plan: {
+      d30: ["Reconocer su consistencia y valor.", "Clarificar que su rol es apreciado.", "Definir objetivos de mantenimiento."],
+      d60: ["Capacitación para sostener el desempeño.", "Detectar riesgo de estancamiento o desmotivación.", "Pequeños retos de rotación."],
+      d90: ["Plan de retención ligero.", "Reconocimiento por estabilidad / antigüedad.", "Revisar bienestar y carga de trabajo."],
+    } },
+  { id: 8, titulo: "Especialista", eje: "Pot. bajo · Desemp. alto", accent: "#415a80",
+    resumen: "Retener como experto y transferir conocimiento.",
+    plan: {
+      d30: ["Reconocer el expertise técnico.", "Conversación: ruta experto vs. gestión.", "Mapear conocimiento crítico que posee."],
+      d60: ["Formalizar como referente técnico.", "Iniciar transferencia de conocimiento / documentación.", "Asignar mentoría a juniors."],
+      d90: ["Plan de retención del experto.", "Incentivos por especialización.", "Plan de continuidad del conocimiento."],
+    } },
+];
+
+const COLABORADORES_INICIALES = [
+  { id: 1, box: 2, nombre: "Laura Cano Medina", edad: 44, correo: "laura.cano@empresa.com.mx", telefono: "55 1842 3390", departamento: "Dirección General", area: "Dirección", puesto: "Directora de Operaciones", jefe: "Consejo Directivo", aCargo: 38, antiguedad: "9 años", ultimaEval: "9.4 / 10", ubicacion: "Corporativo CDMX", notas: "Sucesora natural para Dirección General. Alto impacto en resultados 2025." },
+  { id: 2, box: 5, nombre: "Carlos Mendoza Ruiz", edad: 41, correo: "carlos.mendoza@empresa.com.mx", telefono: "55 2290 7741", departamento: "Posventa", area: "Posventa", puesto: "Gerente de Posventa", jefe: "Laura Cano", aCargo: 22, antiguedad: "7 años", ultimaEval: "8.7 / 10", ubicacion: "Taller Norte", notas: "Resultados sólidos. Potencial de crecimiento por validar en proyecto cross-área." },
+  { id: 3, box: 1, nombre: "Paola Castaño Vélez", edad: 35, correo: "paola.castano@empresa.com.mx", telefono: "55 3398 1120", departamento: "Recursos Humanos", area: "RH", puesto: "Coordinadora de Talento", jefe: "Laura Cano", aCargo: 4, antiguedad: "4 años", ultimaEval: "8.3 / 10", ubicacion: "Corporativo CDMX", notas: "Alto potencial de liderazgo. Candidata a programa de desarrollo gerencial." },
+  { id: 4, box: 2, nombre: "Andrés Ríos Palacios", edad: 38, correo: "andres.rios@empresa.com.mx", telefono: "55 4471 5582", departamento: "Comercial", area: "Comercial", puesto: "Gerente Comercial", jefe: "Laura Cano", aCargo: 15, antiguedad: "6 años", ultimaEval: "9.1 / 10", ubicacion: "Sucursal Sur", notas: "Top performer comercial. En plan de sucesión para Dirección Comercial." },
+  { id: 5, box: 4, nombre: "Mónica Quintana Ávila", edad: 33, correo: "monica.quintana@empresa.com.mx", telefono: "55 5563 2014", departamento: "Operaciones", area: "Operaciones", puesto: "Analista Senior de Operaciones", jefe: "Laura Cano", aCargo: 0, antiguedad: "3 años", ultimaEval: "7.6 / 10", ubicacion: "Planta", notas: "Desempeño estable. Explorar interés en rotación o especialización." },
+  { id: 6, box: 4, nombre: "Sergio Beltrán Nava", edad: 29, correo: "sergio.beltran@empresa.com.mx", telefono: "55 6694 8830", departamento: "Comercial", area: "Comercial", puesto: "Ejecutivo de Cuenta", jefe: "Andrés Ríos", aCargo: 0, antiguedad: "2 años", ultimaEval: "7.4 / 10", ubicacion: "Sucursal Sur", notas: "Consistente. Buen candidato para desarrollo lateral." },
+  { id: 7, box: 4, nombre: "Jorge Fuentes Coronado", edad: 47, correo: "jorge.fuentes@empresa.com.mx", telefono: "55 7712 4408", departamento: "Administración", area: "Administración", puesto: "Jefe de Administración", jefe: "Laura Cano", aCargo: 6, antiguedad: "11 años", ultimaEval: "7.8 / 10", ubicacion: "Corporativo CDMX", notas: "Pilar del equipo administrativo. Estable y confiable." },
+  { id: 8, box: 8, nombre: "Tania Aguilar Mora", edad: 39, correo: "tania.aguilar@empresa.com.mx", telefono: "55 8830 9921", departamento: "Posventa", area: "Posventa", puesto: "Supervisora Técnica", jefe: "Carlos Mendoza", aCargo: 9, antiguedad: "8 años", ultimaEval: "8.9 / 10", ubicacion: "Taller Sur", notas: "Experta técnica de referencia. Clave en transferencia de conocimiento." },
+  { id: 9, box: 7, nombre: "Ricardo Vega Lozano", edad: 52, correo: "ricardo.vega@empresa.com.mx", telefono: "55 9948 1167", departamento: "Operaciones", area: "Operaciones", puesto: "Supervisor de Almacén", jefe: "Mónica Quintana", aCargo: 7, antiguedad: "14 años", ultimaEval: "7.2 / 10", ubicacion: "Planta", notas: "Confiable y constante. Valorar reconocimiento por antigüedad." },
+  { id: 10, box: 0, nombre: "Diana Navarro Estrada", edad: 27, correo: "diana.navarro@empresa.com.mx", telefono: "55 1057 6643", departamento: "Comercial", area: "Comercial", puesto: "Ejecutiva Jr. de Ventas", jefe: "Andrés Ríos", aCargo: 0, antiguedad: "1 año", ultimaEval: "6.4 / 10", ubicacion: "Sucursal Sur", notas: "Mucho potencial, desempeño aún bajo. Diagnosticar barreras de arranque." },
+  { id: 11, box: 3, nombre: "Emilio Solís Tapia", edad: 36, correo: "emilio.solis@empresa.com.mx", telefono: "55 2168 7754", departamento: "Administración", area: "Administración", puesto: "Analista de Finanzas", jefe: "Jorge Fuentes", aCargo: 0, antiguedad: "5 años", ultimaEval: "6.7 / 10", ubicacion: "Corporativo CDMX", notas: "Resultados irregulares. Requiere conversación clara de expectativas." },
+  { id: 12, box: 6, nombre: "Gabriel Lara Domínguez", edad: 31, correo: "gabriel.lara@empresa.com.mx", telefono: "55 3279 8865", departamento: "Operaciones", area: "Operaciones", puesto: "Operador de Línea", jefe: "Ricardo Vega", aCargo: 0, antiguedad: "2 años", ultimaEval: "5.6 / 10", ubicacion: "Planta", notas: "Bajo desempeño sostenido. Iniciar plan de mejora (PIP)." },
+  { id: 13, box: 7, nombre: "Natalia Ibarra Reyes", edad: 43, correo: "natalia.ibarra@empresa.com.mx", telefono: "55 4380 9976", departamento: "Posventa", area: "Posventa", puesto: "Asesora de Servicio", jefe: "Carlos Mendoza", aCargo: 0, antiguedad: "10 años", ultimaEval: "7.1 / 10", ubicacion: "Taller Norte", notas: "Sólida en su rol. Estable y comprometida." },
+  { id: 14, box: 1, nombre: "Fernando Cruz Beltrán", edad: 30, correo: "fernando.cruz@empresa.com.mx", telefono: "55 5491 1087", departamento: "Comercial", area: "Comercial", puesto: "Ejecutivo de Cuenta Sr.", jefe: "Andrés Ríos", aCargo: 2, antiguedad: "4 años", ultimaEval: "8.0 / 10", ubicacion: "Sucursal Sur", notas: "Alto potencial. Candidato a coordinación comercial." },
+];
+
+const AREAS_EMPRESA = ["Comercial", "Posventa", "Operaciones", "Administración", "Dirección", "RH"];
+const iniciales = (nombre) => nombre.split(" ").filter(Boolean).slice(0, 2).map((p) => p[0]).join("").toUpperCase();
+
+function Desempeno() {
+  const [colaboradores, setColaboradores] = useState(COLABORADORES_INICIALES);
+  const [dragId, setDragId] = useState(null);
+  const [overBox, setOverBox] = useState(null);
+  const [detalleId, setDetalleId] = useState(null);
+  const [planBoxId, setPlanBoxId] = useState(null);
+  const [planForId, setPlanForId] = useState(null);
+  const [nuevoOpen, setNuevoOpen] = useState(false);
+  const formInicial = { nombre: "", edad: "", correo: "", telefono: "", departamento: "", area: "Comercial", puesto: "", jefe: "", aCargo: "", ubicacion: "", notas: "", box: 4 };
+  const [form, setForm] = useState(formInicial);
+
+  const enBox = (boxId) => colaboradores.filter((c) => c.box === boxId);
+  const total = colaboradores.length;
+  const enBoxes = (ids) => colaboradores.filter((c) => ids.includes(c.box)).length;
+  const pct = (n) => (total ? Math.round((n / total) * 100) : 0);
+  const altoPotencial = enBoxes([0, 1, 2]);
+  const estrellas = enBoxes([2]);
+  const enRiesgo = enBoxes([6]);
+
+  const detalle = colaboradores.find((c) => c.id === detalleId) || null;
+  const planBox = NINE_BOX.find((b) => b.id === planBoxId) || null;
+  const planPersona = colaboradores.find((c) => c.id === planForId) || null;
+
+  const primerNombre = (n) => n.split(" ")[0];
+  // Inyecta los datos de la persona en cada acción genérica de la casilla.
+  const personalizar = (texto, p) => {
+    if (!p) return texto;
+    const nom = primerNombre(p.nombre);
+    return texto
+      .replace(/\bsu jefe\b/gi, `su jefe (${p.jefe})`)
+      .replace(/^1:1\b/, `1:1 con ${nom}`)
+      .replace(/^Conversación/, `Conversación con ${nom}`)
+      .replace(/^Reconocer\b/, `Reconocer a ${nom} por`)
+      .replace(/^Reconocimiento formal del desempeño\.?$/, `Reconocimiento formal del desempeño de ${nom}.`)
+      .replace(/\bsu rol\b/gi, `su rol de ${p.puesto}`)
+      .replace(/\bal equipo\b/gi, p.aCargo > 0 ? `a su equipo (${p.aCargo} personas)` : "al equipo");
+  };
+  // Diagnóstico de apertura sintetizado a partir de los datos del colaborador.
+  const diagnostico = (p, box) => {
+    if (!p) return null;
+    const nom = primerNombre(p.nombre);
+    const carga = p.aCargo > 0 ? `lidera a ${p.aCargo} persona${p.aCargo > 1 ? "s" : ""}` : "sin personas a cargo";
+    return `${nom} (${p.puesto}, ${p.area}) lleva ${p.antiguedad} en la empresa, ${carga}, ` +
+      `con última evaluación de ${p.ultimaEval}. Ubicado en «${box.titulo}» (${box.eje}), el foco es: ${box.resumen.toLowerCase()}`;
+  };
+  const abrirPlan = (boxId, personaId = null) => { setPlanForId(personaId); setPlanBoxId(boxId); };
+  const cerrarPlan = () => { setPlanBoxId(null); setPlanForId(null); };
+  const exportarPlanPDF = (persona, box) => {
+    const prevTitle = document.title;
+    document.title = persona ? `Plan de trabajo · ${persona.nombre}` : `Plan de trabajo · ${box.titulo}`;
+    document.body.classList.add("printing-plan");
+    const cleanup = () => {
+      document.body.classList.remove("printing-plan");
+      document.title = prevTitle;
+      window.removeEventListener("afterprint", cleanup);
+    };
+    window.addEventListener("afterprint", cleanup);
+    setTimeout(() => window.print(), 60);
+  };
+
+  // --- Drag & Drop ---
+  const onDrop = (boxId) => {
+    if (dragId == null) return;
+    setColaboradores((prev) => prev.map((c) => (c.id === dragId ? { ...c, box: boxId } : c)));
+    setDragId(null);
+    setOverBox(null);
+  };
+
+  const guardarNotas = (texto) => {
+    setColaboradores((prev) => prev.map((c) => (c.id === detalleId ? { ...c, notas: texto } : c)));
+  };
+
+  const crearColaborador = () => {
+    if (!form.nombre.trim()) return;
+    const nuevoId = Math.max(0, ...colaboradores.map((c) => c.id)) + 1;
+    setColaboradores((prev) => [
+      ...prev,
+      {
+        id: nuevoId,
+        box: Number(form.box),
+        nombre: form.nombre.trim(),
+        edad: form.edad ? Number(form.edad) : "—",
+        correo: form.correo.trim() || "—",
+        telefono: form.telefono.trim() || "—",
+        departamento: form.departamento.trim() || form.area,
+        area: form.area,
+        puesto: form.puesto.trim() || "—",
+        jefe: form.jefe.trim() || "—",
+        aCargo: form.aCargo ? Number(form.aCargo) : 0,
+        antiguedad: "Recién ingresado",
+        ultimaEval: "Sin evaluar",
+        ubicacion: form.ubicacion.trim() || "—",
+        notas: form.notas.trim() || "Sin notas.",
+      },
+    ]);
+    setForm(formInicial);
+    setNuevoOpen(false);
+  };
+
+  const colSub = ["Desempeño bajo", "Desempeño medio", "Desempeño alto"];
+  const rowSub = ["Potencial alto", "Potencial medio", "Potencial bajo"];
+
+  const labelStyle = { fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: COLOR.textMuted, marginBottom: 4 };
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <h2 style={S.h2}>Desempeño</h2>
+        </div>
+        <button style={{ ...S.btn, display: "inline-flex", alignItems: "center", gap: 6 }} onClick={() => { setForm(formInicial); setNuevoOpen(true); }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Nuevo colaborador
+        </button>
+      </div>
+      <div style={S.hint}>
+        Modelo de 9 box: cruza el <strong>potencial</strong> (eje vertical) con el <strong>desempeño</strong> (eje horizontal).
+        <strong> Arrastra</strong> a cada persona para reubicarla, o haz <strong>clic</strong> sobre ella para ver su ficha completa.
+      </div>
+
+      <div style={S.grid4}>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Colaboradores evaluados</div>
+            <div style={S.kpiValue}>{total}</div>
+            <div style={S.kpiBenchmark("green")}>Cobertura objetivo: 100% de plantilla</div>
+          </div>
+          <TrafficLight light="green" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Alto potencial</div>
+            <div style={S.kpiValue}>{pct(altoPotencial)}%</div>
+            <div style={S.kpiBenchmark(altoPotencial >= 3 ? "green" : "yellow")}>{altoPotencial} personas · Saludable: ≥15%</div>
+          </div>
+          <TrafficLight light={altoPotencial >= 3 ? "green" : "yellow"} />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>Estrellas (listos promoción)</div>
+            <div style={S.kpiValue}>{estrellas}</div>
+            <div style={S.kpiBenchmark("green")}>Plan de sucesión activo</div>
+          </div>
+          <TrafficLight light="green" />
+        </div>
+        <div style={{ ...S.kpi, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={S.kpiLabel}>En riesgo (PIP)</div>
+            <div style={S.kpiValue}>{enRiesgo}</div>
+            <div style={S.kpiBenchmark(enRiesgo === 0 ? "green" : enRiesgo <= 2 ? "yellow" : "red")}>Meta: 0 · Alerta: ≥3</div>
+          </div>
+          <TrafficLight light={enRiesgo === 0 ? "green" : enRiesgo <= 2 ? "yellow" : "red"} />
+        </div>
+      </div>
+
+      <h3 style={S.h3}>Matriz 9 Box</h3>
+
+      <div style={{ display: "flex", gap: 10 }}>
+        {/* Eje vertical: Potencial */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 12, fontWeight: 700, color: "#2e4773", textTransform: "uppercase", letterSpacing: 1.5 }}>
+            Potencial →
+          </div>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          {/* Encabezado de columnas (Desempeño) */}
+          <div style={{ display: "grid", gridTemplateColumns: "104px 1fr 1fr 1fr", gap: 10, marginBottom: 10 }}>
+            <div />
+            {colSub.map((c) => (
+              <div key={c} style={{ textAlign: "center", fontSize: 12, fontWeight: 700, color: COLOR.textSoft, textTransform: "uppercase", letterSpacing: 0.5 }}>{c}</div>
+            ))}
+          </div>
+
+          {/* 3 filas (Potencial alto → bajo) */}
+          {[0, 1, 2].map((fila) => (
+            <div key={fila} style={{ display: "grid", gridTemplateColumns: "104px 1fr 1fr 1fr", gap: 10, marginBottom: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", textAlign: "right", fontSize: 12, fontWeight: 700, color: COLOR.textSoft, textTransform: "uppercase", letterSpacing: 0.4 }}>
+                {rowSub[fila]}
+              </div>
+              {[0, 1, 2].map((col) => {
+                const box = NINE_BOX[fila * 3 + col];
+                const gente = enBox(box.id);
+                const activo = overBox === box.id && dragId != null;
+                return (
+                  <div
+                    key={box.id}
+                    onDragOver={(e) => { e.preventDefault(); if (overBox !== box.id) setOverBox(box.id); }}
+                    onDrop={(e) => { e.preventDefault(); onDrop(box.id); }}
+                    style={{
+                      background: cellBg(box.accent),
+                      border: `1px solid ${activo ? hexA(box.accent, 0.6) : COLOR.border}`,
+                      borderRadius: 0,
+                      padding: 11,
+                      minHeight: 150,
+                      display: "flex", flexDirection: "column", gap: 9,
+                      boxShadow: activo ? `0 0 0 3px ${hexA(box.accent, 0.25)}, ${COLOR.shadowHover}` : COLOR.shadow,
+                      transition: "box-shadow 0.12s ease, border-color 0.12s ease",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 6 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: box.accent, lineHeight: 1.15 }}>{box.titulo}</div>
+                      <span style={{ ...S.badge("#fff"), border: `1px solid ${hexA(box.accent, 0.4)}`, color: box.accent, fontSize: 12 }}>{gente.length}</span>
+                    </div>
+
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 5, flex: 1, alignContent: "flex-start" }}>
+                      {gente.map((c) => (
+                        <button
+                          key={c.id}
+                          draggable
+                          onDragStart={(e) => { setDragId(c.id); e.dataTransfer.effectAllowed = "move"; }}
+                          onDragEnd={() => { setDragId(null); setOverBox(null); }}
+                          onClick={() => setDetalleId(c.id)}
+                          title={`${c.nombre} · ${c.puesto} — clic para ver ficha, arrastra para mover`}
+                          style={{
+                            display: "inline-flex", alignItems: "center", gap: 6,
+                            fontSize: 12, fontWeight: 600, padding: "4px 9px 4px 4px", borderRadius: 999,
+                            border: `1px solid ${hexA(box.accent, 0.3)}`,
+                            background: "#fff", color: COLOR.inkSoft,
+                            cursor: "grab", boxShadow: "0 1px 2px rgba(15,23,42,0.06)",
+                            opacity: dragId === c.id ? 0.4 : 1,
+                          }}
+                        >
+                          <span style={{ width: 20, height: 20, borderRadius: "50%", flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#fff", background: box.accent }}>
+                            {iniciales(c.nombre)}
+                          </span>
+                          {c.nombre.split(" ")[0]} {c.nombre.split(" ")[1]?.[0] ? c.nombre.split(" ")[1][0] + "." : ""}
+                        </button>
+                      ))}
+                      {gente.length === 0 && <span style={{ fontSize: 12, color: COLOR.textMuted, fontStyle: "italic" }}>Suelta aquí…</span>}
+                    </div>
+
+                    <button
+                      onClick={() => abrirPlan(box.id)}
+                      style={{
+                        marginTop: "auto", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                        fontSize: 11, fontWeight: 700, letterSpacing: 0.4, textTransform: "uppercase",
+                        padding: "7px 10px", borderRadius: 6,
+                        border: `1px solid ${hexA(box.accent, 0.45)}`,
+                        background: hexA(box.accent, 0.1), color: box.accent, cursor: "pointer",
+                      }}
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                      </svg>
+                      Acción recomendada
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+
+          {/* Eje horizontal: Desempeño */}
+          <div style={{ textAlign: "center", fontSize: 12, fontWeight: 700, color: "#2e4773", textTransform: "uppercase", letterSpacing: 1.5, marginTop: 2 }}>
+            Desempeño →
+          </div>
+        </div>
+      </div>
+
+      {/* ---------- Modal: ficha del colaborador ---------- */}
+      {detalle && (
+        <div onClick={() => setDetalleId(null)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", backdropFilter: "blur(3px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 120, padding: 16 }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 12, width: 560, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto", border: "1px solid " + COLOR.border, boxShadow: COLOR.shadowHover }}>
+            {/* Cabecera con textura cálida */}
+            <div style={{ position: "relative", padding: "22px 24px", background: `radial-gradient(circle at 100% 0%, ${hexA(NINE_BOX[detalle.box].accent, 0.2)} 0%, transparent 60%), linear-gradient(135deg, ${hexA(NINE_BOX[detalle.box].accent, 0.12)} 0%, ${hexA(NINE_BOX[detalle.box].accent, 0.05)} 100%), #fff`, borderBottom: "1px solid " + COLOR.border, borderRadius: "12px 12px 0 0" }}>
+              <button onClick={() => setDetalleId(null)} style={{ position: "absolute", top: 14, right: 14, border: "none", background: "transparent", fontSize: 20, cursor: "pointer", color: COLOR.textMuted, lineHeight: 1 }}>×</button>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 54, height: 54, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 700, color: "#fff", background: NINE_BOX[detalle.box].accent, boxShadow: "0 2px 8px rgba(15,23,42,0.2)" }}>
+                  {iniciales(detalle.nombre)}
+                </div>
+                <div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: COLOR.ink }}>{detalle.nombre}</div>
+                  <div style={{ fontSize: 13, color: COLOR.textSoft, marginTop: 2 }}>{detalle.puesto} · {detalle.area}</div>
+                  <div style={{ marginTop: 6 }}>
+                    <span style={{ ...S.badge(hexA(NINE_BOX[detalle.box].accent, 0.14)), color: NINE_BOX[detalle.box].accent, border: `1px solid ${hexA(NINE_BOX[detalle.box].accent, 0.4)}` }}>
+                      {NINE_BOX[detalle.box].titulo} · {NINE_BOX[detalle.box].eje}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ padding: 24 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 18px" }}>
+                {[
+                  ["Edad", `${detalle.edad}${typeof detalle.edad === "number" ? " años" : ""}`],
+                  ["Antigüedad", detalle.antiguedad],
+                  ["Correo", detalle.correo],
+                  ["Teléfono", detalle.telefono],
+                  ["Departamento", detalle.departamento],
+                  ["Área", detalle.area],
+                  ["Jefe inmediato", detalle.jefe],
+                  ["Personas a cargo", String(detalle.aCargo)],
+                  ["Ubicación", detalle.ubicacion],
+                  ["Última evaluación", detalle.ultimaEval],
+                ].map(([k, v]) => (
+                  <div key={k}>
+                    <div style={labelStyle}>{k}</div>
+                    <div style={{ fontSize: 13, color: COLOR.ink, fontWeight: 600, wordBreak: "break-word" }}>{v}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ marginTop: 18 }}>
+                <div style={labelStyle}>Notas</div>
+                <textarea
+                  value={detalle.notas}
+                  onChange={(e) => guardarNotas(e.target.value)}
+                  rows={3}
+                  style={{ ...S.input, resize: "vertical", lineHeight: 1.5 }}
+                />
+                <div style={{ fontSize: 11, color: COLOR.textMuted, marginTop: 4 }}>Las notas se guardan automáticamente.</div>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20, gap: 8 }}>
+                <button style={{ ...S.btnGhost }} onClick={() => { abrirPlan(detalle.box, detalle.id); setDetalleId(null); }}>Ver acción recomendada</button>
+                <button style={{ ...S.btn }} onClick={() => setDetalleId(null)}>Cerrar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---------- Modal: plan de trabajo (IA) ---------- */}
+      {planBox && (
+        <div className="plan-print-overlay" onClick={cerrarPlan} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", backdropFilter: "blur(3px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 120, padding: 16 }}>
+          <div className="plan-print-card" onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 12, width: 640, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto", border: "1px solid " + COLOR.border, boxShadow: COLOR.shadowHover }}>
+            <div style={{ position: "relative", padding: "22px 24px", background: `radial-gradient(circle at 100% 0%, ${hexA(planBox.accent, 0.2)} 0%, transparent 60%), linear-gradient(135deg, ${hexA(planBox.accent, 0.12)} 0%, ${hexA(planBox.accent, 0.05)} 100%), #fff`, borderBottom: "1px solid " + COLOR.border, borderRadius: "12px 12px 0 0" }}>
+              <button className="plan-no-print" onClick={cerrarPlan} style={{ position: "absolute", top: 14, right: 14, border: "none", background: "transparent", fontSize: 20, cursor: "pointer", color: COLOR.textMuted, lineHeight: 1 }}>×</button>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: planBox.accent, display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" /><line x1="9" y1="21" x2="15" y2="21" /></svg>
+                Plan de trabajo {planPersona ? "personalizado" : "sugerido"} por IA
+              </div>
+              {planPersona ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, color: "#fff", background: planBox.accent }}>
+                    {iniciales(planPersona.nombre)}
+                  </div>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: COLOR.ink }}>{planPersona.nombre}</h3>
+                    <div style={{ fontSize: 13, color: COLOR.textSoft }}>{planPersona.puesto} · {planPersona.area} · <span style={{ color: planBox.accent, fontWeight: 700 }}>{planBox.titulo}</span></div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <h3 style={{ margin: "8px 0 2px", fontSize: 18, fontWeight: 700, color: COLOR.ink }}>{planBox.titulo}</h3>
+                  <div style={{ fontSize: 13, color: COLOR.textSoft }}>{planBox.eje} · {planBox.resumen}</div>
+                </>
+              )}
+            </div>
+
+            <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 14 }}>
+              {planPersona ? (
+                <div style={{ borderRadius: 8, padding: "12px 14px", background: hexA(planBox.accent, 0.06), border: `1px solid ${hexA(planBox.accent, 0.2)}` }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, color: planBox.accent, marginBottom: 4 }}>Diagnóstico</div>
+                  <div style={{ fontSize: 13, color: COLOR.text, lineHeight: 1.55 }}>{diagnostico(planPersona, planBox)}</div>
+                </div>
+              ) : (() => {
+                const gente = enBox(planBox.id);
+                return (
+                  <div style={{ fontSize: 12, color: COLOR.textMuted }}>
+                    {gente.length > 0
+                      ? <>Aplica a {gente.length} colaborador{gente.length > 1 ? "es" : ""} en esta casilla: <strong style={{ color: COLOR.text }}>{gente.map((c) => c.nombre).join(", ")}</strong>. Abre la ficha de cada quien para un plan personalizado.</>
+                      : "Sin colaboradores en esta casilla por ahora."}
+                  </div>
+                );
+              })()}
+
+              {[
+                { t: "0–30 días", sub: "Diagnóstico y arranque", items: planBox.plan.d30 },
+                { t: "30–60 días", sub: "Desarrollo y seguimiento", items: planBox.plan.d60 },
+                { t: "60–90 días", sub: "Consolidación y decisión", items: planBox.plan.d90 },
+              ].map((fase) => (
+                <div key={fase.t} className="plan-fase" style={{ border: "1px solid " + COLOR.border, borderRadius: 0, padding: "12px 14px", background: hexA(planBox.accent, 0.04) }}>
+                  <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: planBox.accent }}>{fase.t}</div>
+                    <div style={{ fontSize: 11, color: COLOR.textMuted, textTransform: "uppercase", letterSpacing: 0.4 }}>{fase.sub}</div>
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 5 }}>
+                    {fase.items.map((it, i) => (
+                      <li key={i} style={{ fontSize: 13, color: COLOR.text, lineHeight: 1.5 }}>{personalizar(it, planPersona)}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <div style={{ fontSize: 11, color: COLOR.textMuted, fontStyle: "italic", display: "flex", alignItems: "center", gap: 6 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+                {planPersona ? `Plan generado por IA para ${primerNombre(planPersona.nombre)} a modo de simulación. Revísalo y ajústalo antes de aplicarlo.` : "Contenido generado por IA a modo de simulación. Abre la ficha de un colaborador para personalizarlo."}
+              </div>
+              <div className="plan-no-print" style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                <button style={{ ...S.btnGhost, display: "inline-flex", alignItems: "center", gap: 6 }} onClick={() => exportarPlanPDF(planPersona, planBox)}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Exportar a PDF
+                </button>
+                <button style={S.btn} onClick={cerrarPlan}>Entendido</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---------- Modal: nuevo colaborador ---------- */}
+      {nuevoOpen && (
+        <div onClick={() => setNuevoOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", backdropFilter: "blur(3px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 120, padding: 16 }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 12, width: 620, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto", border: "1px solid " + COLOR.border, boxShadow: COLOR.shadowHover }}>
+            <div style={{ position: "relative", padding: "20px 24px", background: `radial-gradient(circle at 100% 0%, ${hexA("#2e4773", 0.16)} 0%, transparent 60%), linear-gradient(135deg, ${hexA("#2e4773", 0.1)} 0%, ${hexA("#2e4773", 0.04)} 100%), #fff`, borderBottom: "1px solid " + COLOR.border, borderRadius: "12px 12px 0 0" }}>
+              <button onClick={() => setNuevoOpen(false)} style={{ position: "absolute", top: 14, right: 14, border: "none", background: "transparent", fontSize: 20, cursor: "pointer", color: COLOR.textMuted, lineHeight: 1 }}>×</button>
+              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: COLOR.ink }}>Nuevo colaborador</h3>
+              <div style={{ fontSize: 13, color: COLOR.textSoft, marginTop: 2 }}>Captura los datos y ubícalo en una casilla del 9 box.</div>
+            </div>
+            <div style={{ padding: 24 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div style={{ gridColumn: "1 / span 2" }}>
+                  <div style={labelStyle}>Nombre completo *</div>
+                  <input style={S.input} value={form.nombre} onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))} placeholder="Nombre y apellidos" />
+                </div>
+                <div><div style={labelStyle}>Edad</div><input style={S.input} type="number" value={form.edad} onChange={(e) => setForm((f) => ({ ...f, edad: e.target.value }))} placeholder="Ej. 34" /></div>
+                <div><div style={labelStyle}>Teléfono</div><input style={S.input} value={form.telefono} onChange={(e) => setForm((f) => ({ ...f, telefono: e.target.value }))} placeholder="55 0000 0000" /></div>
+                <div style={{ gridColumn: "1 / span 2" }}><div style={labelStyle}>Correo</div><input style={S.input} value={form.correo} onChange={(e) => setForm((f) => ({ ...f, correo: e.target.value }))} placeholder="nombre@empresa.com.mx" /></div>
+                <div>
+                  <div style={labelStyle}>Área</div>
+                  <select style={S.input} value={form.area} onChange={(e) => setForm((f) => ({ ...f, area: e.target.value }))}>
+                    {AREAS_EMPRESA.map((a) => <option key={a} value={a}>{a}</option>)}
+                  </select>
+                </div>
+                <div><div style={labelStyle}>Departamento</div><input style={S.input} value={form.departamento} onChange={(e) => setForm((f) => ({ ...f, departamento: e.target.value }))} placeholder="Ej. Posventa" /></div>
+                <div><div style={labelStyle}>Puesto</div><input style={S.input} value={form.puesto} onChange={(e) => setForm((f) => ({ ...f, puesto: e.target.value }))} placeholder="Ej. Ejecutivo de cuenta" /></div>
+                <div><div style={labelStyle}>Jefe inmediato</div><input style={S.input} value={form.jefe} onChange={(e) => setForm((f) => ({ ...f, jefe: e.target.value }))} placeholder="Nombre del jefe" /></div>
+                <div><div style={labelStyle}>Personas a cargo</div><input style={S.input} type="number" value={form.aCargo} onChange={(e) => setForm((f) => ({ ...f, aCargo: e.target.value }))} placeholder="0" /></div>
+                <div><div style={labelStyle}>Ubicación</div><input style={S.input} value={form.ubicacion} onChange={(e) => setForm((f) => ({ ...f, ubicacion: e.target.value }))} placeholder="Ej. Corporativo CDMX" /></div>
+                <div style={{ gridColumn: "1 / span 2" }}>
+                  <div style={labelStyle}>Casilla inicial (9 box)</div>
+                  <select style={S.input} value={form.box} onChange={(e) => setForm((f) => ({ ...f, box: e.target.value }))}>
+                    {NINE_BOX.map((b) => <option key={b.id} value={b.id}>{b.titulo} — {b.eje}</option>)}
+                  </select>
+                </div>
+                <div style={{ gridColumn: "1 / span 2" }}>
+                  <div style={labelStyle}>Notas</div>
+                  <textarea style={{ ...S.input, resize: "vertical" }} rows={2} value={form.notas} onChange={(e) => setForm((f) => ({ ...f, notas: e.target.value }))} placeholder="Observaciones iniciales…" />
+                </div>
+              </div>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 18 }}>
+                <button style={S.btnGhost} onClick={() => setNuevoOpen(false)}>Cancelar</button>
+                <button style={{ ...S.btn, opacity: form.nombre.trim() ? 1 : 0.4, cursor: form.nombre.trim() ? "pointer" : "not-allowed" }} disabled={!form.nombre.trim()} onClick={crearColaborador}>Agregar colaborador</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <h3 style={S.h3}>Distribución del talento</h3>
+      <div style={S.card}>
+        {(() => {
+          const maxCount = Math.max(1, ...NINE_BOX.map((b) => enBox(b.id).length));
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {NINE_BOX.map((box) => {
+                const n = enBox(box.id).length;
+                const w = Math.round((n / maxCount) * 100);
+                return (
+                  <div key={box.id} title={box.resumen} style={{ display: "grid", gridTemplateColumns: "190px 1fr 34px", alignItems: "center", gap: 12 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ width: 10, height: 10, borderRadius: 3, background: box.accent, flexShrink: 0 }} />
+                        <span style={{ fontSize: 13, fontWeight: 700, color: box.accent, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{box.titulo}</span>
+                      </div>
+                      <div style={{ fontSize: 11, color: COLOR.textMuted, marginTop: 1, paddingLeft: 18 }}>{box.eje}</div>
+                    </div>
+                    <div style={{ background: hexA(box.accent, 0.08), borderRadius: 6, height: 26, position: "relative", overflow: "hidden" }}>
+                      <div style={{
+                        width: n === 0 ? 0 : `${Math.max(w, 6)}%`, height: "100%", borderRadius: 6,
+                        background: `linear-gradient(90deg, ${hexA(box.accent, 0.75)} 0%, ${box.accent} 100%)`,
+                        transition: "width 0.3s ease",
+                      }} />
+                    </div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: n === 0 ? COLOR.textMuted : COLOR.ink, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{n}</div>
+                  </div>
+                );
+              })}
+              <div style={{ fontSize: 11, color: COLOR.textMuted, marginTop: 4, borderTop: "1px solid " + COLOR.borderSoft, paddingTop: 8 }}>
+                Nº de colaboradores por casilla · pasa el cursor sobre cada barra para ver el enfoque recomendado.
+              </div>
+            </div>
+          );
+        })()}
+      </div>
+    </div>
+  );
+}
+
 function Catalogos() {
   const [benchmarks, setBenchmarks] = useState(BENCHMARKS_INICIALES);
   const [editIdx, setEditIdx] = useState(null);
@@ -8175,7 +9223,166 @@ function Catalogos() {
 // =============================================================
 // SHELL — Layout con sidebar a la DERECHA
 // =============================================================
+// =============================================================
+// LOGIN
+// =============================================================
+function LoginPage({ onLogin }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPwd, setShowPwd] = useState(false);
+  const [recordar, setRecordar] = useState(true);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const submit = (e) => {
+    e.preventDefault();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+    if (!emailOk) { setError("Ingresa un correo electrónico válido."); return; }
+    if (!password) { setError("Ingresa tu contraseña."); return; }
+    setError("");
+    setLoading(true);
+    setTimeout(() => onLogin(email.trim()), 750);
+  };
+
+  const ink = "#0f172a", muted = "#64748b", border = "#e2e8f0";
+  const accent = "#c2410c", accentLight = "#ea580c";
+  const field = {
+    width: "100%", padding: "12px 14px 12px 42px", fontSize: 14,
+    border: `1px solid ${border}`, borderRadius: 10, outline: "none",
+    fontFamily: "inherit", color: ink, boxSizing: "border-box",
+    background: "#fff", transition: "border-color 0.15s ease, box-shadow 0.15s ease",
+  };
+  const iconWrap = { position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: muted, display: "flex" };
+
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", fontFamily: FONT_STACK, background: "#fff" }}>
+      {/* Panel de marca */}
+      <div
+        className="login-brand"
+        style={{
+          position: "relative", flex: "1 1 0%", overflow: "hidden",
+          padding: "56px 56px", display: "flex", flexDirection: "column", justifyContent: "space-between",
+          color: "#fff",
+          background:
+            `radial-gradient(circle at 12% 18%, rgba(255,255,255,0.18) 0%, transparent 32%), ` +
+            `radial-gradient(circle at 88% 82%, rgba(0,0,0,0.18) 0%, transparent 42%), ` +
+            `linear-gradient(135deg, #ea580c 0%, #c2410c 52%, #9a3412 100%)`,
+        }}
+      >
+        {/* textura de puntos */}
+        <div style={{ position: "absolute", inset: 0, opacity: 0.14, backgroundImage: "radial-gradient(rgba(255,255,255,0.9) 1px, transparent 1px)", backgroundSize: "22px 22px", pointerEvents: "none" }} />
+        {/* halos flotantes */}
+        <div style={{ position: "absolute", top: -90, right: -60, width: 280, height: 280, borderRadius: "50%", background: "rgba(255,255,255,0.08)", animation: "lr-float 7s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", bottom: -70, left: -40, width: 220, height: 220, borderRadius: "50%", background: "rgba(0,0,0,0.08)", animation: "lr-float 9s ease-in-out infinite" }} />
+
+        <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 14 }}>
+          <div style={{ width: 46, height: 46, borderRadius: 12, background: "rgba(255,255,255,0.16)", backdropFilter: "blur(6px)", border: "1px solid rgba(255,255,255,0.25)", color: "#fff", fontWeight: 800, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", letterSpacing: "-0.04em" }}>RH</div>
+          <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: 0.3 }}>Tablero de Control RRHH</div>
+        </div>
+
+        <div style={{ position: "relative", maxWidth: 460 }}>
+          <h1 style={{ fontSize: 38, lineHeight: 1.12, fontWeight: 800, margin: 0, letterSpacing: "-0.03em" }}>
+            Toda tu gestión de personas, en un solo lugar.
+          </h1>
+          <p style={{ fontSize: 15, lineHeight: 1.6, color: "rgba(255,255,255,0.88)", marginTop: 16, marginBottom: 0 }}>
+            Suite integral para Dirección y Gerencia de Recursos Humanos: indicadores en vivo, semáforos y benchmarks en cada decisión.
+          </p>
+        </div>
+
+        <div style={{ position: "relative", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>Powered by AXON B2B</div>
+      </div>
+
+      {/* Panel de formulario */}
+      <div style={{ flex: "1 1 0%", display: "flex", alignItems: "center", justifyContent: "center", padding: "32px 24px", background: "radial-gradient(circle at 50% 0%, rgba(234,88,12,0.04) 0%, transparent 45%), #fff" }}>
+        <div className="login-form-wrap lr-fade-up" style={{ width: 400, maxWidth: "100%" }}>
+          {/* Logo compacto (visible cuando se oculta el panel de marca) */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
+            <div style={{ width: 42, height: 42, borderRadius: 11, background: `linear-gradient(135deg, ${accentLight} 0%, ${accent} 100%)`, color: "#fff", fontWeight: 800, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center", letterSpacing: "-0.04em", boxShadow: "0 2px 8px rgba(194,65,12,0.25)" }}>RH</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: ink }}>Tablero de Control RRHH</div>
+          </div>
+
+          <h2 style={{ fontSize: 26, fontWeight: 800, color: ink, margin: 0, letterSpacing: "-0.02em" }}>Bienvenido de vuelta</h2>
+          <p style={{ fontSize: 14, color: muted, marginTop: 6, marginBottom: 26 }}>Inicia sesión para entrar a tu tablero.</p>
+
+          <form onSubmit={submit}>
+            <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 7, textTransform: "uppercase", letterSpacing: 0.5 }}>Correo electrónico</label>
+            <div style={{ position: "relative", marginBottom: 18 }}>
+              <span style={iconWrap}>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-10 6L2 7" /></svg>
+              </span>
+              <input
+                type="email" value={email} autoFocus autoComplete="email"
+                onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
+                onFocus={(e) => { e.target.style.borderColor = accent; e.target.style.boxShadow = `0 0 0 3px ${"rgba(194,65,12,0.12)"}`; }}
+                onBlur={(e) => { e.target.style.borderColor = border; e.target.style.boxShadow = "none"; }}
+                placeholder="tu.correo@empresa.com.mx" style={field}
+              />
+            </div>
+
+            <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#334155", marginBottom: 7, textTransform: "uppercase", letterSpacing: 0.5 }}>Contraseña</label>
+            <div style={{ position: "relative", marginBottom: 16 }}>
+              <span style={iconWrap}>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+              </span>
+              <input
+                type={showPwd ? "text" : "password"} value={password} autoComplete="current-password"
+                onChange={(e) => { setPassword(e.target.value); if (error) setError(""); }}
+                onFocus={(e) => { e.target.style.borderColor = accent; e.target.style.boxShadow = `0 0 0 3px rgba(194,65,12,0.12)`; }}
+                onBlur={(e) => { e.target.style.borderColor = border; e.target.style.boxShadow = "none"; }}
+                placeholder="••••••••" style={{ ...field, paddingRight: 44 }}
+              />
+              <button type="button" onClick={() => setShowPwd((v) => !v)} aria-label={showPwd ? "Ocultar" : "Mostrar"}
+                style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", border: "none", background: "transparent", cursor: "pointer", color: muted, display: "flex", padding: 4 }}>
+                {showPwd
+                  ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" /><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" /><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" /><line x1="2" y1="2" x2="22" y2="22" /></svg>
+                  : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>}
+              </button>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22 }}>
+              <label style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 13, color: "#334155", cursor: "pointer" }}>
+                <input type="checkbox" checked={recordar} onChange={(e) => setRecordar(e.target.checked)} style={{ width: 15, height: 15, accentColor: accent, cursor: "pointer" }} />
+                Recordarme
+              </label>
+              <a href="#" onClick={(e) => e.preventDefault()} style={{ fontSize: 13, color: accent, fontWeight: 600, textDecoration: "none" }}>¿Olvidaste tu contraseña?</a>
+            </div>
+
+            {error && (
+              <div style={{ fontSize: 13, color: "#b00020", background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 8, padding: "9px 12px", marginBottom: 16 }}>{error}</div>
+            )}
+
+            <button type="submit" disabled={loading}
+              style={{
+                width: "100%", padding: "13px 16px", border: "none", borderRadius: 10,
+                background: `linear-gradient(135deg, ${accentLight} 0%, ${accent} 100%)`, color: "#fff",
+                fontSize: 15, fontWeight: 700, cursor: loading ? "default" : "pointer", fontFamily: "inherit",
+                letterSpacing: 0.2, boxShadow: "0 4px 14px rgba(194,65,12,0.3)", opacity: loading ? 0.85 : 1,
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 9,
+                transition: "transform 0.1s ease, box-shadow 0.15s ease",
+              }}
+              onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.99)")}
+              onMouseUp={(e) => (e.currentTarget.style.transform = "none")}
+            >
+              {loading
+                ? <><span style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.45)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "lr-spin 0.7s linear infinite" }} /> Entrando…</>
+                : <>Iniciar sesión
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+                  </>}
+            </button>
+          </form>
+
+          <div style={{ marginTop: 22, fontSize: 12, color: muted, textAlign: "center", padding: "10px 12px", background: "#f8fafc", borderRadius: 8, border: "1px solid " + border }}>
+            <strong style={{ color: "#334155" }}>Demo:</strong> entra con cualquier correo y contraseña.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SaaSRRHH() {
+  const [autenticado, setAutenticado] = useState(false);
+  const [usuario, setUsuario] = useState("");
   const [tab, setTab] = useState("dashboard");
   const [filter, setFilter] = useState("");
   const [periodo, setPeriodo] = useState("Abr 2026");
@@ -8246,14 +9453,19 @@ export default function SaaSRRHH() {
       case "nomina": return <Nomina periodo={periodo} />;
       case "clima": return <Clima />;
       case "denuncia": return <Denuncia />;
-      case "cobertura": return <Cobertura onAbrirGuia={() => setVistaGuia(true)} />;
+      case "cobertura": return <Cobertura />;
       case "rotacion": return <Rotacion />;
       case "capacitacion": return <Capacitacion />;
-      case "seleccion": return <Seleccion />;
+      case "desempeno": return <Desempeno />;
+      case "seleccion": return <Seleccion onAbrirGuia={() => setVistaGuia(true)} />;
       case "catalogos": return <Catalogos />;
       default: return null;
     }
   };
+
+  if (!autenticado) {
+    return <LoginPage onLogin={(email) => { setUsuario(email); setAutenticado(true); }} />;
+  }
 
   if (vistaGuia) {
     return <GuiaEntrevista onClose={() => setVistaGuia(false)} />;
@@ -8276,7 +9488,7 @@ export default function SaaSRRHH() {
           </div>
           <div>
             <div style={{ ...S.title, textTransform: "none" }}>Bienvenida María</div>
-            <div style={S.subtitle}>Suite integral para Dirección y Gerencia de Recursos Humanos</div>
+            <div style={S.subtitle}>{usuario ? `Sesión: ${usuario}` : "Suite integral para Dirección y Gerencia de Recursos Humanos"}</div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -8300,6 +9512,14 @@ export default function SaaSRRHH() {
             title="Imprimir / Exportar a PDF la pestaña actual"
           >
             Exportar
+          </button>
+          <button
+            style={{ ...S.btnGhost, display: "inline-flex", alignItems: "center", gap: 6 }}
+            onClick={() => { setAutenticado(false); setUsuario(""); setTab("dashboard"); }}
+            title="Cerrar sesión"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+            Salir
           </button>
         </div>
       </div>

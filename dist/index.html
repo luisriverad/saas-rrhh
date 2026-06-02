@@ -12,6 +12,16 @@
       ::selection { background: #fed7aa; color: #0f172a; }
       *:focus-visible { outline: 2px solid #c2410c; outline-offset: 2px; }
 
+      /* Animaciones del login */
+      @keyframes lr-spin { to { transform: rotate(360deg); } }
+      @keyframes lr-fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+      @keyframes lr-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+      .lr-fade-up { animation: lr-fade-up 0.6s cubic-bezier(0.16,1,0.3,1) both; }
+      @media (max-width: 880px) {
+        .login-brand { display: none !important; }
+        .login-form-wrap { max-width: 100% !important; }
+      }
+
       /* Modo impresión: ocultar sidebar, topbar y footer; expandir contenido a página completa */
       @media print {
         @page { margin: 14mm 12mm; size: A4 portrait; }
@@ -25,8 +35,28 @@
         tr { page-break-inside: avoid; }
         .chart-copy-btn { display: none !important; }
       }
+
+      /* Modo impresión enfocado: exportar SOLO el plan de trabajo a PDF */
+      @media print {
+        body.printing-plan #root > * { visibility: hidden !important; }
+        body.printing-plan .plan-print-overlay,
+        body.printing-plan .plan-print-overlay * { visibility: visible !important; }
+        body.printing-plan .plan-print-overlay {
+          position: absolute !important; inset: 0 !important;
+          background: #fff !important; backdrop-filter: none !important;
+          display: block !important; padding: 0 !important; z-index: 9999 !important;
+        }
+        body.printing-plan .plan-print-card {
+          position: absolute !important; left: 0 !important; top: 0 !important;
+          width: 100% !important; max-width: 100% !important; max-height: none !important;
+          overflow: visible !important; box-shadow: none !important; border: none !important;
+          border-radius: 0 !important;
+        }
+        body.printing-plan .plan-no-print { display: none !important; }
+        body.printing-plan .plan-print-card .plan-fase { page-break-inside: avoid; }
+      }
     </style>
-    <script type="module" crossorigin src="/assets/index-BP5zy8h0.js"></script>
+    <script type="module" crossorigin src="/assets/index-D9YCKfnt.js"></script>
   </head>
   <body>
     <div id="root"></div>
