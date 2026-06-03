@@ -153,7 +153,7 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
     const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
     if (!apiKey) {
       setAiResult({
-        dictamen: "Configura VITE_ANTHROPIC_API_KEY en tu entorno local para habilitar el dictamen con IA. Mientras tanto, usa los scores y notas de la entrevista.",
+        dictamen: "Configura VITE_ANTHROPIC_API_KEY en tu entorno local para habilitar el dictamen automático. Mientras tanto, usa los scores y notas de la entrevista.",
         habilidades: [],
       });
       setLoading(false);
@@ -187,7 +187,7 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
     } catch (err) {
       console.error("Error:", err);
       setAiResult({
-        dictamen: "No se pudo generar el dictamen con IA. Verifica la API key, la conexión y que todas las preguntas tengan score y notas.",
+        dictamen: "No se pudo generar el dictamen. Verifica la API key, la conexión y que todas las preguntas tengan score y notas.",
         habilidades: [],
       });
     } finally {
@@ -206,7 +206,7 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
         <div style={{ display: "flex", gap: 8 }}>
           <button style={S.btnGhost} onClick={onClose}>← Volver a Cobertura</button>
           <button style={S.btn} onClick={handleGenerateDictamen} disabled={loading || answered.length === 0}>
-            {loading ? "Analizando..." : "Generar Dictamen con IA"}
+            {loading ? "Analizando..." : "Generar Dictamen"}
           </button>
         </div>
       </div>
@@ -418,7 +418,7 @@ Las 5 habilidades deben ser las más relevantes detectadas en las respuestas (ej
               disabled={loading || answered.length === 0}
               style={{ ...S.btn, opacity: loading || answered.length === 0 ? 0.5 : 1, cursor: loading || answered.length === 0 ? "not-allowed" : "pointer" }}
             >
-              {loading ? "Analizando..." : "Generar Dictamen con IA"}
+              {loading ? "Analizando..." : "Generar Dictamen"}
             </button>
           </div>
 

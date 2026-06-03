@@ -114,7 +114,7 @@ function ChartCopy({ children, label = "Gráfica" }) {
 
   const ok = estado === "copiado" || estado === "descargado";
   return (
-    <div style={{ position: "relative" }}>
+    <div className="print-keep" style={{ position: "relative", breakInside: "avoid" }}>
       <div ref={captureRef}>{children}</div>
       <button
         type="button"
@@ -267,8 +267,8 @@ const S = {
   },
   h3: { fontSize: 14, fontWeight: 700, marginTop: 22, marginBottom: 10, color: COLOR.ink, letterSpacing: "-0.01em" },
   hint: { fontSize: 12, color: COLOR.textMuted, marginBottom: 16, lineHeight: 1.5 },
-  card: { border: "1px solid " + COLOR.border, borderRadius: 0, padding: 16, marginBottom: 16, background: COLOR.surface, boxShadow: COLOR.shadow },
-  kpi: { border: "1px solid " + COLOR.border, borderRadius: 0, padding: 14, background: COLOR.surface, boxShadow: COLOR.shadow },
+  card: { border: "1px solid " + COLOR.border, borderRadius: 0, padding: 16, marginBottom: 16, background: COLOR.surface, boxShadow: COLOR.shadow, breakInside: "avoid" },
+  kpi: { border: "1px solid " + COLOR.border, borderRadius: 0, padding: 14, background: COLOR.surface, boxShadow: COLOR.shadow, breakInside: "avoid" },
   kpiLabel: { fontSize: 10, fontWeight: 700, color: COLOR.textMuted, textTransform: "uppercase", letterSpacing: 0.8 },
   kpiValue: { fontSize: 28, fontWeight: 700, marginTop: 4, color: COLOR.ink, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" },
   kpiDelta: (positive) => ({ fontSize: 14, color: positive ? "#0a7d2c" : "#b00020", marginTop: 4, fontWeight: 600 }),
@@ -7562,7 +7562,7 @@ function Capacitacion() {
               </div>
             </div>
 
-            {/* Próximos pasos con actividad del agente IA */}
+            {/* Próximos pasos con actividad del agente */}
             {(() => {
               const tipoLabel = {
                 whatsapp: "WhatsApp",
@@ -7598,7 +7598,7 @@ function Capacitacion() {
               return (
                 <>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                    <div style={S.kpiLabel}>Próximos pasos · Actividad del agente IA</div>
+                    <div style={S.kpiLabel}>Próximos pasos · Actividad del agente</div>
                     {totalAgentes > 0 && (
                       <div style={{ fontSize: 11, color: "#64748b" }}>
                         {totalAgentes} acciones automáticas · {sinRespuesta > 0 ? <span style={{ color: "#b00020", fontWeight: 700 }}>{sinRespuesta} sin respuesta</span> : <span style={{ color: "#0a7d2c", fontWeight: 700 }}>todas atendidas</span>}
@@ -8856,7 +8856,7 @@ function Desempeno() {
         </div>
       )}
 
-      {/* ---------- Modal: plan de trabajo (IA) ---------- */}
+      {/* ---------- Modal: plan de trabajo ---------- */}
       {planBox && (
         <div className="plan-print-overlay" onClick={cerrarPlan} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", backdropFilter: "blur(3px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 120, padding: 16 }}>
           <div className="plan-print-card" onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 12, width: 640, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto", border: "1px solid " + COLOR.border, boxShadow: COLOR.shadowHover }}>
@@ -8864,7 +8864,7 @@ function Desempeno() {
               <button className="plan-no-print" onClick={cerrarPlan} style={{ position: "absolute", top: 14, right: 14, border: "none", background: "transparent", fontSize: 20, cursor: "pointer", color: COLOR.textMuted, lineHeight: 1 }}>×</button>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: planBox.accent, display: "inline-flex", alignItems: "center", gap: 6 }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" /><line x1="9" y1="21" x2="15" y2="21" /></svg>
-                Plan de trabajo {planPersona ? "personalizado" : "sugerido"} por IA
+                Plan de trabajo {planPersona ? "personalizado" : "sugerido"}
               </div>
               {planPersona ? (
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8 }}>
@@ -8920,7 +8920,7 @@ function Desempeno() {
               ))}
               <div style={{ fontSize: 11, color: COLOR.textMuted, fontStyle: "italic", display: "flex", alignItems: "center", gap: 6 }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
-                {planPersona ? `Plan generado por IA para ${primerNombre(planPersona.nombre)} a modo de simulación. Revísalo y ajústalo antes de aplicarlo.` : "Contenido generado por IA a modo de simulación. Abre la ficha de un colaborador para personalizarlo."}
+                {planPersona ? `Plan generado para ${primerNombre(planPersona.nombre)} a modo de simulación. Revísalo y ajústalo antes de aplicarlo.` : "Contenido generado a modo de simulación. Abre la ficha de un colaborador para personalizarlo."}
               </div>
               <div className="plan-no-print" style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                 <button style={{ ...S.btnGhost, display: "inline-flex", alignItems: "center", gap: 6 }} onClick={() => exportarPlanPDF(planPersona, planBox)}>
